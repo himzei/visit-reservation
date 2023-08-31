@@ -20,6 +20,8 @@
   display: flex;
   gap: 4px;
 }
+
+/* 테이블 시작 */
 .teacher-approval .onepass div .teacher-approval table {
   width: 100%;
 }
@@ -43,6 +45,8 @@
   text-align: center;
   vertical-align: center;
 }
+
+/* 테이블 끝 */
 
 .approval-status {
   display: flex;

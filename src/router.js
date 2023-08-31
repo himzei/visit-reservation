@@ -8,6 +8,15 @@ import TeacherApproval from "./app/teacher/TeacherApproval";
 import TeacherHistory from "./app/teacher/TeacherHistory";
 import TeacherRegister from "./app/teacher/TeacherRegister";
 import TeacherProfile from "./app/teacher/TeacherProfile";
+import AdminConfirm from "./app/admin/AdminConfirm";
+import AdminRegister from "./app/admin/AdminRegister";
+import AdminManager from "./app/admin/AdminManager";
+import AdminMainPage from "./app/admin/AdminMainPage";
+import AdminUser from "./app/admin/AdminUser";
+import AdminPolicy from "./app/admin/AdminPolicy";
+import AdminStatics from "./app/admin/AdminStatics";
+import AdminProfile from "./app/admin/AdminProfile";
+import AdminHistory from "./app/admin/AdminHistory";
 
 const router = createBrowserRouter([
   {
@@ -56,6 +65,48 @@ const router = createBrowserRouter([
           {
             path: "profile",
             element: <TeacherProfile />,
+          },
+        ],
+      },
+      {
+        path: "admin",
+        element: <Outlet />,
+        children: [
+          {
+            path: "confirm",
+            element: <AdminConfirm />,
+          },
+          {
+            path: "history",
+            element: <AdminHistory />,
+          },
+          {
+            path: "register",
+            element: <AdminRegister />,
+          },
+          {
+            path: "manager",
+            element: <AdminManager />,
+          },
+          {
+            path: "main",
+            element: <AdminMainPage />,
+          },
+          {
+            path: "user",
+            element: <AdminUser />,
+          },
+          {
+            path: "policy",
+            element: <AdminPolicy />,
+          },
+          {
+            path: "statistics",
+            element: <AdminStatics />,
+          },
+          {
+            path: "profile",
+            element: <AdminProfile />,
           },
         ],
       },

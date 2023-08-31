@@ -3,18 +3,14 @@ import React from "react";
 import Layout from "../../components/Layout";
 import { TEACHER_LIST } from "../../lib/menuList";
 import { Box, Checkbox } from "@chakra-ui/react";
+import AllPass from "../../components/AllPass";
 
 export default function TeacherApproval() {
   return (
     <Layout menu={TEACHER_LIST}>
       <div className="teacher-approval">
         {/* 일괄승인 */}
-        <div className="onepass">
-          <div>
-            <input type="checkbox" id="allCheck" />
-            <label htmlFor="allCheck">일괄승인</label>
-          </div>
-        </div>
+        <AllPass />
         {/* 테이블 */}
         <table>
           <thead>

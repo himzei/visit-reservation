@@ -1,0 +1,16 @@
+.search-location {
+  display: flex;
+  align-items: center;
+  padding-right: 24px;
+}
+.search-location span {
+  font-weight: 600;
+  margin-right: 10px;
+}
+.search-location select {
+  width: 150px;
+  border: 1px solid lightgray;
+  background-color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+}

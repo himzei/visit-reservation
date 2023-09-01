@@ -10,20 +10,14 @@ import { login } from "../api";
 export default function LogIn() {
   const { register, handleSubmit } = useForm();
   const { mutate, data: apiData } = useMutation(login);
-  console.log("안녕하세요", apiData);
+  console.log(apiData);
 
   const onSubmit = ({ UserId, Password }) => {
     const encoder = new TextEncoder();
-    const utf8Array1 = encoder.encode(UserId);
     const utf8Array2 = encoder.encode(Password);
-
-    const binaryString1 = String.fromCharCode.apply(null, utf8Array1);
     const binaryString2 = String.fromCharCode.apply(null, utf8Array2);
-
-    const username = btoa(binaryString1);
     const password = btoa(binaryString2);
-
-    console.log(username, password);
+    console.log(password);
     mutate({ UserId, password });
   };
   return (

@@ -14,6 +14,7 @@
 
 .reg-title {
   display: flex;
+  margin-bottom: 10px;
 }
 
 .input-group {
@@ -83,6 +84,7 @@ select:focus {
   display: grid;
   width: 1024px;
   grid-template-columns: 2fr 1fr;
+  gap: 80px;
 }
 
 .horizon-divide .reg-title h2 {
@@ -90,15 +92,48 @@ select:focus {
 }
 
 .location-group {
-  width: 100%x;
-  height: 500px;
-
-  display: flex;
+  width: 100%;
+  height: 400px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
-.location-group .location-first,
-.location-group .location-second {
+.purpose-group {
   width: 100%;
-  margin: 5px;
+  height: 400px;
+}
+.purpose-visit {
+  width: 100%;
+  height: 100%;
   border: 1px solid gray;
+  border-radius: 15px;
+}
+
+.location-first,
+.location-second {
+  width: 100%;
+  border: 1px solid gray;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.location-first > div:first-child {
+  background-color: lightgray;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 50px;
+  padding: 0 10px;
+  border-bottom: 1px solid gray;
+}
+
+.add-btn {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.location-first > div:nth-child(2) {
+  display: flex;
+  flex-direction: column;
 }

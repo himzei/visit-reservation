@@ -1,0 +1,35 @@
+.item-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 12px;
+}
+.item-group:focus {
+  background-color: #0066ff;
+}
+
+.item-group > div:first-child {
+  display: flex;
+}
+
+.icon-group {
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.icon-group img {
+  width: 18px;
+  height: 18px;
+  margin: 3px;
+  cursor: pointer;
+}
+
+.item-group > .edit-delete {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+.item-group > .edit-delete div {
+  cursor: pointer;
+}

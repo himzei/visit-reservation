@@ -14,6 +14,7 @@
     "react-datepicker": "^4.16.0",
     "react-day-picker": "^8.8.1",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.45.4",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.15.0",
     "react-scripts": "5.0.1",
@@ -42,5 +43,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "https://flipapi.spaceedu.co.kr"
 }

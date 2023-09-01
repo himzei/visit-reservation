@@ -25,7 +25,11 @@ export default function Layout({ children, menu }) {
           <div className="menu-list">
             {menu.map((item, i) => (
               <Link to={item.url} key={i}>
-                <div className="menu-list__item">{item.title}</div>
+                {item.url === pathname ? (
+                  <div className="menu-list__item_active">{item.title}</div>
+                ) : (
+                  <div className="menu-list__item">{item.title}</div>
+                )}
               </Link>
             ))}
           </div>

@@ -1,0 +1,22 @@
+.button-red button {
+  background-color: #d44242;
+  color: white;
+  transition: all 0.4s;
+  padding: 5px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+.button-red button img:first-child {
+  margin-right: 3px;
+  /* transform: translateX(-1px); */
+}
+/* .button-custom button img:last-child {
+    margin-left: 1px;
+    transform: translateX(3px);
+  } */
+
+.button-red button:hover {
+  background-color: #bb3232;
+}

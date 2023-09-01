@@ -1,0 +1,56 @@
+.admin-manager {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.admin-manager .search-group {
+  margin-bottom: 5px;
+}
+
+.admin-manager .rigth-btn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+}
+
+/* 테이블 시작 */
+.admin-manager table {
+  width: 100%;
+}
+
+.admin-manager thead {
+  background-color: #5a7087;
+  color: white;
+}
+
+.admin-manager thead td {
+  padding: 10px 0;
+  text-align: center;
+}
+
+.admin-manager tbody tr {
+  border-bottom: 1px solid lightgray;
+}
+.admin-manager tbody td {
+  position: relative;
+  padding: 10px 0;
+  text-align: center;
+  vertical-align: center;
+}
+.admin-manager tbody td:first-child {
+}
+
+/* 테이블 끝 */
+
+.edit-delete {
+  display: flex;
+  justify-content: center;
+}
+.edit-delete div:first-child {
+  margin-right: 5px;
+}

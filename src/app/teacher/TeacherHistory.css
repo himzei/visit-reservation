@@ -6,6 +6,7 @@
 .teacher-history__search {
   width: 100%;
   padding: 15px 0;
+  display: flex;
 }
 
 /* 테이블 시작 */

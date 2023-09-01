@@ -25,7 +25,7 @@ export default function AdminHistory() {
         </div>
         {/* 엑셀 다운로드 */}
         <div className="excel-group">
-          <AllPass />
+          <AllPass title="일괄승인" />
           <Button mx="2" colorScheme="green" size="sm">
             Excel 다운로드
           </Button>

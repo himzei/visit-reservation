@@ -2,6 +2,10 @@ import "./TeacherHistory.css";
 import React from "react";
 import Layout from "../../components/Layout";
 import { TEACHER_LIST } from "../../lib/menuList";
+import SearchDate from "../../components/SearchDate";
+import SearchStatus from "../../components/SearchStatus";
+import SearchKeyword from "../../components/SearchKeyword";
+import { Button } from "@chakra-ui/button";
 
 export default function TeacherHistory() {
   return (
@@ -9,19 +13,12 @@ export default function TeacherHistory() {
       <div className="teacher-history">
         {/* 검색 */}
         <div className="teacher-history__search">
-          <span>기간</span>
-          <input type="text" />
-          ~
-          <input type="text" />
-          <select>
-            {Array(5)
-              .fill("")
-              .map((_, i) => (
-                <option key={i} value={i}>
-                  선택옵션 {i}
-                </option>
-              ))}
-          </select>
+          <SearchDate />
+          <SearchStatus />
+          <SearchKeyword />
+          <Button colorScheme="blue" size="sm" width="100px">
+            검색
+          </Button>
         </div>
 
         {/* 테이블 */}

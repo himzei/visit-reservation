@@ -2,15 +2,58 @@ import "./AdminConfirm.css";
 import React from "react";
 import { ADMIN_LIST } from "../../lib/menuList";
 import Layout from "../../components/Layout";
-import { Box, Button, Checkbox } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from "@chakra-ui/react";
 import SearchLocation from "../../components/SearchLocation";
 import SearchDate from "../../components/SearchDate";
 import SearchStatus from "../../components/SearchStatus";
 import SearchKeyword from "../../components/SearchKeyword";
+import ButtonSearch from "../../components/ButtonSearch";
+import AdminConfirmDetail from "./AdminConfirmDetail";
 
 export default function AdminConfirm() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const handleClick = () => {
+    onOpen();
+  };
   return (
     <Layout menu={ADMIN_LIST}>
+      <Modal onClose={onClose} size="5xl" isOpen={isOpen}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>방문예약확인</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <AdminConfirmDetail />
+          </ModalBody>
+          <ModalFooter>
+            <Button width="100px" onClick={onClose}>
+              닫기
+            </Button>
+            <Button
+              width="100px"
+              height="35px"
+              color="white"
+              bg="#0066FF"
+              _hover={{ bg: "#0053CF" }}
+              mx="2"
+            >
+              저장
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <div className="admin-confirm">
         {/* search */}
         <div className="search-group">
@@ -18,9 +61,7 @@ export default function AdminConfirm() {
           <SearchDate />
           <SearchStatus />
           <SearchKeyword />
-          <Button colorScheme="blue" size="sm" width="100px">
-            검색
-          </Button>
+          <ButtonSearch text="검색" />
         </div>
         {/* 테이블 */}
         <table>
@@ -42,7 +83,11 @@ export default function AdminConfirm() {
             {Array(10)
               .fill("")
               .map((_, i) => (
-                <tr key={i}>
+                <tr
+                  onClick={() => handleClick()}
+                  key={i}
+                  className="table-hover"
+                >
                   <td>
                     <Checkbox position="absolute" top="42%" />
                   </td>

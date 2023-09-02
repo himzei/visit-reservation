@@ -1,0 +1,42 @@
+.admin-user-front {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 테이블 시작 */
+.admin-user table {
+  width: 100%;
+}
+
+.admin-user thead {
+  background-color: #5a7087;
+  color: white;
+}
+
+.admin-user thead td {
+  padding: 10px 0;
+  text-align: center;
+}
+
+.admin-user tbody tr {
+  border-bottom: 1px solid lightgray;
+}
+.admin-user tbody td {
+  position: relative;
+  padding: 10px 0;
+  text-align: center;
+  vertical-align: center;
+}
+.admin-user tbody td:first-child {
+}
+
+/* 테이블 끝 */
+
+.edit-delete {
+  display: flex;
+  justify-content: center;
+}
+.edit-delete div:first-child {
+  margin-right: 5px;
+}

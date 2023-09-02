@@ -42,3 +42,10 @@
   flex-wrap: wrap;
   gap: 8px;
 }
+
+.table-hover {
+  cursor: pointer;
+}
+.table-hover:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}

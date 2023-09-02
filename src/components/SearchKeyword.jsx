@@ -1,9 +1,9 @@
 import "./SearchKeyword.css";
 
-export default function SearchKeyword() {
+export default function SearchKeyword({ text }) {
   return (
     <div className="search-keyword">
-      <span>검색어</span>
+      <span>{text}</span>
       <input type="text" placeholder="전체" />
     </div>
   );

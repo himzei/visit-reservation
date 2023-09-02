@@ -2,19 +2,60 @@ import "./AdminManager.css";
 import React from "react";
 import Layout from "../../components/Layout";
 import { ADMIN_LIST } from "../../lib/menuList";
-import { Checkbox } from "@chakra-ui/checkbox";
 import SearchLocation from "../../components/SearchLocation";
 import SearchDate from "../../components/SearchDate";
 import SearchStatus from "../../components/SearchStatus";
 import SearchKeyword from "../../components/SearchKeyword";
-import { Button } from "@chakra-ui/button";
 import EditIcon from "../../assets/svg/edit-icon.svg";
 import DeleteIcon from "../../assets/svg/delete-icon.svg";
 import AllPass from "../../components/AllPass";
+import ButtonSearch from "../../components/ButtonSearch";
+import {
+  Button,
+  Checkbox,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from "@chakra-ui/react";
+import AdminManagerDetail from "./AdminManagerDetail";
 
 export default function AdminManager() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const handleClick = () => {
+    onOpen();
+  };
   return (
     <Layout menu={ADMIN_LIST}>
+      <Modal onClose={onClose} size="5xl" isOpen={isOpen}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>상시방문자 관리(수정)</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <AdminManagerDetail />
+          </ModalBody>
+          <ModalFooter>
+            <Button width="100px" onClick={onClose}>
+              닫기
+            </Button>
+            <Button
+              width="100px"
+              height="35px"
+              color="white"
+              bg="#0066FF"
+              _hover={{ bg: "#0053CF" }}
+              mx="2"
+            >
+              저장
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <div className="admin-manager">
         {/* search */}
         <div className="search-group">
@@ -22,23 +63,12 @@ export default function AdminManager() {
           <SearchDate />
           <SearchStatus />
           <SearchKeyword />
-          <Button colorScheme="blue" size="sm" width="100px">
-            검색
-          </Button>
+          <ButtonSearch text="검색" />
         </div>
         {/* 일괄발송 */}
         <div className="rigth-btn">
           <AllPass title="일괄발송" />
-          <Button
-            width="80px"
-            fontSize="14px"
-            leftIcon={"+"}
-            ml="2"
-            colorScheme="blue"
-            size="sm"
-          >
-            추가
-          </Button>
+          <ButtonSearch text="추가" />
         </div>
         {/* 테이블 */}
         <table>
@@ -68,7 +98,7 @@ export default function AdminManager() {
                   <td>담당자</td>
                   <td>
                     <div className="edit-delete">
-                      <div>
+                      <div onClick={() => handleClick()}>
                         <img src={EditIcon} alt="edit-icon" />
                       </div>
                       <div>

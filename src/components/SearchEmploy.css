@@ -1,14 +1,14 @@
-.search-keyword {
+.search-employ {
   display: flex;
   align-items: center;
   padding-right: 24px;
 }
-
-.search-keyword span {
+.search-employ span {
   font-weight: 600;
+  margin-right: 10px;
 }
 
-.search-keyword input {
+.search-employ select {
   width: 150px;
   border: 1px solid lightgray;
   background-color: white;

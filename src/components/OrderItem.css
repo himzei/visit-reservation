@@ -1,21 +1,15 @@
 .item-group {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 14px 12px;
+  gap: 20px;
 }
-.item-group:focus {
-  background-color: #0066ff;
+.item-group:hover {
+  background-color: lightgray;
 }
 
 .item-group > div:first-child {
   display: flex;
-}
-
-.icon-group {
-  display: flex;
-  align-items: center;
-  margin-right: 8px;
 }
 
 .icon-group img {
@@ -27,9 +21,15 @@
 
 .item-group > .edit-delete {
   display: flex;
+  width: 100%;
+  justify-content: space-between;
   align-items: center;
   font-size: 14px;
 }
 .item-group > .edit-delete div {
   cursor: pointer;
+}
+
+.edit-delete .edit-delete__btn {
+  display: flex;
 }

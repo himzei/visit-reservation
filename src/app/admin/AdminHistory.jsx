@@ -8,6 +8,7 @@ import SearchStatus from "../../components/SearchStatus";
 import SearchKeyword from "../../components/SearchKeyword";
 import { Button, Checkbox } from "@chakra-ui/react";
 import AllPass from "../../components/AllPass";
+import ButtonSearch from "../../components/ButtonSearch";
 
 export default function AdminHistory() {
   return (
@@ -19,9 +20,7 @@ export default function AdminHistory() {
           <SearchDate />
           <SearchStatus />
           <SearchKeyword />
-          <Button colorScheme="blue" size="sm" width="100px">
-            검색
-          </Button>
+          <ButtonSearch text="검색" />
         </div>
         {/* 엑셀 다운로드 */}
         <div className="excel-group">

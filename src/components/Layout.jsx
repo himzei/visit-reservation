@@ -5,8 +5,6 @@ import { Link, useLocation } from "react-router-dom";
 
 export default function Layout({ children, menu }) {
   const { pathname } = useLocation();
-  console.log(pathname);
-
   const temp_data = menu.find((item) => item.url === pathname);
   const MAIN_TITLE = temp_data.title;
   const SUB_TITLE = temp_data.subTitle;

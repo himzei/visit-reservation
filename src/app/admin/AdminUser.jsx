@@ -11,12 +11,10 @@ import DeleteIcon from "../../assets/svg/delete-icon.svg";
 import {
   Box,
   HStack,
-  Button,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
   useDisclosure,
@@ -38,21 +36,6 @@ export default function AdminUser() {
           <ModalBody>
             <AdminUserDetail />
           </ModalBody>
-          <ModalFooter>
-            <Button width="100px" onClick={onClose}>
-              닫기
-            </Button>
-            <Button
-              width="100px"
-              height="35px"
-              color="white"
-              bg="#0066FF"
-              _hover={{ bg: "#0053CF" }}
-              mx="2"
-            >
-              저장
-            </Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
       <div className="admin-user">
@@ -64,7 +47,8 @@ export default function AdminUser() {
             <SearchKeyword text="이름/사용자" />
             <ButtonSearch text="검색" />
           </div>
-          <div>
+
+          <div onClick={() => handleClick()}>
             <ButtonSearch text="+ 추가" />
           </div>
         </div>

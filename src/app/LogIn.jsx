@@ -3,22 +3,30 @@ import "./Login.css";
 import Person from "../assets/svg/person.svg";
 import InputPerson from "../assets/svg/person-input.svg";
 import InputPassword from "../assets/svg/input-password.svg";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { useForm } from "react-hook-form";
-import { login } from "../api";
+
+import { ipData, login } from "../api";
 
 export default function LogIn() {
   const { register, handleSubmit } = useForm();
-  const { mutate, data: apiData } = useMutation(login);
-  console.log(apiData);
+  const { mutate } = useMutation(login, {
+    onSuccess: (data) => {
+      localStorage.setItem("visitschool", data.token);
+    },
+  });
+
+  const { data: getIpData } = useQuery("ipData", ipData);
 
   const onSubmit = ({ UserId, Password }) => {
-    const encoder = new TextEncoder();
-    const utf8Array2 = encoder.encode(Password);
-    const binaryString2 = String.fromCharCode.apply(null, utf8Array2);
-    const password = btoa(binaryString2);
-    console.log(password);
-    mutate({ UserId, password });
+    // const encoder = new TextEncoder();
+    // const utf8Array2 = encoder.encode(Password);
+    // const binaryString2 = String.fromCharCode.apply(null, utf8Array2);
+    // const password = btoa(binaryString2);
+    // console.log(password);
+
+    const ip = getIpData?.IPv4;
+    mutate({ UserId, Password, ip });
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="login-container">

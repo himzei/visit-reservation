@@ -1,0 +1,15 @@
+.admin-user-detail {
+}
+
+.input-group {
+  position: relative;
+  width: 100%;
+}
+
+.input-group .form-errors {
+  position: absolute;
+  right: 0;
+
+  font-size: 14px;
+  color: tomato;
+}

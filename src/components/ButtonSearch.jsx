@@ -5,6 +5,7 @@ export default function ButtonSearch({ text, color }) {
   return (
     <div>
       <Button
+        type="post"
         height="35px"
         color="white"
         bg="#0066FF"

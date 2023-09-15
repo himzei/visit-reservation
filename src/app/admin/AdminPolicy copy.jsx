@@ -1,5 +1,5 @@
 import "./AdminPolicy.css";
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../../components/Layout";
 import { ADMIN_LIST } from "../../lib/menuList";
 import { Button, Checkbox, HStack, Text, Textarea } from "@chakra-ui/react";
@@ -13,10 +13,17 @@ import { apiAgreement, apiPolicyEdit, apiPolicyRegister } from "../../api";
 
 export default function AdminPolicy() {
   const { data: visitSite } = useVisitSite();
+  const [editIndex, setEditIndex] = useState(null);
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
   const { register, handleSubmit } = useForm({ mode: "onChange" });
-  const { handleSubmit: editHandleSubmit } = useForm();
+  const { handleSubmit: editHandleSubmit, register: editRegister } = useForm();
 
+  const handleEditClick = (index, agreementIndex) => {
+    setEditIndex(index);
+    alert(agreementIndex);
+  };
+
+  // 정책입력 USEMUTATION
   const { data: dataResult, mutate } = useMutation((formData) =>
     apiPolicyRegister(formData, visitSiteIndex)
   );
@@ -24,7 +31,6 @@ export default function AdminPolicy() {
   const { mutate: mutateEdit } = useMutation((editData) =>
     apiPolicyEdit(editData)
   );
-  // 정책입력 USEMUTATION
 
   // 정책읽기 USEQUERY
   const { data: dataLists } = useQuery(
@@ -44,33 +50,83 @@ export default function AdminPolicy() {
   const onEditSubmit = (editData) => {
     console.log(editData);
   };
-  const handleChangeTextarea = (id, value) => {
-    const updateData = dataLists.map((item) => {
-      if (item.agreementIndex === id) {
-        return { ...item, inputValue: value };
-      }
-      return item;
-    });
-    dataLists = updateData;
-  };
-
-  const handleEditClick = (id) => {
-    const item = dataLists.find((item) => item.agreementIndex === id);
-    if (item) {
-      setInputValue(item.inputValue);
-    }
-  };
-
-  const setInputValue = (value) => {
-    console.log(value);
-  };
-
   return (
     <Layout menu={ADMIN_LIST}>
       <div className="admin-policy">
-        <form onSubmit={editHandleSubmit(onEditSubmit)}>
-          {agreements?.map((item, index) => (
-            <>
+        {agreements?.map((item, index) => (
+          <>
+            {editIndex === index ? (
+              <form key={index} onSubmit={editHandleSubmit(onEditSubmit)}>
+                <table>
+                  <thead>
+                    <tr>
+                      <td>순번</td>
+                      <td>제목</td>
+                      <td>동의여부</td>
+                      <td width="50%">내용</td>
+                      <td></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input
+                          type="hidden"
+                          value={item.agreementIndex}
+                          {...editRegister("agreementIndex")}
+                        />
+                      </td>
+                      <td width="25%">
+                        <input
+                          type="text"
+                          {...editRegister("editTitle")}
+                          defaultValue={item.title}
+                        />
+                      </td>
+
+                      <td>
+                        <HStack justifyContent="center">
+                          <Checkbox
+                            {...editRegister("editIsMust")}
+                            defaultChecked={item.isMust}
+                          />
+                          <Text>필수동의</Text>
+                        </HStack>
+                      </td>
+                      <td>
+                        <Textarea
+                          cols="50"
+                          rows="10"
+                          {...register("editContents")}
+                        >
+                          {item.contents}
+                        </Textarea>
+                      </td>
+                      <td>
+                        <div className="edit-delete">
+                          <Button
+                            onClick={() => handleEditClick(index)}
+                            colorScheme="blue"
+                            w="20"
+                            size="sm"
+                          >
+                            저장
+                          </Button>
+                          <Button
+                            onClick={() => setEditIndex(null)}
+                            colorScheme="gray"
+                            w="20"
+                            size="sm"
+                          >
+                            취소
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </form>
+            ) : (
               <table key={index}>
                 <thead>
                   <tr>
@@ -85,7 +141,11 @@ export default function AdminPolicy() {
                   <tr>
                     <td>
                       {index + 1}
-                      <input type="hidden" value={item.agreementIndex} />
+                      <input
+                        type="hidden"
+                        value={item.agreementIndex}
+                        {...editRegister("agreementIndex")}
+                      />
                     </td>
                     <td width="25%">{item.title}</td>
 
@@ -99,23 +159,16 @@ export default function AdminPolicy() {
                       </HStack>
                     </td>
                     <td>
-                      <Textarea
-                        cols="50"
-                        rows="10"
-                        onChange={(e) =>
-                          handleChangeTextarea(
-                            item.agreementIndex,
-                            e.target.value
-                          )
-                        }
-                      >
+                      <Textarea cols="50" rows="10">
                         {item.contents}
                       </Textarea>
                     </td>
                     <td>
                       <div className="edit-delete">
                         <Button
-                          onClick={(e) => handleEditClick(item.agreementIndex)}
+                          onClick={() =>
+                            handleEditClick(index, item.agreementIndex)
+                          }
                           type="post"
                           bg="#67B17B"
                           _hover={{ bg: "#328248" }}
@@ -139,9 +192,9 @@ export default function AdminPolicy() {
                   </tr>
                 </tbody>
               </table>
-            </>
-          ))}
-        </form>
+            )}
+          </>
+        ))}
         <hr />
         <div className="title">새 정책관리 작성하기</div>
         <form onSubmit={handleSubmit(onSubmit)}>

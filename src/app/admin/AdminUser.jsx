@@ -20,8 +20,23 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import AdminUserDetail from "./AdminUserDetail";
+import { useQuery, useQueryClient } from "react-query";
+import AdminUserWrite from "./AdminUserWrite";
+import useVisitSite from "../../hooks/useVisitSite";
+import { apiGetManager } from "../../api";
 
 export default function AdminUser() {
+  const queryClient = useQueryClient();
+  // VISITSITEINDEX
+  const { data: visitSite } = useVisitSite();
+  const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
+
+  const { data: dataManagers } = useQuery(
+    ["getManager", { visitSiteIndex, page: 1, pageRange: 10, type: 0 }],
+    apiGetManager
+  );
+
+  console.log(dataManagers);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const handleClick = () => {
     onOpen();
@@ -31,10 +46,10 @@ export default function AdminUser() {
       <Modal onClose={onClose} size="5xl" isOpen={isOpen}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>사용자 관리</ModalHeader>
+          <ModalHeader>사용자 등록하기</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <AdminUserDetail />
+            <AdminUserWrite onClose={onClose} />
           </ModalBody>
         </ModalContent>
       </Modal>
@@ -56,50 +71,52 @@ export default function AdminUser() {
         <table>
           <thead>
             <tr>
-              <td>분류</td>
-              <td>제목</td>
+              <td>분1류</td>
+              <td>이름</td>
               <td>사용자 ID</td>
               <td>전화번호</td>
-              <td>재직여부</td>
+              <td>직책</td>
               <td></td>
             </tr>
           </thead>
           <tbody>
-            {Array(10)
-              .fill("")
-              .map((_, i) => (
-                <tr key={i}>
-                  <td>교사</td>
-                  <td>홍길동</td>
-                  <td>abcd@gmail.com</td>
-                  <td>010-1234-5678</td>
-                  <td>
-                    <HStack
-                      justifyContent="center"
-                      color="white"
-                      fontSize="sm"
-                      spacing="4px"
-                    >
-                      <Box bg="#67B17B" px="2" py="0.5" rounded="md">
-                        재직
-                      </Box>
-                      <Box bg="#CC4E4E" px="2" py="0.5" rounded="md">
-                        퇴직
-                      </Box>
-                    </HStack>
-                  </td>
-                  <td>
-                    <div className="edit-delete">
-                      <div onClick={() => handleClick()}>
-                        <img src={EditIcon} alt="edit-icon" />
-                      </div>
-                      <div>
-                        <img src={DeleteIcon} alt="delete-icon" />
-                      </div>
+            {dataManagers?.accounts?.map((item, i) => (
+              <tr key={i}>
+                <td>
+                  {(() => {
+                    switch (item.auth) {
+                      case 0:
+                        return <div>관리자</div>;
+                      case 1:
+                        return <div>담당자</div>;
+
+                      case 2:
+                        return <div>입구관리자</div>;
+
+                      case 999:
+                        return <div>총 관리자</div>;
+
+                      default:
+                        console.log("d");
+                    }
+                  })()}
+                </td>
+                <td>{item.name}</td>
+                <td>{item.userId}</td>
+                <td>{item.tel}</td>
+                <td>{item.position}</td>
+                <td>
+                  <div className="edit-delete">
+                    <div onClick={() => handleClick()}>
+                      <img src={EditIcon} alt="edit-icon" />
                     </div>
-                  </td>
-                </tr>
-              ))}
+                    <div>
+                      <img src={DeleteIcon} alt="delete-icon" />
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

@@ -2,19 +2,21 @@ import "./AdminManagerDetail.css";
 import React from "react";
 import RegIcon1 from "../../assets/svg/person-input.svg";
 import RegIcon2 from "../../assets/svg/location-icon.svg";
-import RegIcon3 from "../../assets/svg/person-icon.svg";
 import { useForm } from "react-hook-form";
-import useVisitSite from "../../hooks/useVisitSite";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import {
   apiGetPurposeOfVisit,
   apiGetVisitSite,
-  apiPutVisitor,
+  apiVisitorRegister,
 } from "../../api";
+import useVisitSite from "../../hooks/useVisitSite";
 import { Box, Button, HStack } from "@chakra-ui/react";
 
-export default function AdminManagerDetail({ selectEdit, onClose }) {
-  const queryClient = useQueryClient();
+export default function AdminManagerWrite({ onClose }) {
+  const handleClose = () => {
+    onClose();
+  };
+
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
@@ -31,58 +33,45 @@ export default function AdminManagerDetail({ selectEdit, onClose }) {
     apiGetVisitSite
   );
 
-  const handleClose = () => {
-    onClose();
-  };
   const { register, handleSubmit } = useForm({ mode: "onChange" });
 
-  const { mutate } = useMutation((formData) => apiPutVisitor(formData), {
-    onSuccess: (data) => {
-      if (data.result === 0) {
-        onClose();
-      }
-    },
-    onSettled: () => queryClient.invalidateQueries("getVisitor"),
-  });
+  const { mutate } = useMutation(
+    (formData) => apiVisitorRegister(formData, visitSiteIndex),
+    {
+      onSuccess: (data) => {
+        if (data.result === 0) {
+          onClose();
+        }
+      },
+    }
+  );
+
   const onSubmit = (formData) => {
     mutate(formData);
   };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="admin-manager-detail">
+        <input type="hidden" value={0} {...register("type")} />
+        <input type="hidden" value="code" {...register("code")} />
         <section>
-          <input
-            type="hidden"
-            value={selectEdit.visitorIndex}
-            {...register("visitorIndex")}
-          />
           <div className="reg-title">
             <img src={RegIcon1} alt="icon1" />
             <h2>방문객 정보</h2>
           </div>
+
           <div className="input-group">
             <div>방문객명</div>
-            <input
-              {...register("name")}
-              type="text"
-              defaultValue={selectEdit.name}
-            />
+            <input type="text" {...register("name")} />
           </div>
           <div className="input-group">
             <div>휴대전화번호</div>
-            <input
-              {...register("tel")}
-              type="text"
-              defaultValue={selectEdit.tel}
-            />
+            <input type="text" {...register("tel")} />
           </div>
           <div className="input-group">
             <div>차량번호</div>
-            <input
-              {...register("carNumber")}
-              type="text"
-              defaultValue={selectEdit.carNumber}
-            />
+            <input type="text" {...register("carNumber")} />
           </div>
         </section>
         <section>
@@ -94,11 +83,7 @@ export default function AdminManagerDetail({ selectEdit, onClose }) {
             <div>방문지</div>
             <select {...register("placeToVisit")}>
               {dataVisitSite?.placeToVisits?.map((item, index) => (
-                <option
-                  key={index}
-                  defaultValue={item.title}
-                  selected={item.title === selectEdit.placeToVisit}
-                >
+                <option key={index} value={item.title}>
                   {item.title}
                 </option>
               ))}
@@ -108,11 +93,7 @@ export default function AdminManagerDetail({ selectEdit, onClose }) {
             <div>방문 목적</div>
             <select {...register("purposeOfVisit")}>
               {dataPurposeOfVisits?.purposeOfVisits?.map((item, index) => (
-                <option
-                  key={index}
-                  defaultValue={item.title}
-                  selected={item.title === selectEdit.purposeOfVisit}
-                >
+                <option key={index} value={item.title}>
                   {item.title}
                 </option>
               ))}
@@ -122,18 +103,10 @@ export default function AdminManagerDetail({ selectEdit, onClose }) {
             <div>방문일시</div>
             <HStack w="full" justifyContent="space-between" spacing="16">
               <Box w="1/2">
-                <input
-                  defaultValue={selectEdit.enterStartDate.substr(0, 10)}
-                  type="date"
-                  {...register("enterStartDate")}
-                />
+                <input type="date" {...register("enterStartDate")} />
               </Box>
               <Box w="1/2">
-                <input
-                  defaultValue={selectEdit.enterEndDate.substr(0, 10)}
-                  type="date"
-                  {...register("enterEndDate")}
-                />
+                <input type="date" {...register("enterEndDate")} />
               </Box>
             </HStack>
           </div>

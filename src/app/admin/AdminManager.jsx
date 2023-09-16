@@ -1,5 +1,5 @@
 import "./AdminManager.css";
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../../components/Layout";
 import { ADMIN_LIST } from "../../lib/menuList";
 import SearchLocation from "../../components/SearchLocation";
@@ -23,94 +23,128 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import AdminManagerDetail from "./AdminManagerDetail";
+import { useQuery, useQueryClient } from "react-query";
+import AdminManagerWrite from "./AdminManagerWrite";
+import { apiDeleteVisitor, apiGetVisitor } from "../../api";
+import useVisitSite from "../../hooks/useVisitSite";
 
 export default function AdminManager() {
+  // refetch
+  const queryClient = useQueryClient();
+  // VISITSITEINDEX
+  const { data: visitSite } = useVisitSite();
+  const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
+  const [selectEdit, setSelectEdit] = useState(null);
+
+  const { data } = useQuery(
+    ["getVisitor", { visitSiteIndex, page: 1, pageRange: 10, type: 0 }],
+    apiGetVisitor
+  );
+
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const handleClick = () => {
+  const {
+    isOpen: isOpenWrite,
+    onOpen: onOpenWrite,
+    onClose: onCloseWrite,
+  } = useDisclosure();
+
+  const handleEditClick = (index) => {
     onOpen();
+    const editData = data?.visitors?.find(
+      (item) => item?.visitorIndex === index
+    );
+
+    setSelectEdit(editData);
   };
+
+  const handleDeleteClick = async (index) => {
+    await apiDeleteVisitor(index);
+    queryClient.invalidateQueries("getVisitor");
+  };
+
+  const handleClickWrite = () => {
+    onOpenWrite();
+  };
+
   return (
-    <Layout menu={ADMIN_LIST}>
+    <>
+      <Modal onClose={onCloseWrite} size="5xl" isOpen={isOpenWrite}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>상시방문자 추가</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <AdminManagerWrite onClose={onCloseWrite} />
+          </ModalBody>
+          <ModalFooter></ModalFooter>
+        </ModalContent>
+      </Modal>
       <Modal onClose={onClose} size="5xl" isOpen={isOpen}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>상시방문자 관리(수정)</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <AdminManagerDetail />
+            <AdminManagerDetail selectEdit={selectEdit} onClose={onClose} />
           </ModalBody>
-          <ModalFooter>
-            <Button width="100px" onClick={onClose}>
-              닫기
-            </Button>
-            <Button
-              width="100px"
-              height="35px"
-              color="white"
-              bg="#0066FF"
-              _hover={{ bg: "#0053CF" }}
-              mx="2"
-            >
-              저장
-            </Button>
-          </ModalFooter>
+          <ModalFooter></ModalFooter>
         </ModalContent>
       </Modal>
-      <div className="admin-manager">
-        {/* search */}
-        <div className="search-group">
-          <SearchLocation />
-          <SearchDate />
-          <SearchStatus />
-          <SearchKeyword />
-          <ButtonSearch text="검색" />
-        </div>
-        {/* 일괄발송 */}
-        <div className="rigth-btn">
-          <AllPass title="일괄발송" />
-          <ButtonSearch text="추가" />
-        </div>
-        {/* 테이블 */}
-        <table>
-          <thead>
-            <tr>
-              <td>선택</td>
-              <td>방문객명</td>
-              <td>차량번호</td>
-              <td>방문지</td>
-              <td>목적</td>
-              <td>담당자</td>
-              <td></td>
-            </tr>
-          </thead>
-          <tbody>
-            {Array(10)
-              .fill("")
-              .map((_, i) => (
+      <Layout menu={ADMIN_LIST}>
+        <div className="admin-manager">
+          {/* search */}
+          <div className="search-group">
+            <SearchLocation />
+            <SearchDate />
+            <SearchStatus />
+            <SearchKeyword />
+            <ButtonSearch text="검색" />
+          </div>
+          {/* 일괄발송 */}
+          <div className="rigth-btn">
+            <AllPass title="일괄발송" />
+            <Button onClick={() => handleClickWrite()}>추가 </Button>
+          </div>
+          {/* 테이블 */}
+          <table>
+            <thead>
+              <tr>
+                <td>선택a</td>
+                <td>방문객명</td>
+                <td>휴대전화</td>
+                <td>차량번호</td>
+                <td>방문지</td>
+                <td>목적</td>
+                <td></td>
+              </tr>
+            </thead>
+            <tbody>
+              {data?.visitors?.map((item, i) => (
                 <tr key={i}>
                   <td>
                     <Checkbox position="absolute" top="42%" />
                   </td>
-                  <td>홍길동</td>
-                  <td>42누 1234</td>
-                  <td>행정실</td>
-                  <td>진학상담</td>
-                  <td>담당자</td>
+                  <td>{item.name}</td>
+                  <td>{item.tel}</td>
+                  <td>{item.carNumber}</td>
+                  <td>{item.placeToVisit}</td>
+                  <td>{item.purposeOfVisit}</td>
                   <td>
                     <div className="edit-delete">
-                      <div onClick={() => handleClick()}>
+                      <div onClick={() => handleEditClick(item.visitorIndex)}>
                         <img src={EditIcon} alt="edit-icon" />
                       </div>
-                      <div>
+                      <div onClick={() => handleDeleteClick(item.visitorIndex)}>
                         <img src={DeleteIcon} alt="delete-icon" />
                       </div>
                     </div>
                   </td>
                 </tr>
               ))}
-          </tbody>
-        </table>
-      </div>
-    </Layout>
+            </tbody>
+          </table>
+        </div>
+      </Layout>
+    </>
   );
 }

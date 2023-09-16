@@ -17,9 +17,10 @@ export default function AddPurposeOfVisit() {
     formState: { errors },
   } = useForm();
 
-  const { data, mutate } = useMutation((formData) =>
-    apiPurposeOfVisitRegister(formData, visitSiteIndex, lengthPurposeOfVisit)
-  );
+  console.log(lengthPurposeOfVisit);
+  const { data, mutate } = useMutation((formData) => {
+    apiPurposeOfVisitRegister(formData, visitSiteIndex, lengthPurposeOfVisit);
+  });
   const onSubmit = (formData) => {
     mutate(formData);
   };
@@ -35,7 +36,7 @@ export default function AddPurposeOfVisit() {
             <Input
               type="text"
               {...register("title", {
-                required: "방문지는 반드시 입력해 주셔야 합니다.",
+                required: "방문목적은 반드시 입력해 주셔야 합니다.",
               })}
             />
             <Button

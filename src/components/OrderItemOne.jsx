@@ -6,6 +6,7 @@ import BottomIcon from "../assets/svg/arrow-bottom.svg";
 import BottomIconWhite from "../assets/svg/arrow-bottom-white.svg";
 import { VisitSiteContext } from "../context/VisitSiteContext";
 import {
+  Button,
   Input,
   Modal,
   ModalBody,
@@ -16,9 +17,17 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import AddPurposeOfVisit from "./AddPurposeOfVisit";
+import { useMutation } from "react-query";
+import { apiPurposeOfVisitDelete, apiPurposeOfVisitEdit } from "../api";
+import useVisitSite from "../hooks/useVisitSite";
 
 export default function OrderItemOne({ lists, title }) {
+  const { data: visitSite } = useVisitSite();
+  const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
+
+  const [editTitle, setEditTitle] = useState("");
   const [editIndex, setEditIndex] = useState(null);
+  const [selectEdit, setSelectEdit] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { setPlaceVisitIndex, purposeOfVisit } = useContext(VisitSiteContext);
   const [items, setItems] = useState(lists);
@@ -31,6 +40,9 @@ export default function OrderItemOne({ lists, title }) {
     const editPurposeOfVisit = purposeOfVisit?.filter(
       (item) => item.purposeOfVisitIndex === purposeOfVisitIndex
     );
+    setSelectEdit(editPurposeOfVisit);
+    setEditTitle(editPurposeOfVisit[0].title);
+    console.log(selectEdit);
   };
 
   const handleClick = (index, placeToVisitIndex) => {
@@ -58,6 +70,39 @@ export default function OrderItemOne({ lists, title }) {
       setItems(newItems);
       setSelectedItem(index + 1);
     }
+  };
+
+  const { mutate } = useMutation(apiPurposeOfVisitEdit, {
+    onSuccess: (data) => {
+      // console.log(data.result);
+      // setEditIndex(null);
+      window.location.reload();
+    },
+  });
+
+  const handleChange = (e) => {
+    setEditTitle(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    mutate([
+      editTitle,
+      {
+        visitSiteIndex,
+        purposeOfVisitIndex: selectEdit[0].purposeOfVisitIndex,
+        parentIndex: selectEdit[0].parentIndex,
+        itemOrder: selectEdit[0].itemOrder,
+      },
+    ]);
+    // console.log(selectEdit[0]);
+    // console.log(editTitle);
+  };
+  const handleDeleteClick = (index) => {
+    console.log(index);
+    apiPurposeOfVisitDelete(index);
+    window.location.reload();
   };
 
   return (
@@ -100,59 +145,77 @@ export default function OrderItemOne({ lists, title }) {
               {items?.map((item, index) => (
                 <>
                   {editIndex === index ? (
-                    <div
-                      className="item-group"
-                      ref={(el) => (itemRefs.current[index] = el)}
-                      key={index}
-                      style={{
-                        backgroundColor:
-                          selectedItem === index ? "#0066FF" : "",
-                        color: selectedItem === index ? "white" : "",
-                      }}
-                    >
-                      {/* {console.log(itemRefs.current[index])} */}
-                      {/* 1 */}
-
-                      <div className="icon-group">
-                        <img
-                          onClick={() => moveDown(index)}
-                          src={
-                            selectedItem === index
-                              ? BottomIconWhite
-                              : BottomIcon
-                          }
-                          alt="bottom icon"
-                        />
-                        <img
-                          onClick={() => moveUp(index)}
-                          src={selectedItem === index ? UpIconWhite : UpIcon}
-                          alt="up icon"
-                        />
-                      </div>
-
-                      {/* 2 */}
+                    <form onSubmit={handleSubmit}>
                       <div
-                        className="edit-delete"
-                        onClick={() =>
-                          handleClick(index, item.placeToVisitIndex)
-                        }
+                        className="item-group"
+                        ref={(el) => (itemRefs.current[index] = el)}
+                        key={index}
+                        style={{
+                          backgroundColor:
+                            selectedItem === index ? "#0066FF" : "",
+                          color: selectedItem === index ? "white" : "",
+                        }}
                       >
-                        <div>
-                          <Input
-                            px="1"
-                            size="xs"
-                            type="text"
-                            w="140px"
-                            bg="white"
-                            color="black"
+                        {/* {console.log(itemRefs.current[index])} */}
+                        {/* 1 */}
+
+                        <div className="icon-group">
+                          <img
+                            onClick={() => moveDown(index)}
+                            src={
+                              selectedItem === index
+                                ? BottomIconWhite
+                                : BottomIcon
+                            }
+                            alt="bottom icon"
+                          />
+                          <img
+                            onClick={() => moveUp(index)}
+                            src={selectedItem === index ? UpIconWhite : UpIcon}
+                            alt="up icon"
                           />
                         </div>
-                        <div className="edit-delete__btn">
-                          <div>저장</div>
-                          <div onClick={() => setEditIndex(null)}>취소</div>
+
+                        {/* 2 */}
+                        <div
+                          className="edit-delete"
+                          onClick={() =>
+                            handleClick(index, item.placeToVisitIndex)
+                          }
+                        >
+                          <div>
+                            <Input
+                              onChange={handleChange}
+                              name="title"
+                              px="1"
+                              size="xs"
+                              type="text"
+                              w="140px"
+                              bg="white"
+                              color="black"
+                              defaultValue={selectEdit[0].title}
+                            />
+                          </div>
+                          <div className="edit-delete__btn">
+                            <div>
+                              <Button
+                                type="submit"
+                                size="xs"
+                                variant="outline"
+                                color="white"
+                              >
+                                저장
+                              </Button>
+                            </div>
+                            <div onClick={() => setEditIndex(null)}>
+                              <Button variant="outline" size="xs" color="white">
+                                취소
+                              </Button>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    </form>
                   ) : (
                     <div
                       className="item-group"
@@ -198,9 +261,15 @@ export default function OrderItemOne({ lists, title }) {
                               handleEditClick(index, item.purposeOfVisitIndex)
                             }
                           >
-                            수정
+                            <Button size="xs">수정</Button>
                           </div>
-                          <div>삭제</div>
+                          <div
+                            onClick={() =>
+                              handleDeleteClick(item.purposeOfVisitIndex)
+                            }
+                          >
+                            <Button size="xs">삭제</Button>
+                          </div>
                         </div>
                       </div>
                     </div>

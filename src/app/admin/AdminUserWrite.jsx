@@ -119,27 +119,20 @@ export default function AdminUserWrite({ onClose }) {
             />
             <span className="form-errors">{errors?.email?.message}</span>
           </div>
-          <div className="input-group" {...register("state")}>
-            <div>재직여부</div>
-            <select>
-              <option className="select-default" value="1">
-                재직
-              </option>
-              <option className="select-default" value="2">
-                휴직
-              </option>
-              <option className="select-default" value="3">
-                휴직
-              </option>
-            </select>
+          <div className="input-group" {...register("position")}>
+            <div>직책</div>
+            <input type="text" {...register("position")} />
           </div>
           <div className="input-group">
             <div>분류</div>
             <select {...register("auth")}>
-              <option className="select-default" value="1">
-                매니져
+              <option className="select-default" value={0}>
+                관리자
               </option>
-              <option className="select-default" value="2">
+              <option className="select-default" value={1}>
+                담당자
+              </option>
+              <option className="select-default" value={3}>
                 입구관리자
               </option>
             </select>

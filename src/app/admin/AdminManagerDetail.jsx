@@ -2,7 +2,6 @@ import "./AdminManagerDetail.css";
 import React from "react";
 import RegIcon1 from "../../assets/svg/person-input.svg";
 import RegIcon2 from "../../assets/svg/location-icon.svg";
-import RegIcon3 from "../../assets/svg/person-icon.svg";
 import { useForm } from "react-hook-form";
 import useVisitSite from "../../hooks/useVisitSite";
 import { useMutation, useQuery, useQueryClient } from "react-query";

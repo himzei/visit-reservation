@@ -78,7 +78,7 @@ export async function adminManagerRegister(formData, visitSiteIndex) {
 // 사용자 관리 페이지 불러오기
 // queryKey: getManager
 export async function apiGetManager({ queryKey }) {
-  const { visitSiteIndex, page, pageRange, type } = queryKey[1];
+  const { visitSiteIndex, page, pageRange } = queryKey[1];
   return await fetch(
     `/api/Account?visitSiteIndex=${visitSiteIndex}&page=${page}&pageRange=${pageRange}`,
     {
@@ -94,6 +94,41 @@ export async function apiGetManager({ queryKey }) {
 }
 
 // 사용자관리 수정하기
+export async function apiPutManager(formData) {
+  const { accountIndex, userId, password, name, tel, auth, position } =
+    formData;
+
+  return await fetch(`/api/Account/${accountIndex}`, {
+    method: "PUT",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    body: JSON.stringify({
+      userId,
+      password,
+      name,
+      tel,
+      auth,
+      position,
+    }),
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
+// 사용자관리 삭제하기
+export async function apiDeleteManager(accountIndex) {
+  return await fetch(`/api/Account/${accountIndex}`, {
+    method: "DELETE",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    credentials: "include",
+  }).then((res) => res.json());
+}
 
 // 정책 입력
 export async function apiPolicyRegister(formData, visitSiteIndex) {

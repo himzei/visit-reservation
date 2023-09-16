@@ -53,7 +53,6 @@ export default function AdminManager() {
     const editData = data?.visitors?.find(
       (item) => item?.visitorIndex === index
     );
-
     setSelectEdit(editData);
   };
 

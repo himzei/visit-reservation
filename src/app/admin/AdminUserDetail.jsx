@@ -3,32 +3,35 @@ import React from "react";
 import RegIcon1 from "../../assets/svg/person-input.svg";
 import RegIcon2 from "../../assets/svg/location-icon.svg";
 import { Button } from "@chakra-ui/react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
-import useVisitSite from "../../hooks/useVisitSite";
-import { adminManagerRegister } from "../../api";
+import { apiPutManager } from "../../api";
 
-export default function AdminUserDetail() {
-  const { data: visitSite } = useVisitSite();
-  const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
+export default function AdminUserDetail({ selectEdit, onClose }) {
+  const queryClient = useQueryClient();
 
-  const { mutate, data } = useMutation(
-    (formData) => adminManagerRegister(formData, visitSiteIndex),
-    adminManagerRegister
-  );
-
-  if (data?.result === 0) {
-    window.location.reload();
-  }
+  const { mutate } = useMutation((formData) => apiPutManager(formData), {
+    onSuccess: (formData) => {
+      if (formData.result === 0) {
+        onClose();
+      }
+      queryClient.invalidateQueries("getManager");
+    },
+  });
 
   const {
+    watch,
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm({ mode: "onChange" });
   const onSubmit = (formData) => {
+    console.log(formData);
     mutate(formData);
+  };
+
+  const handleCloseClick = () => {
+    onClose();
   };
 
   return (
@@ -42,7 +45,13 @@ export default function AdminUserDetail() {
           <div className="input-group">
             <div>사용자명</div>
             <input
+              type="hidden"
+              value={selectEdit.accountIndex}
+              {...register("accountIndex")}
+            />
+            <input
               type="text"
+              defaultValue={selectEdit.name}
               {...register("name", {
                 required: "이름을 입력해 주세요",
                 minLength: {
@@ -57,6 +66,7 @@ export default function AdminUserDetail() {
             <div>패스워드</div>
             <input
               type="password"
+              defaultValue={selectEdit.password}
               {...register("password", {
                 required: "패스워드를 입력해 주세요",
               })}
@@ -81,6 +91,7 @@ export default function AdminUserDetail() {
             <div>휴대전화번호</div>
             <input
               type="text"
+              defaultValue={selectEdit.tel}
               {...register("tel", {
                 required: "모바일 번호를 입력해 주세요",
                 pattern: {
@@ -95,6 +106,7 @@ export default function AdminUserDetail() {
             <div>이메일</div>
             <input
               type="text"
+              defaultValue={selectEdit.userId}
               {...register("email", {
                 required: "이메일을 입력해 주세요",
                 pattern: {
@@ -107,26 +119,35 @@ export default function AdminUserDetail() {
             <span className="form-errors">{errors?.email?.message}</span>
           </div>
           <div className="input-group" {...register("state")}>
-            <div>재직여부</div>
-            <select>
-              <option className="select-default" value="1">
-                재직
-              </option>
-              <option className="select-default" value="2">
-                휴직
-              </option>
-              <option className="select-default" value="3">
-                휴직
-              </option>
-            </select>
+            <div>직책</div>
+            <input
+              type="text"
+              defaultValue={selectEdit.position}
+              {...register("position")}
+            />
           </div>
           <div className="input-group">
-            <div>분류</div>
+            <div>분류{selectEdit.auth}</div>
             <select {...register("auth")}>
-              <option className="select-default" value="1">
-                매니져
+              <option
+                className="select-default"
+                value={0}
+                selected={selectEdit.auth === 0}
+              >
+                관리자
               </option>
-              <option className="select-default" value="2">
+              <option
+                className="select-default"
+                value={1}
+                selected={selectEdit.auth === 1}
+              >
+                담당자
+              </option>
+              <option
+                className="select-default"
+                value={2}
+                selected={selectEdit.auth === 2}
+              >
                 입구관리자
               </option>
             </select>
@@ -149,7 +170,9 @@ export default function AdminUserDetail() {
             </Button>
           </div>
           <div>
-            <Button width="100px">닫기</Button>
+            <Button width="100px" onClick={() => handleCloseClick()}>
+              닫기
+            </Button>
             <Button
               type="submit"
               width="100px"

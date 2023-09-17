@@ -7,27 +7,54 @@ import RegIcon1 from "../../assets/svg/security-register1.svg";
 import RegIcon2 from "../../assets/svg/security-register2.svg";
 import RegIcon3 from "../../assets/svg/security-register3.svg";
 import { useForm } from "react-hook-form";
+import useVisitSite from "../../hooks/useVisitSite";
+import {
+  apiGetPurposeOfVisit,
+  apiGetVisitSite,
+  apiVisitReservationRegister,
+} from "../../api";
+import { useMutation, useQuery } from "react-query";
+import { divideDate } from "../../utils/divideDate";
 
 export default function AdminRegister() {
+  // VISITSITEINDEX
+  const { data: visitSite } = useVisitSite();
+  const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
+
+  // 방문목적 불러오기
+  const { data: dataPurposeOfVisits } = useQuery(
+    ["getPurposeOfVisit", visitSiteIndex],
+    apiGetPurposeOfVisit
+  );
+
+  // 방문지 불러오기
+  const { data: dataVisitSite } = useQuery(
+    ["getVisitSite", visitSiteIndex],
+    apiGetVisitSite
+  );
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ mode: "onChange" });
+
+  const { data, mutate } = useMutation((formData) =>
+    apiVisitReservationRegister(visitSiteIndex, formData)
+  );
+
+  const onSubmit = (formData) => {
+    const reservationDate = divideDate(formData.date, formData.time);
+    console.log(formData);
+    mutate([reservationDate, formData]);
+  };
+
   return (
     <Layout menu={ADMIN_LIST}>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="admin-register">
-          <section>
-            <div className="reg-title">
-              <img src={RegIcon1} alt="icon1" />
-              <h2>신청자 정보</h2>
-            </div>
-            <div className="input-group">
-              <div>신청자</div>
-              <input type="text" placeholder="성명을 입력해 주세요." />
-            </div>
-          </section>
+          <input type="hidden" value={1} {...register("type")} />
+          <input type="hidden" value="" {...register("code")} />
           <section>
             <div className="reg-title">
               <img src={RegIcon2} alt="icon2" />
@@ -65,41 +92,37 @@ export default function AdminRegister() {
             </div>
             <div className="input-group">
               <div>방문지</div>
-              <select>
-                <option className="select-default" value="">
-                  방문지를 선택해 주세요.
-                </option>
-                {Array(5)
-                  .fill("")
-                  .map((_, i) => (
-                    <option key={i} value={i}>
-                      선택옵션 {i}
-                    </option>
-                  ))}
+              <select {...register("placeToVisit")}>
+                {dataVisitSite?.placeToVisits?.map((item, index) => (
+                  <option key={index} value={item.title}>
+                    {item.title}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="input-group">
               <div>방문목적</div>
-              <select placeholder="방문목적" className="select">
-                <option className="select-default" value="">
-                  방문목적을 선택해 주세요.
-                </option>
-                {Array(5)
-                  .fill("")
-                  .map((_, i) => (
-                    <option key={i} value={i}>
-                      선택옵션 {i}
-                    </option>
-                  ))}
+              <select {...register("purposeOfVisit")}>
+                {dataPurposeOfVisits?.purposeOfVisits?.map((item, index) => (
+                  <option key={index} value={item.title}>
+                    {item.title}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="input-group">
               <div>방문일시</div>
-              <input type="text" placeholder="차량번호를 입력해 주세요." />
+              <input type="date" {...register("date", { required: true })} />
+            </div>
+            <div className="input-group">
+              <div>방문시간</div>
+              <input type="time" {...register("time", { required: true })} />
             </div>
           </section>
           <div className="btn-container">
-            <Button colorScheme="blue">등록하기</Button>
+            <Button type="submit" colorScheme="blue">
+              등록하기
+            </Button>
           </div>
         </div>
       </form>

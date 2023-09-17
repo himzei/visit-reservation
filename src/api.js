@@ -389,3 +389,162 @@ export async function apiDeleteVisitor(visitorIndex) {
     credentials: "include",
   }).then((res) => res.json());
 }
+
+// 방문직접등록
+export async function apiVisitReservationRegister(visitSiteIndex, data) {
+  const {
+    name,
+    tel,
+    type,
+    code,
+    carNumber,
+    purposeOfVisit,
+    placeToVisit,
+    enterStartDate,
+    enterEndDate,
+  } = data[1];
+  const resevationDate = data[0];
+
+  return await fetch(`/api/VisitReservation`, {
+    method: "POST",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    body: JSON.stringify({
+      visitSiteIndex,
+      state: 0,
+      resevationDate,
+      password: "",
+      visitors: [
+        {
+          visitorIndex: -1,
+          name,
+          tel,
+          type: parseInt(type),
+          code,
+          carNumber,
+          purposeOfVisit,
+          placeToVisit,
+          enterStartDate,
+          enterEndDate,
+        },
+      ],
+      managers: [
+        {
+          managerIndex: 0,
+          accountIndex: 0,
+          name: "",
+          position: "",
+          auth: 0,
+          state: 0,
+          memo: "",
+        },
+      ],
+      agrees: [
+        {
+          agreementIndex: 0,
+          isAgree: true,
+        },
+      ],
+    }),
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
+// VisitReservation-Search
+// queryKey : getVisitReservation
+export async function apiGetVisitReservation({ queryKey }) {
+  const {
+    visitSiteIndex,
+    startDate,
+    endDate,
+    page,
+    pageRange,
+    state,
+    searchValue,
+    placeToVisit,
+  } = queryKey[1];
+  return await fetch(
+    `/api/VisitReservation/search?visitSiteIndex=${visitSiteIndex}&startDate=${startDate}&endDate=${endDate}&page=${page}&pageRange=${pageRange}&state=${state}&searchValue=${searchValue}&placeToVisit=${placeToVisit}`,
+    {
+      method: "GET",
+      headers: {
+        accept: "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${TOKEN}`,
+      },
+      credentials: "include",
+    }
+  ).then((res) => res.json());
+}
+
+// VisitReservation-Search
+// queryKey : getVisitReservationOne
+export async function apiGetVisitReservationOne({ queryKey }) {
+  const { visitReservationIndex } = queryKey[1];
+  return await fetch(`/api/VisitReservation/${visitReservationIndex}`, {
+    method: "GET",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
+// 승인변경
+// VisitReservation/state
+export async function apiPutVisitReservationOne(
+  formData,
+  visitReservationIndex
+) {
+  return await fetch(`/api/VisitReservation/${visitReservationIndex}/state`, {
+    method: "PUT",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    body: JSON.stringify({
+      state: parseInt(formData.state),
+      stateReason: formData.stateReason,
+    }),
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
+// 관리자 등록
+// POST Manager
+export async function apiManagerRegister(
+  formData,
+  visitSiteIndex,
+  visitReservationIndex
+) {
+  return await fetch(`/api/Manager`, {
+    method: "POST",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    body: JSON.stringify({
+      visitSiteIndex,
+      visitReservationIndex,
+      managers: [
+        {
+          // managerIndex: 0,
+          // accountIndex: 0,
+          name: formData.name,
+          position: formData.position,
+          auth: 0,
+          state: 0,
+          memo: "string",
+        },
+      ],
+    }),
+    credentials: "include",
+  }).then((res) => res.json());
+}

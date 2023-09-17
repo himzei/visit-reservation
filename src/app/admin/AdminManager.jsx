@@ -34,8 +34,8 @@ export default function AdminManager() {
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
-  const [selectEdit, setSelectEdit] = useState(null);
 
+  const [selectEdit, setSelectEdit] = useState(null);
   const { data } = useQuery(
     ["getVisitor", { visitSiteIndex, page: 1, pageRange: 10, type: 0 }],
     apiGetVisitor

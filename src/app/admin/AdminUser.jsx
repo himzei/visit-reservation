@@ -113,13 +113,10 @@ export default function AdminUser() {
                         return <div>관리자</div>;
                       case 1:
                         return <div>담당자</div>;
-
                       case 2:
                         return <div>입구관리자</div>;
-
                       case 999:
                         return <div>총 관리자</div>;
-
                       default:
                         console.log("d");
                     }

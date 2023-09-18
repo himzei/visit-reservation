@@ -1,10 +1,39 @@
+// 입구관리자(안전지킴이)
+// 방문 예약 현황
+// 목록
+
 import "./SecurityStatus.css";
 import React from "react";
 import Layout from "../../components/Layout";
 import { Button, Input } from "@chakra-ui/react";
 import { SECURITY_LIST } from "../../lib/menuList";
+import useVisitSite from "../../hooks/useVisitSite";
+import { useQuery } from "react-query";
+import { apiGetVisitReservation } from "../../api";
+import { dateFormat } from "../../utils/dateFormat";
 
 export default function SecurityStatus() {
+  // VISITSITEINDEX
+  const { data: visitSite } = useVisitSite();
+  const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
+
+  const { data } = useQuery(
+    [
+      "getVisitReservation",
+      {
+        visitSiteIndex,
+        startDate: "2023-01-01",
+        endDate: "2023-12-31",
+        page: 1,
+        pageRange: 10,
+        state: -1,
+        searchValue: "",
+        placeToVisit: "",
+      },
+    ],
+    apiGetVisitReservation
+  );
+
   return (
     <Layout menu={SECURITY_LIST}>
       <div className="security-container">
@@ -32,20 +61,35 @@ export default function SecurityStatus() {
               </tr>
             </thead>
             <tbody>
-              {Array(10)
-                .fill("")
-                .map((_, i) => (
-                  <tr key={i}>
-                    <td>행정실</td>
-                    <td>홍길동</td>
-                    <td>010-****-1234</td>
-                    <td>42누 1234</td>
-                    <td>2023-10-16 16:30</td>
-                    <td>진학상담</td>
-                    <td>2023-10-14 16:00</td>
-                    <td>승인</td>
-                  </tr>
-                ))}
+              {data?.resevations?.map((item, i) => (
+                <tr key={i}>
+                  <td>{item.placeToVisit}</td>
+                  <td>{item.visitorName}</td>
+                  <td>{item.visitorTel}</td>
+                  <td>{item.carNumber}</td>
+                  <td>{dateFormat(item.visitDate)}</td>
+                  <td>{item.purposeOfVisit}</td>
+                  <td>__</td>
+                  <td>
+                    {(() => {
+                      switch (item.state) {
+                        case 0:
+                          return <div>대기중</div>;
+                        case 1:
+                          return <div>승인</div>;
+                        case 2:
+                          return <div>미승인</div>;
+                        case 3:
+                          return <div>방문</div>;
+                        case 4:
+                          return <div>예약취소</div>;
+                        default:
+                          console.log("d");
+                      }
+                    })()}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </section>
@@ -64,21 +108,18 @@ export default function SecurityStatus() {
                 <td>상태</td>
               </tr>
             </thead>
+            {/* 최근출입자 */}
             <tbody>
-              {Array(2)
-                .fill("")
-                .map((_, i) => (
-                  <tr key={i} className="table-accent">
-                    <td>행정실</td>
-                    <td>홍길동</td>
-                    <td>010-****-1234</td>
-                    <td>42누 1234</td>
-                    <td>2023-10-16 16:30</td>
-                    <td>진학상담</td>
-                    <td>2023-10-14 16:00</td>
-                    <td>승인</td>
-                  </tr>
-                ))}
+              <tr className="table-accent">
+                <td>행정실</td>
+                <td>홍길동</td>
+                <td>010-****-1234</td>
+                <td>42누 1234</td>
+                <td>2023-10-16 16:30</td>
+                <td>진학상담</td>
+                <td>2023-10-14 16:00</td>
+                <td>승인</td>
+              </tr>
             </tbody>
           </table>
         </section>

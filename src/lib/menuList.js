@@ -4,11 +4,6 @@ export const SECURITY_LIST = [
     subTitle: "방문예약 현황을 확인해 보세요.",
     url: "/security/status",
   },
-  {
-    title: "방문 직접 등록",
-    subTitle: "직접 출입증 발급을 해보세요.",
-    url: "/security/register",
-  },
 ];
 
 export const TEACHER_LIST = [

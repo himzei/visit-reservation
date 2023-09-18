@@ -17,7 +17,6 @@ export default function AddPurposeOfVisit() {
     formState: { errors },
   } = useForm();
 
-  console.log(lengthPurposeOfVisit);
   const { data, mutate } = useMutation((formData) => {
     apiPurposeOfVisitRegister(formData, visitSiteIndex, lengthPurposeOfVisit);
   });

@@ -17,11 +17,16 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useQuery } from "react-query";
-import { apiGetPurposeOfVisit, apiGetVisitSite } from "../../api";
+import { useMutation, useQuery } from "react-query";
+import {
+  apiGetPurposeOfVisit,
+  apiGetVisitSite,
+  apiVisitSiteImageRegister,
+} from "../../api";
 import useVisitSite from "../../hooks/useVisitSite";
 import { VisitSiteContext } from "../../context/VisitSiteContext";
 import OrderItemOne from "../../components/OrderItemOne";
+import { useForm } from "react-hook-form";
 
 const LOCATION_CLASS = [{ title: "1" }, { title: "2" }, { title: "3" }];
 
@@ -51,6 +56,11 @@ export default function AdminMainPage() {
   };
   const fileInput = useRef(null);
 
+  const { mutate, data } = useMutation(() =>
+    apiVisitSiteImageRegister(imageFile, visitSiteIndex)
+  );
+
+  const [imageFile, setImageFile] = useState(null);
   const saveImgFile = () => {
     const file = fileInput.current.files[0];
     const reader = new FileReader();
@@ -59,12 +69,24 @@ export default function AdminMainPage() {
       setImgFile(reader.result);
     };
     setImgPath(file.name);
+
+    const formData = new FormData();
+    formData.append("file", file, file.name);
+    setImageFile(file.name);
+    console.log(imageFile);
   };
   // context
   const handleAddModal = () => {
     onOpen();
   };
   const [placeVisitIndex, setPlaceVisitIndex] = useState(-1);
+
+  const { handleSubmit } = useForm();
+
+  const onSubmit = () => {
+    mutate();
+  };
+
   return (
     <VisitSiteContext.Provider
       value={{
@@ -84,71 +106,63 @@ export default function AdminMainPage() {
           <ModalBody>
             <AddVisitSite />
           </ModalBody>
-          {/* <ModalFooter>
-            <Button width="100px" onClick={onClose}>
-              닫기
-            </Button>
-            <Button
-              width="100px"
-              height="35px"
-              color="white"
-              bg="#0066FF"
-              _hover={{ bg: "#0053CF" }}
-              mx="2"
-            >
-              저장
-            </Button>
-          </ModalFooter> */}
         </ModalContent>
       </Modal>
       <Layout menu={ADMIN_LIST}>
         <div className="admin-main">
-          <section>
-            <div className="reg-title">
-              <img src={PhotoIcon} alt="icon2" />
-              <h2>대표 이미지</h2>
-            </div>
-            <div className="files-group">
-              <div className="border-box">{imgPath}</div>
-              <Button
-                height="35px"
-                color="white"
-                bg="#0066FF"
-                _hover={{ bg: "#0053CF" }}
-                onClick={handleButtonClick}
-                mr="1"
-              >
-                찾기
-              </Button>
-              <Button
-                height="35px"
-                color="white"
-                bg="#D44242"
-                _hover={{ bg: "#B23232" }}
-                onClick={handleButtonClick}
-                mr="1"
-              >
-                삭제
-              </Button>
+          {/* 이미지 업로드 */}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <section>
+              <div className="reg-title">
+                <img src={PhotoIcon} alt="icon2" />
+                <h2>대표 이미지</h2>
+              </div>
+              <div className="files-group">
+                <div className="border-box">{imgPath}</div>
+                <Button
+                  height="35px"
+                  color="white"
+                  bg="#0066FF"
+                  _hover={{ bg: "#0053CF" }}
+                  onClick={handleButtonClick}
+                  mr="1"
+                >
+                  찾기
+                </Button>
+                <Button
+                  height="35px"
+                  color="white"
+                  bg="#D44242"
+                  _hover={{ bg: "#B23232" }}
+                  onClick={handleButtonClick}
+                  mr="1"
+                >
+                  삭제
+                </Button>
 
-              <input
-                accept="image/*"
-                ref={fileInput}
-                type="file"
-                style={{ display: "none" }}
-                onChange={saveImgFile}
-              />
-            </div>
-            <div className="image-group">
-              <p>미리보기</p>
-              <div className="pre-image">
-                <img
-                  src={imgFile ? imgFile : DefaultLogo}
-                  alt="학교배너이미지"
+                <input
+                  accept="image/*"
+                  ref={fileInput}
+                  type="file"
+                  style={{ display: "none" }}
+                  onChange={saveImgFile}
                 />
               </div>
-            </div>
-          </section>
+              <div className="image-group">
+                <p>미리보기</p>
+                <div className="pre-image">
+                  <img
+                    src={imgFile ? imgFile : DefaultLogo}
+                    alt="학교배너이미지"
+                  />
+                </div>
+              </div>
+              <Button colorScheme="green" type="submit">
+                이미지 업로드
+              </Button>
+            </section>
+          </form>
+
           <div className="horizon-divide">
             {/* 2fr */}
             <div>

@@ -29,7 +29,6 @@ export default function OrderItemOne({ lists, title }) {
   const itemRefs = useRef([]);
   const addRefs = useRef();
 
-  console.log(items);
   const { register, handleSubmit } = useForm();
   const handleEditClick = (index, purposeOfVisitIndex) => {
     setEditIndex(index);
@@ -68,9 +67,7 @@ export default function OrderItemOne({ lists, title }) {
     }
   };
 
-  const onSubmit = (data) => {
-    console.log(data);
-  };
+  const onSubmit = (data) => {};
 
   return (
     <>

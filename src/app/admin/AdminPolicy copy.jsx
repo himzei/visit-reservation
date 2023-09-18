@@ -41,15 +41,12 @@ export default function AdminPolicy() {
 
   // 정책입력 후 결과처리
   if (dataResult) {
-    console.log(dataResult);
   }
   const onSubmit = (formData) => {
     mutate(formData);
   };
 
-  const onEditSubmit = (editData) => {
-    console.log(editData);
-  };
+  const onEditSubmit = (editData) => {};
   return (
     <Layout menu={ADMIN_LIST}>
       <div className="admin-policy">

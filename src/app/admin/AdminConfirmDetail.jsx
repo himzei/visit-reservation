@@ -40,8 +40,6 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     apiGetVisitReservationOne
   );
 
-  console.log(data);
-
   const handleCloseClick = () => {
     onClose();
   };

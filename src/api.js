@@ -548,3 +548,36 @@ export async function apiManagerRegister(
     credentials: "include",
   }).then((res) => res.json());
 }
+
+// 방문이력조회
+// Log
+// queryKey: getLog
+export async function apiGetLog({ queryKey }) {
+  const paramsObj = queryKey[1];
+  const searchParams = new URLSearchParams(paramsObj);
+  const params = searchParams.toString();
+  return await fetch(`/api/Log?${params}`, {
+    method: "GET",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
+// 이미지 업로드
+export async function apiVisitSiteImageRegister(imageFile, visitSiteIndex) {
+  console.log(imageFile, visitSiteIndex);
+  return await fetch(`/api/VisitSite/${visitSiteIndex}/TitleImage`, {
+    method: "POST",
+    headers: {
+      accept: "*",
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    body: imageFile,
+    credentials: "include",
+  }).then((res) => res.json());
+}

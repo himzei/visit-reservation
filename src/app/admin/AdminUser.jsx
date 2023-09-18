@@ -1,3 +1,7 @@
+//
+// 사용자 관리 페이지
+//
+
 import "./AdminUser.css";
 import React, { useState } from "react";
 import Layout from "../../components/Layout";
@@ -81,10 +85,10 @@ export default function AdminUser() {
         {/* search */}
         <div className="admin-user-front">
           <div className="search-group">
-            <SearchCategory />
+            {/* <SearchCategory />
             <SearchEmploy />
             <SearchKeyword text="이름/사용자" />
-            <ButtonSearch text="검색" />
+            <ButtonSearch text="검색" /> */}
           </div>
 
           <div onClick={() => handleClick()}>
@@ -95,7 +99,7 @@ export default function AdminUser() {
         <table>
           <thead>
             <tr>
-              <td>분1류</td>
+              <td>분류</td>
               <td>이름</td>
               <td>사용자 ID</td>
               <td>전화번호</td>

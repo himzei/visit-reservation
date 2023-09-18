@@ -17,6 +17,7 @@ import AdminPolicy from "./app/admin/AdminPolicy";
 import AdminStatics from "./app/admin/AdminStatics";
 import AdminProfile from "./app/admin/AdminProfile";
 import AdminHistory from "./app/admin/AdminHistory";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -34,7 +35,11 @@ const router = createBrowserRouter([
       },
       {
         path: "security",
-        element: <Outlet />,
+        element: (
+          <ProtectedRoute>
+            <Outlet />
+          </ProtectedRoute>
+        ),
         children: [
           {
             path: "status",
@@ -48,7 +53,11 @@ const router = createBrowserRouter([
       },
       {
         path: "teacher",
-        element: <Outlet />,
+        element: (
+          <ProtectedRoute>
+            <Outlet />
+          </ProtectedRoute>
+        ),
         children: [
           {
             path: "approval",
@@ -70,7 +79,11 @@ const router = createBrowserRouter([
       },
       {
         path: "admin",
-        element: <Outlet />,
+        element: (
+          <ProtectedRoute>
+            <Outlet />
+          </ProtectedRoute>
+        ),
         children: [
           {
             path: "confirm",

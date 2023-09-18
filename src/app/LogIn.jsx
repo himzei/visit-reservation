@@ -7,12 +7,16 @@ import { useMutation, useQuery } from "react-query";
 import { useForm } from "react-hook-form";
 
 import { ipData, login } from "../api";
+import { useNavigate } from "react-router-dom";
 
 export default function LogIn() {
+  const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
   const { mutate } = useMutation(login, {
     onSuccess: (data) => {
       localStorage.setItem("visitschool", data.token);
+      navigate("/");
+      window.location.reload();
     },
   });
 

@@ -1,20 +1,32 @@
 import "./SearchStatus.css";
 
-export default function SearchStatus() {
+export default function SearchStatus({ searchOption, setSearchOption }) {
+  const handleChange = (e) => {
+    setSearchOption({ ...searchOption, state: e.target.value });
+  };
+
   return (
     <div className="search-status">
       <span>상태 구분</span>
-      <select>
-        <option className="select-default" value="">
+      <select onChange={(e) => handleChange(e)}>
+        <option className="select-default" value={-1}>
           전체
         </option>
-        {Array(5)
-          .fill("")
-          .map((_, i) => (
-            <option key={i} value={i}>
-              선택옵션 {i}
-            </option>
-          ))}
+        <option className="select-default" value={0}>
+          대기중
+        </option>
+        <option className="select-default" value={1}>
+          승인
+        </option>
+        <option className="select-default" value={2}>
+          미승인
+        </option>
+        <option className="select-default" value={3}>
+          방문
+        </option>
+        <option className="select-default" value={4}>
+          예약취소
+        </option>
       </select>
     </div>
   );

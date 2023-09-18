@@ -26,7 +26,6 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
     formState: { errors },
   } = useForm({ mode: "onChange" });
   const onSubmit = (formData) => {
-    console.log(formData);
     mutate(formData);
   };
 

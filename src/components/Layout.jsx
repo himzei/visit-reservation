@@ -2,8 +2,10 @@ import React from "react";
 import "./Layout.css";
 import { Avatar } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
+import useTokenLogin from "../hooks/useTokenLogin";
 
 export default function Layout({ children, menu }) {
+  const { data } = useTokenLogin();
   const { pathname } = useLocation();
   const temp_data = menu.find((item) => item.url === pathname);
   const MAIN_TITLE = temp_data.title;
@@ -17,7 +19,7 @@ export default function Layout({ children, menu }) {
           {/* profile */}
           <div className="menu-profile">
             <Avatar />
-            <p>학교지킴이실</p>
+            <p>{data?.userName}</p>
           </div>
           {/* menu */}
           <div className="menu-list">

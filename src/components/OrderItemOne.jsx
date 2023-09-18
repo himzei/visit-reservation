@@ -42,7 +42,6 @@ export default function OrderItemOne({ lists, title }) {
     );
     setSelectEdit(editPurposeOfVisit);
     setEditTitle(editPurposeOfVisit[0].title);
-    console.log(selectEdit);
   };
 
   const handleClick = (index, placeToVisitIndex) => {
@@ -100,7 +99,6 @@ export default function OrderItemOne({ lists, title }) {
     // console.log(editTitle);
   };
   const handleDeleteClick = (index) => {
-    console.log(index);
     apiPurposeOfVisitDelete(index);
     window.location.reload();
   };

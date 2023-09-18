@@ -41,9 +41,7 @@ export default function AdminPolicy() {
     mutate(formData);
   };
 
-  const onEditSubmit = (editData) => {
-    console.log(editData);
-  };
+  const onEditSubmit = (editData) => {};
   const handleChangeTextarea = (id, value) => {
     const updateData = dataLists.map((item) => {
       if (item.agreementIndex === id) {
@@ -61,9 +59,7 @@ export default function AdminPolicy() {
     }
   };
 
-  const setInputValue = (value) => {
-    console.log(value);
-  };
+  const setInputValue = (value) => {};
 
   return (
     <Layout menu={ADMIN_LIST}>

@@ -1,3 +1,7 @@
+// 관리자
+// 방문 예약 확인
+// 목록
+
 import "./AdminConfirm.css";
 import React, { useState } from "react";
 import { ADMIN_LIST } from "../../lib/menuList";
@@ -23,6 +27,7 @@ import { useQuery } from "react-query";
 import { apiGetVisitReservation } from "../../api";
 import useVisitSite from "../../hooks/useVisitSite";
 import { dateFormat } from "../../utils/dateFormat";
+import { dateNowChange } from "../../utils/dateNowChange";
 
 export default function AdminConfirm() {
   // VISITSITEINDEX
@@ -30,36 +35,40 @@ export default function AdminConfirm() {
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
   const [selectData, setSelectData] = useState(null);
-
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  // search
+  const [searchOption, setSearchOption] = useState({
+    state: -1,
+    placeToVisit: "",
+    startDate: dateNowChange(Date.now()),
+    endDate: "",
+    searchValue: "",
+  });
   const { data } = useQuery(
     [
       "getVisitReservation",
       {
         visitSiteIndex,
-        startDate: "2023-01-01",
-        endDate: "2023-12-31",
         page: 1,
         pageRange: 10,
-        state: -1,
-        searchValue: "",
-        placeToVisit: "",
+        state: searchOption.state,
+        startDate: searchOption.startDate,
+        endDate: searchOption.endDate,
+        searchValue: searchOption.searchValue,
+        placeToVisit: searchOption.placeToVisit,
       },
     ],
     apiGetVisitReservation
   );
 
+  // end search
+
   const handleEditClick = (index) => {
     onOpen();
-    // console.log(index);
-    // const tmptData = data?.resevations?.find(
-    //   (item) => item.visitReservationIndex === index
-    // );
     setSelectData(index);
   };
 
-  // console.log(data);
   return (
     <Layout menu={ADMIN_LIST}>
       <Modal onClose={onClose} size="5xl" isOpen={isOpen}>
@@ -76,11 +85,23 @@ export default function AdminConfirm() {
       <div className="admin-confirm">
         {/* search */}
         <div className="search-group">
-          <SearchLocation />
-          <SearchDate />
-          <SearchStatus />
-          <SearchKeyword />
-          <ButtonSearch text="검색" />
+          <SearchLocation
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchDate
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchStatus
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchKeyword
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          {/* <ButtonSearch text="검색" /> */}
         </div>
         {/* 테이블 */}
         <table>
@@ -94,7 +115,6 @@ export default function AdminConfirm() {
               <td>목적</td>
               <td>예약일시</td>
               <td>담당자</td>
-
               <td>상태</td>
             </tr>
           </thead>
@@ -116,7 +136,6 @@ export default function AdminConfirm() {
                 <td>{item.purposeOfVisit}</td>
                 <td>{dateFormat(item.regDate)}</td>
                 <td>{item.managerName}</td>
-
                 <td>
                   <div className="approval-status">
                     {(() => {

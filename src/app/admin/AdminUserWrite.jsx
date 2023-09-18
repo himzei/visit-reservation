@@ -1,3 +1,7 @@
+//
+// 사용자 관리 페이지
+// 글쓰기
+
 import React from "react";
 import RegIcon1 from "../../assets/svg/person-input.svg";
 import RegIcon2 from "../../assets/svg/location-icon.svg";
@@ -22,7 +26,6 @@ export default function AdminUserWrite({ onClose }) {
       },
     }
   );
-  console.log(data);
 
   if (data?.result === 0) {
     window.location.reload();
@@ -36,7 +39,6 @@ export default function AdminUserWrite({ onClose }) {
   } = useForm({ mode: "onChange" });
 
   const onSubmit = (formData) => {
-    console.log(formData);
     mutate(formData);
   };
 

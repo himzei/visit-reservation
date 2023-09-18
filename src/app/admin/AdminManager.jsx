@@ -1,3 +1,7 @@
+//
+// 상시반문자 관리 페이지
+//
+
 import "./AdminManager.css";
 import React, { useState } from "react";
 import Layout from "../../components/Layout";
@@ -27,6 +31,7 @@ import { useQuery, useQueryClient } from "react-query";
 import AdminManagerWrite from "./AdminManagerWrite";
 import { apiDeleteVisitor, apiGetVisitor } from "../../api";
 import useVisitSite from "../../hooks/useVisitSite";
+import { dateNowChange } from "../../utils/dateNowChange";
 
 export default function AdminManager() {
   // refetch
@@ -36,10 +41,6 @@ export default function AdminManager() {
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
   const [selectEdit, setSelectEdit] = useState(null);
-  const { data } = useQuery(
-    ["getVisitor", { visitSiteIndex, page: 1, pageRange: 10, type: 0 }],
-    apiGetVisitor
-  );
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -64,6 +65,22 @@ export default function AdminManager() {
   const handleClickWrite = () => {
     onOpenWrite();
   };
+
+  // api search 없음
+  //
+
+  const { data } = useQuery(
+    [
+      "getVisitor",
+      {
+        visitSiteIndex,
+        page: 1,
+        pageRange: 10,
+        type: 0,
+      },
+    ],
+    apiGetVisitor
+  );
 
   return (
     <>
@@ -92,13 +109,7 @@ export default function AdminManager() {
       <Layout menu={ADMIN_LIST}>
         <div className="admin-manager">
           {/* search */}
-          <div className="search-group">
-            <SearchLocation />
-            <SearchDate />
-            <SearchStatus />
-            <SearchKeyword />
-            <ButtonSearch text="검색" />
-          </div>
+          <div className="search-group"></div>
           {/* 일괄발송 */}
           <div className="rigth-btn">
             <AllPass title="일괄발송" />
@@ -108,7 +119,7 @@ export default function AdminManager() {
           <table>
             <thead>
               <tr>
-                <td>선택a</td>
+                <td>선택</td>
                 <td>방문객명</td>
                 <td>휴대전화</td>
                 <td>차량번호</td>

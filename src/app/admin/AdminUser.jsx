@@ -34,9 +34,11 @@ export default function AdminUser() {
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
   const { data } = useQuery(
-    ["getManager", { visitSiteIndex, page: 1, pageRange: 10, type: 0 }],
+    ["getManager", { visitSiteIndex, page: 1, pageRange: 10 }],
     apiGetManager
   );
+  console.log(data);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenEdit,
@@ -122,7 +124,7 @@ export default function AdminUser() {
                       case 999:
                         return <div>총 관리자</div>;
                       default:
-                        console.log("d");
+                        return;
                     }
                   })()}
                 </td>

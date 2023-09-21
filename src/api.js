@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const TOKEN = localStorage.getItem("visitschool");
 
 // 현대 아이피 주소
@@ -62,18 +64,43 @@ export async function adminManagerRegister(formData, visitSiteIndex) {
     body: JSON.stringify({
       visitSiteIndex,
       account: {
-        accountIndex: -1,
         userId: formData.email,
         password: formData.password,
         name: formData.name,
         tel: formData.tel,
         auth: parseInt(formData.auth),
-        position: formData.state,
+        position: formData.position,
       },
     }),
     credentials: "include",
   }).then((res) => res.json());
 }
+
+// 사용자관리 - 관리자등록
+// export async function apiManagerRegister(formData, visitSiteIndex) {
+//   return await fetch(`/api/Manager`, {
+//     method: "POST",
+//     headers: {
+//       accept: "*",
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${TOKEN}`,
+//     },
+//     body: JSON.stringify({
+//       visitSiteIndex,
+//       visitReservationIndex,
+//       manager: {
+//         managerIndex,
+//         accountIndex,
+//         name,
+//         position,
+//         auth,
+//         state,
+//         memo,
+//       },
+//     }),
+//     credentials: "include",
+//   }).then((res) => res.json());
+// }
 
 // 사용자 관리 페이지 불러오기
 // queryKey: getManager
@@ -521,8 +548,12 @@ export async function apiPutVisitReservationOne(
 export async function apiManagerRegister(
   formData,
   visitSiteIndex,
-  visitReservationIndex
+  visitReservationIndex,
+  managerPosition,
+  accountIndex
 ) {
+  console.log(accountIndex);
+  console.log(managerPosition);
   return await fetch(`/api/Manager`, {
     method: "POST",
     headers: {
@@ -535,13 +566,13 @@ export async function apiManagerRegister(
       visitReservationIndex,
       managers: [
         {
-          // managerIndex: 0,
-          // accountIndex: 0,
+          managerIndex: -1,
+          accountIndex: parseInt(accountIndex),
           name: formData.name,
-          position: formData.position,
+          position: managerPosition,
           auth: 0,
-          state: 0,
-          memo: "string",
+          state: parseInt(formData.state),
+          memo: formData.memo,
         },
       ],
     }),
@@ -569,15 +600,33 @@ export async function apiGetLog({ queryKey }) {
 
 // 이미지 업로드
 export async function apiVisitSiteImageRegister(imageFile, visitSiteIndex) {
-  console.log(imageFile, visitSiteIndex);
-  return await fetch(`/api/VisitSite/${visitSiteIndex}/TitleImage`, {
-    method: "POST",
-    headers: {
-      accept: "*",
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${TOKEN}`,
-    },
-    body: imageFile,
-    credentials: "include",
-  }).then((res) => res.json());
+  const formData = new FormData();
+  formData.append("file", imageFile);
+
+  return await axios
+    .post(`/api/VisitSite/${visitSiteIndex}/TitleImage`, formData, {
+      headers: {
+        accept: "*/*",
+        Authorization: `Bearer ${TOKEN}`,
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((response) => response.data);
 }
+
+// Manager GET
+// export async function apiManagerGet({ queryKey }) {
+//   const { visitReservationIndex } = queryKey[1];
+//   return await fetch(
+//     `/api/Manager?visitReservationIndex=${visitReservationIndex}`,
+//     {
+//       method: "GET",
+//       headers: {
+//         accept: "*",
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${TOKEN}`,
+//       },
+//       credentials: "include",
+//     }
+//   ).then((res) => res.json());
+// }

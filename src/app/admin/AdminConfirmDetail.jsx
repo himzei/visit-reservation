@@ -1,14 +1,13 @@
 import "./AdminConfirmDetail.css";
-import React from "react";
+import React, { useState } from "react";
 import RegIcon1 from "../../assets/svg/person-input.svg";
 import RegIcon2 from "../../assets/svg/location-icon.svg";
 import RegIcon3 from "../../assets/svg/person-icon.svg";
 import RegIcon4 from "../../assets/svg/status-icon.svg";
 import useVisitSite from "../../hooks/useVisitSite";
 import {
-  apiGetPurposeOfVisit,
+  apiGetManager,
   apiGetVisitReservationOne,
-  apiGetVisitSite,
   apiManagerRegister,
   apiPutVisitReservationOne,
 } from "../../api";
@@ -22,17 +21,11 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
-  // 방문목적 불러오기
-  const { data: dataPurposeOfVisits } = useQuery(
-    ["getPurposeOfVisit", visitSiteIndex],
-    apiGetPurposeOfVisit
+  const { data: dataManager } = useQuery(
+    ["getManager", { visitSiteIndex, page: 1, pageRange: 10 }],
+    apiGetManager
   );
 
-  // 방문지 불러오기
-  const { data: dataVisitSite } = useQuery(
-    ["getVisitSite", visitSiteIndex],
-    apiGetVisitSite
-  );
   const { register, handleSubmit } = useForm({ mode: "onChange" });
 
   const { data } = useQuery(
@@ -57,12 +50,27 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
   );
 
   const { mutate: mutateManager } = useMutation((formData) =>
-    apiManagerRegister(formData, visitSiteIndex, selectData)
+    apiManagerRegister(
+      formData,
+      visitSiteIndex,
+      selectData,
+      managerPosition,
+      accountIndex
+    )
   );
 
   const onSubmit = (formData) => {
     mutateManager(formData);
     mutateState(formData);
+  };
+
+  const [managerPosition, setNanagerPosition] = useState("");
+  const [accountIndex, setAccountIndex] = useState(0);
+  const handleChange = (e) => {
+    const name = e.target.value;
+    const temp = dataManager?.accounts?.find((item) => item.name === name);
+    setNanagerPosition(temp.position);
+    setAccountIndex(temp.accountIndex);
   };
 
   return (
@@ -148,25 +156,27 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
 
           <div className="input-group">
             <div>이름</div>
-            <input
-              type="text"
-              defaultValue={data?.managers[0]?.name}
-              {...register("name")}
-            />
+            <select {...register("name")} onChange={(e) => handleChange(e)}>
+              {dataManager?.accounts?.map((item, index) => (
+                <option key={index} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="input-group">
             <div>직책</div>
             <input
               type="text"
-              defaultValue={data?.managers[0]?.position}
-              {...register("position")}
+              {...register("managerPosition")}
+              value={managerPosition}
             />
           </div>
           <div className="input-group">
             <div>메모</div>
             <input
               type="text"
-              defaultValue={data?.managers[0]?.memo}
+              // defaultValue={data?.managers[0]?.memo}
               {...register("memo")}
             />
           </div>
@@ -200,7 +210,7 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
                 value={2}
                 selected={data?.visitReservation?.state === 2}
               >
-                미승인
+                반려
               </option>
               <option
                 className="select-default"

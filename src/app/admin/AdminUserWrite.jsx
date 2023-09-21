@@ -113,8 +113,6 @@ export default function AdminUserWrite({ onClose }) {
               {...register("email", {
                 required: "이메일을 입력해 주세요",
                 pattern: {
-                  value:
-                    /[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$/i,
                   message: "이메일 형식으로 입력해 주세요",
                 },
               })}
@@ -127,14 +125,16 @@ export default function AdminUserWrite({ onClose }) {
           </div>
           <div className="input-group">
             <div>분류</div>
-            <select {...register("auth")}>
-              <option className="select-default" value={0}>
+            <select {...register("auth", { required: true })}>
+              {/* 관리자가 관리자를 생성못함 */}
+              {/* <option className="select-default" value={0}>
                 관리자
-              </option>
+              </option> */}
+              <option className="select-default">선택하세요</option>
               <option className="select-default" value={1}>
                 담당자
               </option>
-              <option className="select-default" value={3}>
+              <option className="select-default" value={2}>
                 입구관리자
               </option>
             </select>

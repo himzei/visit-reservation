@@ -84,7 +84,7 @@ export default function SecurityStatus() {
                         case 4:
                           return <div>예약취소</div>;
                         default:
-                          console.log("d");
+                          return;
                       }
                     })()}
                   </td>

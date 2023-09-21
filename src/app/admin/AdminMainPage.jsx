@@ -56,11 +56,8 @@ export default function AdminMainPage() {
   };
   const fileInput = useRef(null);
 
-  const { mutate, data } = useMutation(() =>
-    apiVisitSiteImageRegister(imageFile, visitSiteIndex)
-  );
-
   const [imageFile, setImageFile] = useState(null);
+
   const saveImgFile = () => {
     const file = fileInput.current.files[0];
     const reader = new FileReader();
@@ -69,19 +66,21 @@ export default function AdminMainPage() {
       setImgFile(reader.result);
     };
     setImgPath(file.name);
-
-    const formData = new FormData();
-    formData.append("file", file, file.name);
-    setImageFile(file.name);
-    console.log(imageFile);
+    setImageFile(file);
   };
-  // context
+
   const handleAddModal = () => {
     onOpen();
   };
   const [placeVisitIndex, setPlaceVisitIndex] = useState(-1);
 
   const { handleSubmit } = useForm();
+
+  const { mutate, data } = useMutation(() =>
+    apiVisitSiteImageRegister(imageFile, visitSiteIndex)
+  );
+
+  console.log(data);
 
   const onSubmit = () => {
     mutate();

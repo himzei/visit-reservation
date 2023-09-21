@@ -83,7 +83,7 @@ export default function TeacherApproval() {
                         case 4:
                           return <div>예약취소</div>;
                         default:
-                          console.log("d");
+                          return;
                       }
                     })()}
                   </div>

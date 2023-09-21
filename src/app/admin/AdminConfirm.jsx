@@ -21,7 +21,6 @@ import SearchLocation from "../../components/SearchLocation";
 import SearchDate from "../../components/SearchDate";
 import SearchStatus from "../../components/SearchStatus";
 import SearchKeyword from "../../components/SearchKeyword";
-import ButtonSearch from "../../components/ButtonSearch";
 import AdminConfirmDetail from "./AdminConfirmDetail";
 import { useQuery } from "react-query";
 import { apiGetVisitReservation } from "../../api";
@@ -61,6 +60,8 @@ export default function AdminConfirm() {
     ],
     apiGetVisitReservation
   );
+
+  console.log(data);
 
   // end search
 
@@ -151,7 +152,7 @@ export default function AdminConfirm() {
                         case 4:
                           return <div>예약취소</div>;
                         default:
-                          console.log("d");
+                          return;
                       }
                     })()}
                   </div>

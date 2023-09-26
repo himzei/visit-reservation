@@ -34,10 +34,10 @@ export default function DirectRegister() {
     formState: { errors },
   } = useForm({ mode: "onChange" });
 
-  const { data, mutate } = useMutation(
+  const { mutate } = useMutation(
     (formData) => apiVisitReservationRegister(visitSiteIndex, formData),
     {
-      onSuccess: (data) => {
+      onSuccess: () => {
         reset();
       },
     }
@@ -45,9 +45,9 @@ export default function DirectRegister() {
 
   const onSubmit = (formData) => {
     const reservationDate = divideDate(formData.date, formData.time);
-
     mutate([reservationDate, formData]);
   };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="admin-register">
@@ -80,6 +80,14 @@ export default function DirectRegister() {
               {...register("carNumber")}
               type="text"
               placeholder="차량번호를 입력해 주세요."
+            />
+          </div>
+          <div className="input-group">
+            <div>메모</div>
+            <input
+              {...register("memo")}
+              type="text"
+              placeholder="메모를 입력해 주세요."
             />
           </div>
         </section>

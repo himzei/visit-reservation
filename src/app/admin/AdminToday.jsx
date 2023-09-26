@@ -1,50 +1,27 @@
-// 관리자
-// 방문 예약 확인
-// 목록
-
-import "./AdminConfirm.css";
 import React, { useState } from "react";
-import { ADMIN_LIST } from "../../lib/menuList";
 import Layout from "../../components/Layout";
-import {
-  Checkbox,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
-} from "@chakra-ui/react";
-import SearchLocation from "../../components/SearchLocation";
-import SearchDate from "../../components/SearchDate";
-import SearchStatus from "../../components/SearchStatus";
-import SearchKeyword from "../../components/SearchKeyword";
-import AdminConfirmDetail from "./AdminConfirmDetail";
-import { useQuery } from "react-query";
+import { ADMIN_LIST } from "../../lib/menuList";
 import { apiGetVisitReservation } from "../../api";
-import useVisitSite from "../../hooks/useVisitSite";
-import { dateFormat } from "../../utils/dateFormat";
-import { dateNowChange } from "../../utils/dateNowChange";
+import { useQuery } from "react-query";
 import { nameHidden } from "../../utils/nameHidden";
+import { dateFormat } from "../../utils/dateFormat";
+import { Checkbox } from "@chakra-ui/react";
+import useVisitSite from "../../hooks/useVisitSite";
+import { timeEnd, timeStart } from "../../utils/timeStatEnd";
 
-export default function AdminConfirm() {
+export default function AdminToday() {
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
-  const [selectData, setSelectData] = useState(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  // search
   const [searchOption, setSearchOption] = useState({
     state: -1,
     placeToVisit: "",
-    startDate: dateNowChange(Date.now()),
-    endDate: "",
+    startDate: timeStart(),
+    endDate: timeEnd(),
     searchValue: "",
   });
+
   const { data } = useQuery(
     [
       "getVisitReservation",
@@ -61,50 +38,9 @@ export default function AdminConfirm() {
     ],
     apiGetVisitReservation
   );
-
-  console.log("리스트", data);
-
-  // end search
-
-  const handleEditClick = (index) => {
-    onOpen();
-    setSelectData(index);
-  };
-
   return (
     <Layout menu={ADMIN_LIST}>
-      <Modal onClose={onClose} size="5xl" isOpen={isOpen}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>방문예약확인</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <AdminConfirmDetail selectData={selectData} onClose={onClose} />
-          </ModalBody>
-          <ModalFooter></ModalFooter>
-        </ModalContent>
-      </Modal>
-      <div className="admin-confirm">
-        {/* search */}
-        <div className="search-group">
-          <SearchLocation
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-          <SearchDate
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-          <SearchStatus
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-          <SearchKeyword
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-          {/* <ButtonSearch text="검색" /> */}
-        </div>
+      <div>
         {/* 테이블 */}
         <table>
           <thead>
@@ -122,11 +58,7 @@ export default function AdminConfirm() {
           </thead>
           <tbody>
             {data?.resevations?.map((item, i) => (
-              <tr
-                onClick={() => handleEditClick(item.visitReservationIndex)}
-                key={i}
-                className="table-hover"
-              >
+              <tr key={i} className="table-hover">
                 <td>
                   <Checkbox position="absolute" top="42%" />
                 </td>

@@ -8,35 +8,41 @@ import useVisitSite from "../../hooks/useVisitSite";
 import {
   apiGetManager,
   apiGetVisitReservationOne,
+  apiManagerGet,
+  apiManagerPut,
   apiManagerRegister,
   apiPutVisitReservationOne,
 } from "../../api";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import { Button, HStack } from "@chakra-ui/react";
+import { nameHidden } from "../../utils/nameHidden";
+import { mobileFormat } from "../../utils/mobileFormat";
 
 export default function AdminConfirmDetail({ selectData, onClose }) {
   const queryClient = useQueryClient();
+  const { register, handleSubmit } = useForm({ mode: "onChange" });
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
+  // useQuery
+  // 매니져 불러오기
   const { data: dataManager } = useQuery(
     ["getManager", { visitSiteIndex, page: 1, pageRange: 10 }],
     apiGetManager
   );
 
-  const { register, handleSubmit } = useForm({ mode: "onChange" });
-
+  // useQuery
+  // 디테일 불러오기
   const { data } = useQuery(
     ["getVisitReservationOne", { visitReservationIndex: selectData }],
     apiGetVisitReservationOne
   );
+  // console.log("디테일", data);
 
-  const handleCloseClick = () => {
-    onClose();
-  };
-
+  // useMutation
+  // 승인 반려 수정
   const { mutate: mutateState } = useMutation(
     (formData) => apiPutVisitReservationOne(formData, selectData),
     {
@@ -49,6 +55,8 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     }
   );
 
+  // useMutation
+  // 매니져 배정 및 등록하기
   const { mutate: mutateManager } = useMutation((formData) =>
     apiManagerRegister(
       formData,
@@ -59,13 +67,44 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     )
   );
 
+  // useMuatation
+  // 매니져 수정 등록하기
+  const { mutate: mutateEditManager } = useMutation((formData) =>
+    apiManagerPut(formData)
+  );
+
+  // useQuery
+  // 배정된 매니져 불러오기
+  const { data: dataGetManager } = useQuery(
+    ["managerGet", { visitReservationIndex: selectData }],
+    apiManagerGet
+  );
+  console.log("선택된 매니져", dataGetManager);
+  const isManager = Boolean(dataGetManager);
+
+  // 저장 버튼 클릭시
+  // 담당자 선택 mutate 실행 및 상태 mutate 실행
   const onSubmit = (formData) => {
-    mutateManager(formData);
+    if (isManager) {
+      // 매니져 수정
+      console.log(formData);
+      // alert(formData.name);
+      // mutateEditManager(formData);
+    } else {
+      // 매니져 추가
+      mutateManager(formData);
+    }
+
     mutateState(formData);
+  };
+
+  const handleCloseClick = () => {
+    onClose();
   };
 
   const [managerPosition, setNanagerPosition] = useState("");
   const [accountIndex, setAccountIndex] = useState(0);
+
   const handleChange = (e) => {
     const name = e.target.value;
     const temp = dataManager?.accounts?.find((item) => item.name === name);
@@ -85,13 +124,17 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
             <div>방문객명</div>
             <input
               type="text"
-              defaultValue={data?.visitors[0]?.name}
+              defaultValue={nameHidden(data?.visitors[0]?.name)}
               readOnly
             />
           </div>
           <div className="input-group">
             <div>휴대전화번호</div>
-            <input type="text" defaultValue={data?.visitors[0]?.tel} readOnly />
+            <input
+              type="text"
+              defaultValue={mobileFormat(data?.visitors[0]?.tel)}
+              readOnly
+            />
           </div>
           <div className="input-group">
             <div>차량번호</div>
@@ -157,8 +200,13 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
           <div className="input-group">
             <div>이름</div>
             <select {...register("name")} onChange={(e) => handleChange(e)}>
+              <option>선택해주세요</option>
               {dataManager?.accounts?.map((item, index) => (
-                <option key={index} value={item.name}>
+                <option
+                  key={index}
+                  value={item.name}
+                  selected={item.name === dataGetManager?.managers.at(-1).name}
+                >
                   {item.name}
                 </option>
               ))}

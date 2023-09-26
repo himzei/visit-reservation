@@ -12,7 +12,6 @@ import SearchStatus from "../../components/SearchStatus";
 import SearchKeyword from "../../components/SearchKeyword";
 import { Button, Checkbox } from "@chakra-ui/react";
 import AllPass from "../../components/AllPass";
-import ButtonSearch from "../../components/ButtonSearch";
 import { useQuery } from "react-query";
 import { apiGetLog } from "../../api";
 import useVisitSite from "../../hooks/useVisitSite";
@@ -25,11 +24,10 @@ export default function AdminHistory() {
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
   const [searchOption, setSearchOption] = useState({
-    state: -1,
     placeToVisit: "",
     startDate: dateNowChange(Date.now()),
     endDate: "",
-    searchValue: "",
+    searchData: "",
   });
 
   const { data } = useQuery(
@@ -37,17 +35,18 @@ export default function AdminHistory() {
       "getLog",
       {
         visitSiteIndex,
-        page: 1,
-        pageRange: 10,
-        state: searchOption.state,
         startDate: searchOption.startDate,
         endDate: searchOption.endDate,
-        searchValue: searchOption.searchValue,
+        page: 1,
+        pageRange: 10,
         placeToVisit: searchOption.placeToVisit,
+        searchData: searchOption.searchData,
       },
     ],
     apiGetLog
   );
+
+  console.log(data);
 
   return (
     <Layout menu={ADMIN_LIST}>

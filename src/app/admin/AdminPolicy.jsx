@@ -7,7 +7,12 @@ import ButtonSearch from "../../components/ButtonSearch";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "react-query";
 import useVisitSite from "../../hooks/useVisitSite";
-import { apiAgreement, apiPolicyEdit, apiPolicyRegister } from "../../api";
+import {
+  apiAgreement,
+  apiPolicyDelete,
+  apiPolicyEdit,
+  apiPolicyRegister,
+} from "../../api";
 // import ReactMarkdown from "react-markdown";
 // import remarkGfm from "remark-gfm";
 
@@ -52,11 +57,27 @@ export default function AdminPolicy() {
     dataLists = updateData;
   };
 
+  // 수정해야함
+  const { mutate: mutateDeletePolicy } = useMutation(
+    (id) => apiPolicyDelete(id),
+    {
+      onSuccess: (data) => {
+        if (data.reault === 0) {
+          alert("삭제완료");
+        }
+      },
+    }
+  );
+
   const handleEditClick = (id) => {
     const item = dataLists.find((item) => item.agreementIndex === id);
     if (item) {
       setInputValue(item.inputValue);
     }
+  };
+
+  const handleDeleteClick = (id) => {
+    mutateDeletePolicy(id);
   };
 
   const setInputValue = (value) => {};
@@ -122,6 +143,9 @@ export default function AdminPolicy() {
                           수정
                         </Button>
                         <Button
+                          onClick={(e) =>
+                            handleDeleteClick(item.agreementIndex)
+                          }
                           bg="#CC4E4E"
                           _hover={{ bg: "#A72E2E" }}
                           size="sm"

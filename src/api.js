@@ -178,6 +178,21 @@ export async function apiPolicyRegister(formData, visitSiteIndex) {
   }).then((res) => res.json());
 }
 
+// 정책 삭제
+export async function apiPolicyDelete(agreementIndex) {
+  console.log(agreementIndex);
+  return await fetch(`/api/Agreement/${agreementIndex}`, {
+    method: "DELETE",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
 // 정책수정
 export async function apiPolicyEdit(agreementIndex, title, isMust, contents) {
   return await fetch(`/api/Agreement/${agreementIndex}`, {
@@ -423,6 +438,7 @@ export async function apiVisitReservationRegister(visitSiteIndex, data) {
     name,
     tel,
     type,
+    memo,
     code,
     carNumber,
     purposeOfVisit,
@@ -444,6 +460,7 @@ export async function apiVisitReservationRegister(visitSiteIndex, data) {
       state: 0,
       resevationDate,
       password: "",
+      memo,
       visitors: [
         {
           visitorIndex: -1,
@@ -460,8 +477,8 @@ export async function apiVisitReservationRegister(visitSiteIndex, data) {
       ],
       managers: [
         {
-          managerIndex: 0,
-          accountIndex: 0,
+          managerIndex: -1,
+          accountIndex: -1,
           name: "",
           position: "",
           auth: 0,
@@ -552,8 +569,6 @@ export async function apiManagerRegister(
   managerPosition,
   accountIndex
 ) {
-  console.log(accountIndex);
-  console.log(managerPosition);
   return await fetch(`/api/Manager`, {
     method: "POST",
     headers: {
@@ -587,7 +602,8 @@ export async function apiGetLog({ queryKey }) {
   const paramsObj = queryKey[1];
   const searchParams = new URLSearchParams(paramsObj);
   const params = searchParams.toString();
-  return await fetch(`/api/Log?${params}`, {
+  console.log(params);
+  return await fetch(`/api/Log/visitlog?${params}`, {
     method: "GET",
     headers: {
       accept: "*",
@@ -614,19 +630,63 @@ export async function apiVisitSiteImageRegister(imageFile, visitSiteIndex) {
     .then((response) => response.data);
 }
 
-// Manager GET
-// export async function apiManagerGet({ queryKey }) {
-//   const { visitReservationIndex } = queryKey[1];
-//   return await fetch(
-//     `/api/Manager?visitReservationIndex=${visitReservationIndex}`,
-//     {
-//       method: "GET",
-//       headers: {
-//         accept: "*",
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${TOKEN}`,
-//       },
-//       credentials: "include",
-//     }
-//   ).then((res) => res.json());
-// }
+// 배정된 매니져 불러오기
+// queryKey: "managerGet"
+export async function apiManagerGet({ queryKey }) {
+  const { visitReservationIndex } = queryKey[1];
+  return await fetch(
+    `/api/Manager?visitReservationIndex=${visitReservationIndex}`,
+    {
+      method: "GET",
+      headers: {
+        accept: "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${TOKEN}`,
+      },
+      credentials: "include",
+    }
+  ).then((res) => res.json());
+}
+
+// 매니져 수정하기
+export async function apiManagerPut(formData, visitReservationIndex) {
+  // return await fetch(`/api/Manager/${managerIndex}`, {
+  //   method: "PUT",
+  //   headers: {
+  //     accept: "*",
+  //     "Content-Type": "application/json",
+  //     Authorization: `Bearer ${TOKEN}`,
+  //   },
+  //   body: JSON.stringify({
+  //     managerIndex,
+  //     accountIndex,
+  //     name,
+  //     position,
+  //   }),
+  //   credentials: "include",
+  // }).then((res) => res.json());
+}
+
+// 나이스정보통신 인증
+const client_id = "36bdc3ed-6b76-4e0a-895e-1b6797c77ee3";
+const client_secret = "c01489a692d9da543f07aa8a934b84225bc9bb";
+const credentials = btoa(`${client_id}:${client_secret}`);
+
+const formData = new URLSearchParams();
+formData.append("grant_type", "client_credentials");
+formData.append("scope", "default");
+
+export async function apiNiceGetToken() {
+  return await fetch(
+    `https://svc.niceapi.co.kr:22001/digital/niceid/oauth/oauth/token`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Basic ${credentials}`,
+      },
+      credentials: "include",
+      body: formData,
+    }
+  ).then((res) => res.json());
+}

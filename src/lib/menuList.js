@@ -1,5 +1,10 @@
 export const SECURITY_LIST = [
   {
+    title: "방문자 현황",
+    subTitle: "방문자 현황을 확인해 보세요.",
+    url: "/security/today",
+  },
+  {
     title: "방문예약 현황",
     subTitle: "방문예약 현황을 확인해 보세요.",
     url: "/security/status",
@@ -30,6 +35,11 @@ export const TEACHER_LIST = [
 ];
 
 export const ADMIN_LIST = [
+  {
+    title: "방문자 현황",
+    subTitle: "금일 방문자 현황을 확인해 보세요",
+    url: "/admin/today",
+  },
   {
     title: "방문 예약 확인",
     subTitle: "방문예약 현황을 확인해 보세요",

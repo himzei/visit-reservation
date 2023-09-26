@@ -18,6 +18,8 @@ import AdminStatics from "./app/admin/AdminStatics";
 import AdminProfile from "./app/admin/AdminProfile";
 import AdminHistory from "./app/admin/AdminHistory";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminToday from "./app/admin/AdminToday";
+import SecurityToday from "./app/security/SecurityToday";
 
 const router = createBrowserRouter([
   {
@@ -46,8 +48,8 @@ const router = createBrowserRouter([
             element: <SecurityStatus />,
           },
           {
-            path: "register",
-            element: <SecurityRegister />,
+            path: "today",
+            element: <SecurityToday />,
           },
         ],
       },
@@ -85,6 +87,10 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
         children: [
+          {
+            path: "today",
+            element: <AdminToday />,
+          },
           {
             path: "confirm",
             element: <AdminConfirm />,

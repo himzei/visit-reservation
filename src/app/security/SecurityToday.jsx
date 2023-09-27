@@ -33,14 +33,6 @@ export default function SecurityToday() {
     <Layout menu={SECURITY_LIST}>
       <div className="security-container">
         <section>
-          {/* 검색창 */}
-          <div className="security-search">
-            {/* <div className="security-search__label">검색어</div> */}
-            <Input type="text" />
-            <Button colorScheme="blue" width="100px">
-              검색
-            </Button>
-          </div>
           {/* 테이블 */}
           <table>
             <thead>
@@ -57,36 +49,44 @@ export default function SecurityToday() {
               </tr>
             </thead>
             <tbody>
-              {data?.resevations?.map((item, i) => (
-                <tr key={i}>
-                  <td>{i + 1}</td>
-                  <td>{item.placeToVisit}</td>
-                  <td>{nameHidden(item.visitorName)}</td>
-
-                  <td>{item.carNumber}</td>
-
-                  <td>{dateFormat(item.reservationDate)}</td>
-                  <td>{item.purposeOfVisit}</td>
-                  <td>
-                    {(() => {
-                      switch (item.state) {
-                        case 0:
-                          return <div>대기중</div>;
-                        case 1:
-                          return <div>승인</div>;
-                        case 2:
-                          return <div>미승인</div>;
-                        case 3:
-                          return <div>방문</div>;
-                        case 4:
-                          return <div>예약취소</div>;
-                        default:
-                          return;
-                      }
-                    })()}
+              {!data ? (
+                <tr>
+                  <td colSpan={8}>
+                    <div>해당하는 데이터가 없습니다.</div>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                data?.resevations?.map((item, i) => (
+                  <tr key={i}>
+                    <td>{i + 1}</td>
+                    <td>{item.placeToVisit}</td>
+                    <td>{nameHidden(item.visitorName)}</td>
+
+                    <td>{item.carNumber}</td>
+
+                    <td>{dateFormat(item.reservationDate)}</td>
+                    <td>{item.purposeOfVisit}</td>
+                    <td>
+                      {(() => {
+                        switch (item.state) {
+                          case 0:
+                            return <div>대기중</div>;
+                          case 1:
+                            return <div>승인</div>;
+                          case 2:
+                            return <div>미승인</div>;
+                          case 3:
+                            return <div>방문</div>;
+                          case 4:
+                            return <div>예약취소</div>;
+                          default:
+                            return;
+                        }
+                      })()}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </section>

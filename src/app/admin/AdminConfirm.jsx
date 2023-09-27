@@ -28,6 +28,7 @@ import useVisitSite from "../../hooks/useVisitSite";
 import { dateFormat } from "../../utils/dateFormat";
 import { dateNowChange } from "../../utils/dateNowChange";
 import { nameHidden } from "../../utils/nameHidden";
+import { timeEnd, timeStart } from "../../utils/timeStatEnd";
 
 export default function AdminConfirm() {
   // VISITSITEINDEX
@@ -41,8 +42,8 @@ export default function AdminConfirm() {
   const [searchOption, setSearchOption] = useState({
     state: -1,
     placeToVisit: "",
-    startDate: dateNowChange(Date.now()),
-    endDate: "",
+    startDate: timeStart(),
+    endDate: timeEnd(),
     searchValue: "",
   });
   const { data } = useQuery(
@@ -61,10 +62,6 @@ export default function AdminConfirm() {
     ],
     apiGetVisitReservation
   );
-
-  console.log("리스트", data);
-
-  // end search
 
   const handleEditClick = (index) => {
     onOpen();
@@ -121,45 +118,53 @@ export default function AdminConfirm() {
             </tr>
           </thead>
           <tbody>
-            {data?.resevations?.map((item, i) => (
-              <tr
-                onClick={() => handleEditClick(item.visitReservationIndex)}
-                key={i}
-                className="table-hover"
-              >
-                <td>
-                  <Checkbox position="absolute" top="42%" />
-                </td>
-
-                <td>{item.placeToVisit}</td>
-                <td>{nameHidden(item.visitorName)}</td>
-                <td>{item.carNumber}</td>
-                <td>{dateFormat(item.reservationDate)}</td>
-                <td>{item.purposeOfVisit}</td>
-                <td>{dateFormat(item.regDate)}</td>
-                <td>{item.managerName}</td>
-                <td>
-                  <div className="approval-status">
-                    {(() => {
-                      switch (item.state) {
-                        case 0:
-                          return <div>대기중</div>;
-                        case 1:
-                          return <div>승인</div>;
-                        case 2:
-                          return <div>미승인</div>;
-                        case 3:
-                          return <div>방문</div>;
-                        case 4:
-                          return <div>예약취소</div>;
-                        default:
-                          return;
-                      }
-                    })()}
-                  </div>
+            {!data ? (
+              <tr>
+                <td colSpan={8}>
+                  <div>해당하는 데이터가 없습니다.</div>
                 </td>
               </tr>
-            ))}
+            ) : (
+              data?.resevations?.map((item, i) => (
+                <tr
+                  onClick={() => handleEditClick(item.visitReservationIndex)}
+                  key={i}
+                  className="table-hover"
+                >
+                  <td>
+                    <Checkbox position="absolute" top="42%" />
+                  </td>
+
+                  <td>{item.placeToVisit}</td>
+                  <td>{nameHidden(item.visitorName)}</td>
+                  <td>{item.carNumber}</td>
+                  <td>{dateFormat(item.reservationDate)}</td>
+                  <td>{item.purposeOfVisit}</td>
+                  <td>{dateFormat(item.regDate)}</td>
+                  <td>{item.managerName}</td>
+                  <td>
+                    <div className="approval-status">
+                      {(() => {
+                        switch (item.state) {
+                          case 0:
+                            return <div>대기중</div>;
+                          case 1:
+                            return <div>승인</div>;
+                          case 2:
+                            return <div>미승인</div>;
+                          case 3:
+                            return <div>방문</div>;
+                          case 4:
+                            return <div>예약취소</div>;
+                          default:
+                            return;
+                        }
+                      })()}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

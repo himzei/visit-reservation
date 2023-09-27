@@ -16,6 +16,7 @@ import { apiGetLog } from "../../api";
 import { dateFormat } from "../../utils/dateFormat";
 import { dateNowChange } from "../../utils/dateNowChange";
 import SearchLocation from "../../components/SearchLocation";
+import { nameHidden } from "../../utils/nameHidden";
 
 export default function TeacherHistory() {
   // VISITSITEINDEX
@@ -84,17 +85,25 @@ export default function TeacherHistory() {
             </tr>
           </thead>
           <tbody>
-            {data?.logs?.map((item, i) => (
-              <tr key={i}>
-                <td>{item.placeToVisit}</td>
-                <td>{item.visitorName}</td>
-                <td>{item.carNumber}</td>
-                <td>{dateFormat(item.regDate)}</td>
-                <td>{item.purposeOfVisit}</td>
-                <td>{item.managerName}</td>
-                <td></td>
+            {!data ? (
+              <tr>
+                <td colSpan={8}>
+                  <div>해당하는 데이터가 없습니다.</div>
+                </td>
               </tr>
-            ))}
+            ) : (
+              data?.logs?.map((item, i) => (
+                <tr key={i}>
+                  <td>{item.placeToVisit}</td>
+                  <td>{nameHidden(item.visitorName)}</td>
+                  <td>{item.carNumber}</td>
+                  <td>{dateFormat(item.regDate)}</td>
+                  <td>{item.purposeOfVisit}</td>
+                  <td>{item.managerName}</td>
+                  <td></td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

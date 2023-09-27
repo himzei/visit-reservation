@@ -18,11 +18,16 @@
 }
 
 .input-group {
+  width: 100%;
+
   display: flex;
   padding: 10px 10px;
 }
-.input-group div {
+.input-group div:first-child {
   width: 180px;
+}
+.input-group div:last-child {
+  width: 100%;
 }
 .input-group input,
 .input-group select {

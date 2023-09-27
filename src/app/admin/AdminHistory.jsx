@@ -46,8 +46,6 @@ export default function AdminHistory() {
     apiGetLog
   );
 
-  console.log(data);
-
   return (
     <Layout menu={ADMIN_LIST}>
       <div className="admin-history">
@@ -92,20 +90,28 @@ export default function AdminHistory() {
             </tr>
           </thead>
           <tbody>
-            {data?.logs?.map((item, i) => (
-              <tr key={i}>
-                <td>
-                  <Checkbox position="absolute" top="42%" />
+            {!data ? (
+              <tr>
+                <td colSpan={8}>
+                  <div>해당하는 데이터가 없습니다.</div>
                 </td>
-                <td>{item.placeToVisit}</td>
-                <td>{item.visitorName}</td>
-                <td>{item.carNumber}</td>
-                <td>{dateFormat(item.regDate)}</td>
-                <td>{item.purposeOfVisit}</td>
-                <td>{item.managerName}</td>
-                <td></td>
               </tr>
-            ))}
+            ) : (
+              data?.logs?.map((item, i) => (
+                <tr key={i}>
+                  <td>
+                    <Checkbox position="absolute" top="42%" />
+                  </td>
+                  <td>{item.placeToVisit}</td>
+                  <td>{item.visitorName}</td>
+                  <td>{item.carNumber}</td>
+                  <td>{dateFormat(item.regDate)}</td>
+                  <td>{item.purposeOfVisit}</td>
+                  <td>{item.managerName}</td>
+                  <td></td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

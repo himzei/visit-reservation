@@ -1,0 +1,51 @@
+.admin-today {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+/* 테이블 시작 */
+.admin-today table {
+  width: 100%;
+}
+
+.admin-today thead {
+  background-color: #5a7087;
+  color: white;
+}
+
+.admin-today thead td {
+  padding: 10px 0;
+  text-align: center;
+}
+
+.admin-today tbody tr {
+  border-bottom: 1px solid lightgray;
+}
+.admin-today tbody td {
+  position: relative;
+  padding: 10px 0;
+  text-align: center;
+  vertical-align: center;
+}
+.admin-today tbody td:first-child {
+}
+
+/* 테이블 끝 */
+.search-group {
+  width: 100%;
+  display: flex;
+  margin: 20px 0;
+  padding: 0 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.table-hover {
+  cursor: pointer;
+}
+.table-hover:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}

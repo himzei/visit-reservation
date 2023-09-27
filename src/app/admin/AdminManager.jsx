@@ -32,6 +32,7 @@ import AdminManagerWrite from "./AdminManagerWrite";
 import { apiDeleteVisitor, apiGetVisitor } from "../../api";
 import useVisitSite from "../../hooks/useVisitSite";
 import { dateNowChange } from "../../utils/dateNowChange";
+import { nameHidden } from "../../utils/nameHidden";
 
 export default function AdminManager() {
   // refetch
@@ -119,7 +120,7 @@ export default function AdminManager() {
           <table>
             <thead>
               <tr>
-                <td>선택</td>
+                <td>No</td>
                 <td>방문객명</td>
                 <td>휴대전화</td>
                 <td>차량번호</td>
@@ -131,10 +132,8 @@ export default function AdminManager() {
             <tbody>
               {data?.visitors?.map((item, i) => (
                 <tr key={i}>
-                  <td>
-                    <Checkbox position="absolute" top="42%" />
-                  </td>
-                  <td>{item.name}</td>
+                  <td>{i + 1}</td>
+                  <td>{nameHidden(item.name)}</td>
                   <td>{item.tel}</td>
                   <td>{item.carNumber}</td>
                   <td>{item.placeToVisit}</td>

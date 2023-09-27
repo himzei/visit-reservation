@@ -15,13 +15,21 @@ import {
 } from "../../api";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
-import { Button, HStack } from "@chakra-ui/react";
+import {
+  Button,
+  HStack,
+  Input,
+  Radio,
+  RadioGroup,
+  VStack,
+} from "@chakra-ui/react";
 import { nameHidden } from "../../utils/nameHidden";
 import { mobileFormat } from "../../utils/mobileFormat";
 
 export default function AdminConfirmDetail({ selectData, onClose }) {
   const queryClient = useQueryClient();
   const { register, handleSubmit } = useForm({ mode: "onChange" });
+
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
@@ -39,8 +47,8 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     ["getVisitReservationOne", { visitReservationIndex: selectData }],
     apiGetVisitReservationOne
   );
-  // console.log("디테일", data);
 
+  console.log(data);
   // useMutation
   // 승인 반려 수정
   const { mutate: mutateState } = useMutation(
@@ -79,7 +87,7 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     ["managerGet", { visitReservationIndex: selectData }],
     apiManagerGet
   );
-  console.log("선택된 매니져", dataGetManager);
+
   const isManager = Boolean(dataGetManager);
 
   // 저장 버튼 클릭시
@@ -122,29 +130,18 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
           </div>
           <div className="input-group">
             <div>방문객명</div>
-            <input
-              type="text"
-              defaultValue={nameHidden(data?.visitors[0]?.name)}
-              readOnly
-            />
+            <div>{nameHidden(data?.visitors[0]?.name)}</div>
           </div>
           <div className="input-group">
             <div>휴대전화번호</div>
-            <input
-              type="text"
-              defaultValue={mobileFormat(data?.visitors[0]?.tel)}
-              readOnly
-            />
+            <div>{mobileFormat(data?.visitors[0]?.tel)}</div>
           </div>
           <div className="input-group">
             <div>차량번호</div>
-            <input
-              type="text"
-              defaultValue={data?.visitors[0]?.carNumber}
-              readOnly
-            />
+            <div>{data?.visitors[0]?.carNumber}</div>
           </div>
         </section>
+
         <section>
           <div className="reg-title">
             <img src={RegIcon2} alt="icon2" />
@@ -152,41 +149,19 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
           </div>
           <div className="input-group">
             <div>방문지</div>
-            <input
-              type="text"
-              defaultValue={data?.visitors[0]?.placeToVisit}
-              readOnly
-            />
+            <div>{data?.visitors[0]?.placeToVisit}</div>
           </div>
           <div className="input-group">
             <div>방문 목적</div>
-            <input
-              type="text"
-              defaultValue={data?.visitors[0]?.purposeOfVisit}
-              readOnly
-            />
+            <div>{data?.visitors[0]?.purposeOfVisit}</div>
           </div>
           <div className="input-group">
             <div>방문일시</div>
-            <input
-              readOnly
-              type="text"
-              defaultValue={data?.visitReservation?.reservationDate.substr(
-                0,
-                10
-              )}
-            />
+            <div>{data?.visitReservation?.reservationDate.substr(0, 10)}</div>
           </div>
           <div className="input-group">
             <div>방문시간</div>
-            <input
-              readOnly
-              type="text"
-              defaultValue={data?.visitReservation?.reservationDate.substr(
-                11,
-                5
-              )}
-            />
+            <div>{data?.visitReservation?.reservationDate.substr(11, 5)}</div>
           </div>
         </section>
 
@@ -238,46 +213,49 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
           </div>
           <div className="input-group">
             <div>승인여부</div>
-            <select {...register("state")}>
-              <option
-                className="select-default"
-                value={0}
-                selected={data?.visitReservation?.state === 0}
-              >
-                대기중
-              </option>
-              <option
-                className="select-default"
-                value={1}
-                selected={data?.visitReservation?.state === 1}
-              >
-                승인
-              </option>
-              <option
-                className="select-default"
-                value={2}
-                selected={data?.visitReservation?.state === 2}
-              >
-                반려
-              </option>
-              <option
-                className="select-default"
-                value={3}
-                selected={data?.visitReservation?.state === 3}
-              >
-                방문
-              </option>
-              <option
-                className="select-default"
-                value={4}
-                selected={data?.visitReservation?.state === 4}
-              >
-                예약취소
-              </option>
-            </select>
-          </div>{" "}
+            <div>
+              <VStack spacing={5}>
+                <input
+                  htmlFor="fir"
+                  type="radio"
+                  {...register("state")}
+                  value="0"
+                />
+                <label id="0">대기중</label>
+                <input
+                  htmlFor="1"
+                  type="radio"
+                  {...register("state")}
+                  value="1"
+                />
+                <label id="1">승인</label>
+                <input
+                  htmlFor="2"
+                  type="radio"
+                  {...register("state")}
+                  value="2"
+                />
+                <label id="2">반려</label>
+                <input
+                  htmlFor="3"
+                  type="radio"
+                  {...register("state")}
+                  value="3"
+                />
+                <label id="3">방문</label>
+                <input
+                  htmlFor="4"
+                  type="radio"
+                  {...register("state")}
+                  value="4"
+                />
+                <label id="4">예약취소</label>
+              </VStack>
+            </div>
+          </div>
           <div className="input-group">
             <div>반려사유</div>
+
             <input
               type="text"
               {...register("stateReason")}
@@ -285,6 +263,7 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
             />
           </div>
         </section>
+
         <HStack mt="8">
           <Button width="100px" onClick={() => handleCloseClick(0)}>
             닫기

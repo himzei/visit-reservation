@@ -1,6 +1,6 @@
 export const timeStart = () => {
   const now = new Date();
-  const utc = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
+  const utc = now.getTime();
   const koreaTimeDiff = 9 * 60 * 60 * 1000;
   const korNow = new Date(utc + koreaTimeDiff);
 
@@ -11,7 +11,7 @@ export const timeStart = () => {
 
 export const timeEnd = () => {
   const now = new Date();
-  const utc = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
+  const utc = now.getTime();
   const koreaTimeDiff = 9 * 60 * 60 * 1000;
   const korNow = new Date(utc + koreaTimeDiff);
 

@@ -13,6 +13,11 @@ export const SECURITY_LIST = [
 
 export const TEACHER_LIST = [
   {
+    title: "방문자현황",
+    subTitle: "방문자 확인 및 상태를 변경해 보세요.",
+    url: "/teacher/today",
+  },
+  {
     title: "방문승인",
     subTitle: "방문예약 확인 및 상태를 변경해 보세요.",
     url: "/teacher/approval",

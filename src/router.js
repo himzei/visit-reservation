@@ -20,6 +20,7 @@ import AdminHistory from "./app/admin/AdminHistory";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminToday from "./app/admin/AdminToday";
 import SecurityToday from "./app/security/SecurityToday";
+import TeacherToday from "./app/teacher/TeacherToday";
 
 const router = createBrowserRouter([
   {
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
         children: [
+          {
+            path: "today",
+            element: <TeacherToday />,
+          },
           {
             path: "approval",
             element: <TeacherApproval />,

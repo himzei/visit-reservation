@@ -3,33 +3,45 @@
 // 목록
 
 import "./TeacherApproval.css";
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../../components/Layout";
 import { TEACHER_LIST } from "../../lib/menuList";
-import { Box, Checkbox } from "@chakra-ui/react";
-import AllPass from "../../components/AllPass";
 import useVisitSite from "../../hooks/useVisitSite";
 import { useQuery } from "react-query";
 import { apiGetVisitReservation } from "../../api";
 import { dateFormat } from "../../utils/dateFormat";
+import { timeEnd, timeStart } from "../../utils/timeStatEnd";
+import SearchLocation from "../../components/SearchLocation";
+import SearchDate from "../../components/SearchDate";
+import SearchStatus from "../../components/SearchStatus";
+import SearchKeyword from "../../components/SearchKeyword";
+import { nameHidden } from "../../utils/nameHidden";
 
 export default function TeacherApproval() {
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
+  const [searchOption, setSearchOption] = useState({
+    state: -1,
+    placeToVisit: "",
+    startDate: timeStart(),
+    endDate: timeEnd(),
+    searchValue: "",
+  });
+
   const { data } = useQuery(
     [
       "getVisitReservation",
       {
         visitSiteIndex,
-        startDate: "2023-01-01",
-        endDate: "2023-12-31",
         page: 1,
         pageRange: 10,
-        state: -1,
-        searchValue: "",
-        placeToVisit: "",
+        state: searchOption.state,
+        startDate: searchOption.startDate,
+        endDate: searchOption.endDate,
+        searchValue: searchOption.searchValue,
+        placeToVisit: searchOption.placeToVisit,
       },
     ],
     apiGetVisitReservation
@@ -40,11 +52,32 @@ export default function TeacherApproval() {
       <div className="teacher-approval">
         {/* 일괄승인 */}
         {/* <AllPass /> */}
+
+        {/* 검색 */}
+        <div className="teacher-history__search">
+          <SearchLocation
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchDate
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchStatus
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchKeyword
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+        </div>
+
         {/* 테이블 */}
         <table>
           <thead>
             <tr>
-              <td>선택</td>
+              <td>No</td>
               <td>방문객명</td>
               <td>연락처</td>
               <td>차량번호</td>
@@ -56,40 +89,46 @@ export default function TeacherApproval() {
             </tr>
           </thead>
           <tbody>
-            {data?.resevations?.map((item, i) => (
-              <tr key={i}>
-                <td>
-                  <Checkbox />
-                </td>
-                <td>{item.visitorName}</td>
-                <td>{item.visitorTel}</td>
-                <td>{item.carNumber}</td>
-                <td>{dateFormat(item.reservationDate)}</td>
-                <td>{dateFormat(item.visitDate)}</td>
-                <td>{item.purposeOfVisit}</td>
-                <td>{item.stateReason}</td>
-                <td>
-                  <div className="approval-status">
-                    {(() => {
-                      switch (item.state) {
-                        case 0:
-                          return <div>대기중</div>;
-                        case 1:
-                          return <div>승인</div>;
-                        case 2:
-                          return <div>미승인</div>;
-                        case 3:
-                          return <div>방문</div>;
-                        case 4:
-                          return <div>예약취소</div>;
-                        default:
-                          return;
-                      }
-                    })()}
-                  </div>
+            {!data ? (
+              <tr>
+                <td colSpan={8}>
+                  <div>해당하는 데이터가 없습니다.</div>
                 </td>
               </tr>
-            ))}
+            ) : (
+              data?.resevations?.map((item, i) => (
+                <tr key={i}>
+                  <td>{i + 1}</td>
+                  <td>{nameHidden(item.visitorName)}</td>
+                  <td>{item.visitorTel}</td>
+                  <td>{item.carNumber}</td>
+                  <td>{dateFormat(item.reservationDate)}</td>
+                  <td>{dateFormat(item.visitDate)}</td>
+                  <td>{item.purposeOfVisit}</td>
+                  <td>{item.stateReason}</td>
+                  <td>
+                    <div className="approval-status">
+                      {(() => {
+                        switch (item.state) {
+                          case 0:
+                            return <div>대기중</div>;
+                          case 1:
+                            return <div>승인</div>;
+                          case 2:
+                            return <div>미승인</div>;
+                          case 3:
+                            return <div>방문</div>;
+                          case 4:
+                            return <div>예약취소</div>;
+                          default:
+                            return;
+                        }
+                      })()}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

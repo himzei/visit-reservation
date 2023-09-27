@@ -1,16 +1,15 @@
-import "./AdminToday.css";
+import "./TeacherToday.css";
 import React, { useState } from "react";
+import { TEACHER_LIST } from "../../lib/menuList";
 import Layout from "../../components/Layout";
-import { ADMIN_LIST } from "../../lib/menuList";
-import { apiGetVisitReservation } from "../../api";
-import { useQuery } from "react-query";
 import { nameHidden } from "../../utils/nameHidden";
 import { dateFormat } from "../../utils/dateFormat";
-import { Checkbox } from "@chakra-ui/react";
+import { useQuery } from "react-query";
+import { apiGetVisitReservation } from "../../api";
 import useVisitSite from "../../hooks/useVisitSite";
 import { timeEnd, timeStart } from "../../utils/timeStatEnd";
 
-export default function AdminToday() {
+export default function TeacherToday() {
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
@@ -40,8 +39,8 @@ export default function AdminToday() {
     apiGetVisitReservation
   );
   return (
-    <Layout menu={ADMIN_LIST}>
-      <div className="admin-today">
+    <Layout menu={TEACHER_LIST}>
+      <div className="teacher-today">
         {/* 테이블 */}
         <table>
           <thead>

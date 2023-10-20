@@ -3,8 +3,6 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
 }
 /* 테이블 시작 */
 .admin-confirm table {
@@ -16,21 +14,32 @@
   color: white;
 }
 
-.admin-confirm thead td {
+.admin-confirm thead tr {
+  display: grid;
+  grid-template-columns: 1fr 2fr 3fr 2fr 3fr 3fr 1fr 4fr 1fr;
   padding: 10px 0;
   text-align: center;
+}
+/* .admin-confirm thead td p {
+  padding: 10px 0;
+  text-align: center;
+} */
+
+.td-div-all {
+  display: grid;
+  grid-template-columns: 1fr 2fr 3fr 2fr 3fr 3fr 1fr 4fr 1fr;
 }
 
 .admin-confirm tbody tr {
   border-bottom: 1px solid lightgray;
 }
 .admin-confirm tbody td {
-  position: relative;
   padding: 10px 0;
   text-align: center;
   vertical-align: center;
 }
-.admin-confirm tbody td:first-child {
+.td-div-p {
+  display: none;
 }
 
 /* 테이블 끝 */
@@ -48,4 +57,45 @@
 }
 .table-hover:hover {
   background-color: rgba(0, 0, 0, 0.02);
+}
+
+@media (max-width: 768px) { 
+  thead {
+    display: none;
+  }
+
+  .admin-confirm tbody {
+    margin-bottom: 10px;
+  }
+
+  .admin-confirm tbody td {
+    padding: 5px 0;
+  }
+
+  .td-div-all {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 10px 0;
+  }
+  
+  .td-div {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .td-div-p {
+    display: flex;
+    width: 35%;
+  }
+    
+  .td-div-td {
+    width: 65%;
+  }
+  .admin-confirm tbody td {
+    text-align: start;
+  }
+
 }

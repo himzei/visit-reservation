@@ -10,7 +10,7 @@ import {
   apiGetVisitSite,
   apiPutVisitor,
 } from "../../api";
-import { Box, Button, HStack } from "@chakra-ui/react";
+import { Button, Grid, HStack, Stack } from "@chakra-ui/react";
 
 export default function AdminManagerDetail({ selectEdit, onClose }) {
   const queryClient = useQueryClient();
@@ -33,7 +33,11 @@ export default function AdminManagerDetail({ selectEdit, onClose }) {
   const handleClose = () => {
     onClose();
   };
-  const { register, handleSubmit } = useForm({ mode: "onChange" });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: "onChange" });
 
   const { mutate } = useMutation((formData) => apiPutVisitor(formData), {
     onSuccess: (data) => {
@@ -62,18 +66,32 @@ export default function AdminManagerDetail({ selectEdit, onClose }) {
           <div className="input-group">
             <div>방문객명</div>
             <input
-              {...register("name")}
+              {...register("name", {
+                required: "이름을 입력해 주세요",
+                minLength: {
+                  value: 2,
+                  message: "최소 2글자 이상 입력해주세요",
+                },
+              })}
               type="text"
               defaultValue={selectEdit.name}
             />
+            <span className="form-errors">{errors?.name?.message}</span>
           </div>
           <div className="input-group">
             <div>휴대전화번호</div>
             <input
-              {...register("tel")}
+              {...register("tel", {
+                required: "모바일 번호를 입력해 주세요",
+                pattern: {
+                  value: /^[0-9]{10,11}$/,
+                  message: "'-' 없이 숫자만 입력해 주세요",
+                },
+              })}
               type="text"
               defaultValue={selectEdit.tel}
             />
+            <span className="form-errors">{errors?.tel?.message}</span>
           </div>
           <div className="input-group">
             <div>차량번호</div>
@@ -119,39 +137,45 @@ export default function AdminManagerDetail({ selectEdit, onClose }) {
           </div>
           <div className="input-group">
             <div>방문일시</div>
-            <HStack w="full" justifyContent="space-between" spacing="16">
-              <Box w="1/2">
+            <Grid w="full" templateColumns={"1fr 1fr 1fr"}>
+              <Stack w="full">
                 <input
                   defaultValue={selectEdit.enterStartDate.substr(0, 10)}
                   type="date"
-                  {...register("enterStartDate")}
+                  {...register("enterStartDate", {
+                    required: true,
+                  })}
                 />
-              </Box>
-              <Box w="1/2">
+              </Stack>
+              <Stack w="full">
                 <input
                   defaultValue={selectEdit.enterEndDate.substr(0, 10)}
                   type="date"
-                  {...register("enterEndDate")}
+                  {...register("enterEndDate", {
+                    required: true,
+                  })}
                 />
-              </Box>
-            </HStack>
+              </Stack>
+            </Grid>
           </div>
         </section>
       </div>
-      <Button width="100px" onClick={() => handleClose()}>
-        닫기
-      </Button>
-      <Button
-        type="submit"
-        width="100px"
-        height="35px"
-        color="white"
-        bg="#0066FF"
-        _hover={{ bg: "#0053CF" }}
-        mx="2"
-      >
-        저장
-      </Button>
+      <HStack w="full" justifyContent="center" my={4}>
+        <Button width="100px" onClick={() => handleClose()}>
+          닫기
+        </Button>
+        <Button
+          type="submit"
+          width="100px"
+          height="35px"
+          color="white"
+          bg="#0066FF"
+          _hover={{ bg: "#0053CF" }}
+          mx="2"
+        >
+          저장
+        </Button>
+      </HStack>
     </form>
   );
 }

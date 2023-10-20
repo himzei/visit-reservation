@@ -3,7 +3,6 @@ import NotFound from "./app/NotFound";
 import Page from "./Page";
 import LogIn from "./app/LogIn";
 import SecurityStatus from "./app/security/SecurityStatus";
-import SecurityRegister from "./app/security/SecurityRegister";
 import TeacherApproval from "./app/teacher/TeacherApproval";
 import TeacherHistory from "./app/teacher/TeacherHistory";
 import TeacherRegister from "./app/teacher/TeacherRegister";
@@ -21,6 +20,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminToday from "./app/admin/AdminToday";
 import SecurityToday from "./app/security/SecurityToday";
 import TeacherToday from "./app/teacher/TeacherToday";
+import ProtectedRouteSecurity from "./components/ProtectedRouteSecurity";
+import ProtectedRouteTeacher from "./components/ProtectedRouteTeacher";
 
 const router = createBrowserRouter([
   {
@@ -39,9 +40,9 @@ const router = createBrowserRouter([
       {
         path: "security",
         element: (
-          <ProtectedRoute>
+          <ProtectedRouteSecurity>
             <Outlet />
-          </ProtectedRoute>
+          </ProtectedRouteSecurity>
         ),
         children: [
           {
@@ -57,9 +58,9 @@ const router = createBrowserRouter([
       {
         path: "teacher",
         element: (
-          <ProtectedRoute>
+          <ProtectedRouteTeacher>
             <Outlet />
-          </ProtectedRoute>
+          </ProtectedRouteTeacher>
         ),
         children: [
           {

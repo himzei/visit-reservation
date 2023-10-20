@@ -55,3 +55,7 @@
   width: 100%;
   justify-content: flex-end;
 }
+
+.admin-policy .remark-container {
+  padding: 10px 0;
+}

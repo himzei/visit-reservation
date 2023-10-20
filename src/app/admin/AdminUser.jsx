@@ -6,10 +6,7 @@ import "./AdminUser.css";
 import React, { useState } from "react";
 import Layout from "../../components/Layout";
 import { ADMIN_LIST } from "../../lib/menuList";
-import SearchCategory from "../../components/SearchCategory";
 import ButtonSearch from "../../components/ButtonSearch";
-import SearchEmploy from "../../components/SearchEmploy";
-import SearchKeyword from "../../components/SearchKeyword";
 import EditIcon from "../../assets/svg/edit-icon.svg";
 import DeleteIcon from "../../assets/svg/delete-icon.svg";
 import {
@@ -26,18 +23,26 @@ import AdminUserWrite from "./AdminUserWrite";
 import useVisitSite from "../../hooks/useVisitSite";
 import { apiDeleteManager, apiGetManager } from "../../api";
 import AdminUserDetail from "./AdminUserDetail";
+import Pagination from "react-js-pagination";
 
 export default function AdminUser() {
   const queryClient = useQueryClient();
   const [selectEdit, setSelectEdit] = useState(null);
+
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
+  const [page, setPage] = useState(1);
+
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
   const { data } = useQuery(
-    ["getManager", { visitSiteIndex, page: 1, pageRange: 10 }],
+    ["getManager", { visitSiteIndex, page: page, pageRange: 10 }],
     apiGetManager
   );
-  console.log(data);
+
+  const totalItemsCount = data?.totalCnt;
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -56,7 +61,10 @@ export default function AdminUser() {
     setSelectEdit(editData);
   };
   const handDeleteClick = async (index) => {
-    await apiDeleteManager(index);
+    const check = window.confirm("삭제하시겠습니까?");
+    if (check) {
+      await apiDeleteManager(index);
+    }
     queryClient.invalidateQueries("getManager");
   };
   return (
@@ -146,6 +154,17 @@ export default function AdminUser() {
             ))}
           </tbody>
         </table>
+        <div>
+          <Pagination
+            activePage={page}
+            itemsCountPerPage={10}
+            totalItemsCount={totalItemsCount}
+            pageRangeDisplayed={5}
+            prevPageText={"‹"}
+            nextPageText={"›"}
+            onChange={handlePageChange}
+          />
+        </div>
       </div>
     </Layout>
   );

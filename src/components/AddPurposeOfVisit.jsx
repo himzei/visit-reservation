@@ -7,7 +7,10 @@ import useVisitSite from "../hooks/useVisitSite";
 import { useContext } from "react";
 import { VisitSiteContext } from "../context/VisitSiteContext";
 
-export default function AddPurposeOfVisit() {
+export default function AddPurposeOfVisit({ onClose }) {
+  // 저장, 삭제, 수정 후 동작
+  // 데이터 새로 불로오기
+
   const { lengthPurposeOfVisit } = useContext(VisitSiteContext);
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
@@ -17,15 +20,21 @@ export default function AddPurposeOfVisit() {
     formState: { errors },
   } = useForm();
 
-  const { data, mutate } = useMutation((formData) => {
-    apiPurposeOfVisitRegister(formData, visitSiteIndex, lengthPurposeOfVisit);
-  });
+  const { mutate } = useMutation(
+    (formData) => {
+      apiPurposeOfVisitRegister(formData, visitSiteIndex, lengthPurposeOfVisit);
+    },
+    {
+      onSuccess: () => {
+        window.location.reload();
+        onClose();
+      },
+    }
+  );
+
   const onSubmit = (formData) => {
     mutate(formData);
   };
-  if (data?.result === 0) {
-    window.location.reload();
-  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

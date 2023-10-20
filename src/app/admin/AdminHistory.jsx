@@ -10,18 +10,21 @@ import SearchLocation from "../../components/SearchLocation";
 import SearchDate from "../../components/SearchDate";
 import SearchStatus from "../../components/SearchStatus";
 import SearchKeyword from "../../components/SearchKeyword";
-import { Button, Checkbox } from "@chakra-ui/react";
-import AllPass from "../../components/AllPass";
+import { CSVLink } from "react-csv";
 import { useQuery } from "react-query";
 import { apiGetLog } from "../../api";
 import useVisitSite from "../../hooks/useVisitSite";
 import { dateFormat } from "../../utils/dateFormat";
 import { dateNowChange } from "../../utils/dateNowChange";
+import { nameHidden } from "../../utils/nameHidden";
+import Pagination from "react-js-pagination";
 
 export default function AdminHistory() {
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
+
+  const [page, setPage] = useState(1);
 
   const [searchOption, setSearchOption] = useState({
     placeToVisit: "",
@@ -37,7 +40,7 @@ export default function AdminHistory() {
         visitSiteIndex,
         startDate: searchOption.startDate,
         endDate: searchOption.endDate,
-        page: 1,
+        page: page,
         pageRange: 10,
         placeToVisit: searchOption.placeToVisit,
         searchData: searchOption.searchData,
@@ -45,6 +48,16 @@ export default function AdminHistory() {
     ],
     apiGetLog
   );
+
+  const totalItemsCount = data?.totalCnt;
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
+
+  const handleCSVDownload = () => {
+    const downloadCheck = window.confirm("CSV파일 다운로드 하시겠습니까?");
+    if (!downloadCheck) return false;
+  };
 
   return (
     <Layout menu={ADMIN_LIST}>
@@ -70,16 +83,21 @@ export default function AdminHistory() {
         </div>
         {/* 엑셀 다운로드 */}
         <div className="excel-group">
-          <AllPass title="일괄승인" />
-          <Button mx="2" colorScheme="green" size="sm">
-            Excel 다운로드
-          </Button>
+          {/* <AllPass title="일괄승인" /> */}
+          <CSVLink
+            className="btn-download"
+            onClick={handleCSVDownload}
+            data={data?.logs || []}
+            filename="downloads.csv"
+          >
+            CSV 다운로드
+          </CSVLink>
         </div>
         {/* 테이블 */}
         <table>
           <thead>
             <tr>
-              <td>선택</td>
+              <td>No</td>
               <td>방문지</td>
               <td>방문객명</td>
               <td>차량번호</td>
@@ -99,11 +117,9 @@ export default function AdminHistory() {
             ) : (
               data?.logs?.map((item, i) => (
                 <tr key={i}>
-                  <td>
-                    <Checkbox position="absolute" top="42%" />
-                  </td>
+                  <td>{i + 1 + (page - 1) * 10}</td>
                   <td>{item.placeToVisit}</td>
-                  <td>{item.visitorName}</td>
+                  <td>{nameHidden(item.visitorName)}</td>
                   <td>{item.carNumber}</td>
                   <td>{dateFormat(item.regDate)}</td>
                   <td>{item.purposeOfVisit}</td>
@@ -114,6 +130,17 @@ export default function AdminHistory() {
             )}
           </tbody>
         </table>
+        <div>
+          <Pagination
+            activePage={page}
+            itemsCountPerPage={10}
+            totalItemsCount={totalItemsCount}
+            pageRangeDisplayed={5}
+            prevPageText={"‹"}
+            nextPageText={"›"}
+            onChange={handlePageChange}
+          />
+        </div>
       </div>
     </Layout>
   );

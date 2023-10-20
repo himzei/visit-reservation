@@ -5,7 +5,6 @@
 import "./SecurityStatus.css";
 import React, { useState } from "react";
 import Layout from "../../components/Layout";
-import { Button, Input } from "@chakra-ui/react";
 import { SECURITY_LIST } from "../../lib/menuList";
 import useVisitSite from "../../hooks/useVisitSite";
 import { useQuery } from "react-query";
@@ -17,11 +16,14 @@ import SearchLocation from "../../components/SearchLocation";
 import SearchDate from "../../components/SearchDate";
 import SearchStatus from "../../components/SearchStatus";
 import SearchKeyword from "../../components/SearchKeyword";
+import Pagination from "react-js-pagination";
 
 export default function SecurityStatus() {
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
+
+  const [page, setPage] = useState(1);
 
   const [searchOption, setSearchOption] = useState({
     state: -1,
@@ -36,7 +38,7 @@ export default function SecurityStatus() {
       "getVisitReservation",
       {
         visitSiteIndex,
-        page: 1,
+        page: page,
         pageRange: 10,
         state: searchOption.state,
         startDate: searchOption.startDate,
@@ -47,6 +49,11 @@ export default function SecurityStatus() {
     ],
     apiGetVisitReservation
   );
+
+  const totalItemsCount = data?.totalCnt;
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
 
   return (
     <Layout menu={SECURITY_LIST}>
@@ -128,6 +135,17 @@ export default function SecurityStatus() {
               )}
             </tbody>
           </table>
+          <div>
+            <Pagination
+              activePage={page}
+              itemsCountPerPage={10}
+              totalItemsCount={totalItemsCount}
+              pageRangeDisplayed={5}
+              prevPageText={"‹"}
+              nextPageText={"›"}
+              onChange={handlePageChange}
+            />
+          </div>
         </section>
       </div>
     </Layout>

@@ -1,8 +1,8 @@
 import { useQuery } from "react-query";
-import { tokenLogin } from "../api";
+import { apiTokenLogin } from "../api";
 
 export default function useUser() {
-  const { isLoading, data, refetch } = useQuery("tokenLogin", tokenLogin);
+  const { isLoading, data, refetch } = useQuery("tokenLogin", apiTokenLogin);
   return {
     refetch,
     user: data,

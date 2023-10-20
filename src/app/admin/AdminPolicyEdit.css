@@ -1,0 +1,37 @@
+.policy-input-group {
+  display: flex;
+  padding: 5px 0;
+}
+
+.policy-input-group div:first-child {
+  width: 20%;
+}
+
+.policy-input-group div:nth-child(2) {
+  width: 70%;
+  padding: 2px 0;
+}
+
+.policy-input-group input[type="text"] {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.policy-input-group input[type="checkbox"] {
+  margin-right: 4px;
+}
+
+.policy-textarea-group {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 0;
+}
+.policy-textarea-group div:first-child {
+  margin-bottom: 8px;
+}
+
+.policy-textarea-group textarea {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 5px 10px;
+  border-radius: 5px;
+}

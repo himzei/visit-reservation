@@ -90,3 +90,19 @@
   display: flex;
   flex-direction: column;
 }
+
+@media (max-width: 768px) { 
+  .container {
+    display: block;
+    min-width: 0px;
+  }
+  
+  .menu-left {
+    display: none;
+  }
+
+  .container-main {
+    padding: 0 3%;
+  }
+  
+}

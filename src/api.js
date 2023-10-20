@@ -194,7 +194,10 @@ export async function apiPolicyDelete(agreementIndex) {
 }
 
 // 정책수정
-export async function apiPolicyEdit(agreementIndex, title, isMust, contents) {
+export async function apiPolicyEdit(
+  { title, isMust, contents },
+  agreementIndex
+) {
   return await fetch(`/api/Agreement/${agreementIndex}`, {
     method: "PUT",
     headers: {
@@ -213,9 +216,24 @@ export async function apiPolicyEdit(agreementIndex, title, isMust, contents) {
 }
 
 // 정책 불러오기
+// queryKey : "Agreement"
 export async function apiAgreement({ queryKey }) {
   const visitSiteIndex = queryKey[1];
   return await fetch(`/api/Agreement?visitSiteIndex=${visitSiteIndex}`, {
+    method: "GET",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
+// 정책 불러오기 1개
+export async function apiAgreementOne({ queryKey }) {
+  const AgreementIndex = queryKey[1];
+  return await fetch(`/api/Agreement/${AgreementIndex}`, {
     method: "GET",
     headers: {
       accept: "*",
@@ -560,41 +578,6 @@ export async function apiPutVisitReservationOne(
   }).then((res) => res.json());
 }
 
-// 관리자 등록
-// POST Manager
-export async function apiManagerRegister(
-  formData,
-  visitSiteIndex,
-  visitReservationIndex,
-  managerPosition,
-  accountIndex
-) {
-  return await fetch(`/api/Manager`, {
-    method: "POST",
-    headers: {
-      accept: "*",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${TOKEN}`,
-    },
-    body: JSON.stringify({
-      visitSiteIndex,
-      visitReservationIndex,
-      managers: [
-        {
-          managerIndex: -1,
-          accountIndex: parseInt(accountIndex),
-          name: formData.name,
-          position: managerPosition,
-          auth: 0,
-          state: parseInt(formData.state),
-          memo: formData.memo,
-        },
-      ],
-    }),
-    credentials: "include",
-  }).then((res) => res.json());
-}
-
 // 방문이력조회
 // Log
 // queryKey: getLog
@@ -648,23 +631,63 @@ export async function apiManagerGet({ queryKey }) {
   ).then((res) => res.json());
 }
 
+// 관리자 등록
+// POST Manager
+export async function apiManagerRegister(
+  formData,
+  visitSiteIndex,
+  visitReservationIndex,
+  managerPosition,
+  accountIndex
+) {
+  return await fetch(`/api/Manager`, {
+    method: "POST",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    body: JSON.stringify({
+      visitSiteIndex,
+      visitReservationIndex,
+      managers: [
+        {
+          managerIndex: -1,
+          accountIndex: parseInt(accountIndex),
+          name: formData.name,
+          position: managerPosition,
+          auth: formData.auth,
+          state: parseInt(formData.state),
+          memo: formData.memo,
+        },
+      ],
+    }),
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
 // 매니져 수정하기
-export async function apiManagerPut(formData, visitReservationIndex) {
-  // return await fetch(`/api/Manager/${managerIndex}`, {
-  //   method: "PUT",
-  //   headers: {
-  //     accept: "*",
-  //     "Content-Type": "application/json",
-  //     Authorization: `Bearer ${TOKEN}`,
-  //   },
-  //   body: JSON.stringify({
-  //     managerIndex,
-  //     accountIndex,
-  //     name,
-  //     position,
-  //   }),
-  //   credentials: "include",
-  // }).then((res) => res.json());
+export async function apiManagerPut(
+  { formData, managerIndex },
+  visitReservationIndex,
+  accountIndex
+) {
+  console.log(formData, managerIndex, visitReservationIndex);
+  return await fetch(`/api/Manager/${managerIndex}`, {
+    method: "PUT",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    body: JSON.stringify({
+      managerIndex,
+      accountIndex,
+      name: formData.name,
+      position: formData.managerPosition,
+    }),
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 // 나이스정보통신 인증
@@ -689,4 +712,41 @@ export async function apiNiceGetToken() {
       body: formData,
     }
   ).then((res) => res.json());
+}
+
+// Message
+// Post 인증번호요청
+export async function apiMessagePost({ tel, randomAuthNumber }) {
+  return await fetch(`/api/Message/send-auth-code`, {
+    method: "POST",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      tel,
+      authCode: randomAuthNumber.toString(),
+    }),
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
+// Account
+export async function apiAccountPasswordPut(
+  { nowPassword, newPassword },
+  accountIndex
+) {
+  return await fetch(`/api/Account/${accountIndex}/password-change`, {
+    method: "PUT",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    body: JSON.stringify({
+      nowPassword,
+      newPassword,
+    }),
+    credentials: "include",
+  }).then((res) => res.json());
 }

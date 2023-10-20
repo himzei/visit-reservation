@@ -1,10 +1,9 @@
 //
 // 사용자 관리 페이지
 // 글쓰기
-
+import "./AdminUserWrite.css";
 import React from "react";
 import RegIcon1 from "../../assets/svg/person-input.svg";
-import RegIcon2 from "../../assets/svg/location-icon.svg";
 import { Button } from "@chakra-ui/react";
 import { useMutation } from "react-query";
 import { useForm } from "react-hook-form";
@@ -16,6 +15,8 @@ export default function AdminUserWrite({ onClose }) {
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
+  // useMutation
+  // 등록하기
   const { mutate, data } = useMutation(
     (formData) => adminManagerRegister(formData, visitSiteIndex),
     {
@@ -31,6 +32,7 @@ export default function AdminUserWrite({ onClose }) {
     window.location.reload();
   }
 
+  // input box 관리
   const {
     register,
     handleSubmit,
@@ -112,9 +114,6 @@ export default function AdminUserWrite({ onClose }) {
               type="text"
               {...register("email", {
                 required: "이메일을 입력해 주세요",
-                pattern: {
-                  message: "이메일 형식으로 입력해 주세요",
-                },
               })}
             />
             <span className="form-errors">{errors?.email?.message}</span>
@@ -135,28 +134,13 @@ export default function AdminUserWrite({ onClose }) {
                 담당자
               </option>
               <option className="select-default" value={2}>
-                입구관리자
+                지킴이실
               </option>
             </select>
           </div>
         </section>
         <section>
-          <div className="reg-title">
-            <img src={RegIcon2} alt="icon2" />
-            <h2>비밀번호 초기화</h2>
-          </div>
-          <div>
-            <Button
-              height="35px"
-              color="white"
-              bg="#0066FF"
-              _hover={{ bg: "#0053CF" }}
-              mx="2"
-            >
-              초기화 하기
-            </Button>
-          </div>
-          <div>
+          <div className="button-container">
             <Button onClick={() => handleCloseClick()} width="100px">
               닫기
             </Button>

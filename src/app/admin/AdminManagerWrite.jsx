@@ -3,16 +3,18 @@ import React from "react";
 import RegIcon1 from "../../assets/svg/person-input.svg";
 import RegIcon2 from "../../assets/svg/location-icon.svg";
 import { useForm } from "react-hook-form";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import {
   apiGetPurposeOfVisit,
   apiGetVisitSite,
   apiVisitorRegister,
 } from "../../api";
 import useVisitSite from "../../hooks/useVisitSite";
-import { Box, Button, HStack } from "@chakra-ui/react";
+import { Button, Grid, HStack, Stack, Text, VStack } from "@chakra-ui/react";
 
 export default function AdminManagerWrite({ onClose }) {
+  const queryClient = useQueryClient();
+
   const handleClose = () => {
     onClose();
   };
@@ -33,13 +35,18 @@ export default function AdminManagerWrite({ onClose }) {
     apiGetVisitSite
   );
 
-  const { register, handleSubmit } = useForm({ mode: "onChange" });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: "onChange" });
 
   const { mutate } = useMutation(
     (formData) => apiVisitorRegister(formData, visitSiteIndex),
     {
       onSuccess: (data) => {
         if (data.result === 0) {
+          queryClient.invalidateQueries("getVisitor");
           onClose();
         }
       },
@@ -63,11 +70,31 @@ export default function AdminManagerWrite({ onClose }) {
 
           <div className="input-group">
             <div>방문객명</div>
-            <input type="text" {...register("name")} />
+            <input
+              type="text"
+              {...register("name", {
+                required: "이름을 입력해 주세요",
+                minLength: {
+                  value: 2,
+                  message: "최소 2글자 이상 입력해주세요",
+                },
+              })}
+            />
+            <span className="form-errors">{errors?.name?.message}</span>
           </div>
           <div className="input-group">
             <div>휴대전화번호</div>
-            <input type="text" {...register("tel")} />
+            <input
+              type="text"
+              {...register("tel", {
+                required: "모바일 번호를 입력해 주세요",
+                pattern: {
+                  value: /^[0-9]{10,11}$/,
+                  message: "'-' 없이 숫자만 입력해 주세요",
+                },
+              })}
+            />
+            <span className="form-errors">{errors?.tel?.message}</span>
           </div>
           <div className="input-group">
             <div>차량번호</div>
@@ -101,31 +128,45 @@ export default function AdminManagerWrite({ onClose }) {
           </div>
           <div className="input-group">
             <div>방문일시</div>
-            <HStack w="full" justifyContent="space-between" spacing="16">
-              <Box w="1/2">
-                <input type="date" {...register("enterStartDate")} />
-              </Box>
-              <Box w="1/2">
-                <input type="date" {...register("enterEndDate")} />
-              </Box>
-            </HStack>
+            <Grid w="full" templateColumns={"1fr 1fr 1fr"}>
+              <Stack w="full">
+                <input
+                  type="date"
+                  {...register("enterStartDate", {
+                    required: "시작날짜를 입력해 주세요",
+                  })}
+                />
+                <Text color="red.500">{errors?.enterStartDate?.message}</Text>
+              </Stack>
+              <VStack w="full">
+                <input
+                  type="date"
+                  {...register("enterEndDate", {
+                    required: "종료날짜를 입력해 주세요",
+                  })}
+                />
+                <Text>{errors?.enterEndDate?.message}</Text>
+              </VStack>
+            </Grid>
           </div>
         </section>
+        <HStack py={4} mt={4}>
+          <Button width="100px" onClick={() => handleClose()}>
+            닫기
+          </Button>
+          <Button
+            type="submit"
+            width="100px"
+            height="35px"
+            color="white"
+            bg="#0066FF"
+            _hover={{ bg: "#0053CF" }}
+            mx="2"
+          >
+            저장
+          </Button>
+        </HStack>
       </div>
-      <Button width="100px" onClick={() => handleClose()}>
-        닫기
-      </Button>
-      <Button
-        type="submit"
-        width="100px"
-        height="35px"
-        color="white"
-        bg="#0066FF"
-        _hover={{ bg: "#0053CF" }}
-        mx="2"
-      >
-        저장
-      </Button>
     </form>
   );
 }

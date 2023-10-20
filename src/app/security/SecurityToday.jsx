@@ -1,17 +1,20 @@
+import { useState } from "react";
 import { useQuery } from "react-query";
 import Layout from "../../components/Layout";
 import useVisitSite from "../../hooks/useVisitSite";
 import { SECURITY_LIST } from "../../lib/menuList";
 import { apiGetVisitReservation } from "../../api";
-import { Button, Input } from "@chakra-ui/react";
 import { nameHidden } from "../../utils/nameHidden";
 import { dateFormat } from "../../utils/dateFormat";
 import { timeEnd, timeStart } from "../../utils/timeStatEnd";
+import Pagination from "react-js-pagination";
 
 export default function SecurityToday() {
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
+
+  const [page, setPage] = useState(1);
 
   const { data } = useQuery(
     [
@@ -20,7 +23,7 @@ export default function SecurityToday() {
         visitSiteIndex,
         startDate: timeStart(),
         endDate: timeEnd(),
-        page: 1,
+        page: page,
         pageRange: 10,
         state: 3,
         searchValue: "",
@@ -29,6 +32,11 @@ export default function SecurityToday() {
     ],
     apiGetVisitReservation
   );
+  const totalItemsCount = data?.totalCnt;
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
+
   return (
     <Layout menu={SECURITY_LIST}>
       <div className="security-container">
@@ -89,6 +97,17 @@ export default function SecurityToday() {
               )}
             </tbody>
           </table>
+          <div>
+            <Pagination
+              activePage={page}
+              itemsCountPerPage={10}
+              totalItemsCount={totalItemsCount}
+              pageRangeDisplayed={5}
+              prevPageText={"‹"}
+              nextPageText={"›"}
+              onChange={handlePageChange}
+            />
+          </div>
         </section>
       </div>
     </Layout>

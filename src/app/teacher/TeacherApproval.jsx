@@ -10,32 +10,43 @@ import useVisitSite from "../../hooks/useVisitSite";
 import { useQuery } from "react-query";
 import { apiGetVisitReservation } from "../../api";
 import { dateFormat } from "../../utils/dateFormat";
-import { timeEnd, timeStart } from "../../utils/timeStatEnd";
-import SearchLocation from "../../components/SearchLocation";
-import SearchDate from "../../components/SearchDate";
-import SearchStatus from "../../components/SearchStatus";
-import SearchKeyword from "../../components/SearchKeyword";
+import { monthThreeEnd, monthThreeStart } from "../../utils/timeStatEnd";
 import { nameHidden } from "../../utils/nameHidden";
+import {
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from "@chakra-ui/react";
+import TeacherApprovalDetail from "./TeacherApprovalDetail";
+import Pagination from "react-js-pagination";
 
 export default function TeacherApproval() {
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
-  const [searchOption, setSearchOption] = useState({
-    state: -1,
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [page, setPage] = useState(1);
+
+  const searchOption = {
+    state: 0,
     placeToVisit: "",
-    startDate: timeStart(),
-    endDate: timeEnd(),
+    startDate: monthThreeStart(),
+    endDate: monthThreeEnd(),
     searchValue: "",
-  });
+  };
 
   const { data } = useQuery(
     [
       "getVisitReservation",
       {
         visitSiteIndex,
-        page: 1,
+        page: page,
         pageRange: 10,
         state: searchOption.state,
         startDate: searchOption.startDate,
@@ -47,90 +58,183 @@ export default function TeacherApproval() {
     apiGetVisitReservation
   );
 
+  const totalItemsCount = data?.totalCnt;
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
+
+  const [selectData, setSelectData] = useState(null);
+  const handleEditClick = (index) => {
+    onOpen();
+    setSelectData(index);
+  };
+  console.log(selectData);
+
   return (
     <Layout menu={TEACHER_LIST}>
+      <Modal onClose={onClose} size="5xl" isOpen={isOpen}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>방문예약확인</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <TeacherApprovalDetail selectData={selectData} onClose={onClose} />
+          </ModalBody>
+          <ModalFooter></ModalFooter>
+        </ModalContent>
+      </Modal>
       <div className="teacher-approval">
         {/* 일괄승인 */}
         {/* <AllPass /> */}
 
         {/* 검색 */}
-        <div className="teacher-history__search">
-          <SearchLocation
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-          <SearchDate
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-          <SearchStatus
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-          <SearchKeyword
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-        </div>
 
         {/* 테이블 */}
         <table>
           <thead>
             <tr>
-              <td>No</td>
-              <td>방문객명</td>
-              <td>연락처</td>
-              <td>차량번호</td>
-              <td>방문예정일시</td>
-              <td>출입일시</td>
-              <td>목적</td>
-              <td>반려사유</td>
-              <td>상태</td>
+              <p>No</p>
+              <p>방문객명</p>
+              <p>연락처</p>
+              <p>차량번호</p>
+              <p>방문예정일시</p>
+              <p>출입일시</p>
+              <p>목적</p>
+              <p>반려사유</p>
+              <p>상태</p>
             </tr>
           </thead>
           <tbody>
             {!data ? (
               <tr>
-                <td colSpan={8}>
+                <p colSpan={8}>
                   <div>해당하는 데이터가 없습니다.</div>
-                </td>
+                </p>
               </tr>
             ) : (
               data?.resevations?.map((item, i) => (
-                <tr key={i}>
-                  <td>{i + 1}</td>
-                  <td>{nameHidden(item.visitorName)}</td>
-                  <td>{item.visitorTel}</td>
-                  <td>{item.carNumber}</td>
-                  <td>{dateFormat(item.reservationDate)}</td>
-                  <td>{dateFormat(item.visitDate)}</td>
-                  <td>{item.purposeOfVisit}</td>
-                  <td>{item.stateReason}</td>
-                  <td>
-                    <div className="approval-status">
-                      {(() => {
-                        switch (item.state) {
-                          case 0:
-                            return <div>대기중</div>;
-                          case 1:
-                            return <div>승인</div>;
-                          case 2:
-                            return <div>미승인</div>;
-                          case 3:
-                            return <div>방문</div>;
-                          case 4:
-                            return <div>예약취소</div>;
-                          default:
-                            return;
-                        }
-                      })()}
+                <tr
+                  key={i}
+                  className="table-hover"
+                  onClick={() => handleEditClick(item.visitReservationIndex)}
+                >
+                  <div className="td-div-all">
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>No</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{i + 1 + (page - 1) * 10}</td>
+                      </div>
                     </div>
-                  </td>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>방문객명</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{nameHidden(item.visitorName)}</td>
+                      </div>
+                    </div>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>연락처</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{item.visitorTel}</td>
+                      </div>
+                    </div>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>차량번호</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{item.carNumber}</td>
+                      </div>
+                    </div>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>방문예정일시</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{dateFormat(item.reservationDate)}</td>
+                      </div>
+                    </div>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>출입일시</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{dateFormat(item.visitDate)}</td>
+                      </div>
+                    </div>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>목적</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{item.purposeOfVisit}</td>
+                      </div>
+                    </div>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>반려사유</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{item.stateReason}</td>
+                      </div>
+                    </div>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>상태</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>
+                          <div className="approval-status">
+                            {(() => {
+                              switch (item.state) {
+                                case 0:
+                                  return <div>대기중</div>;
+                                case 1:
+                                  return <div>승인</div>;
+                                case 2:
+                                  return <div>미승인</div>;
+                                case 3:
+                                  return <div>방문</div>;
+                                case 4:
+                                  return <div>예약취소</div>;
+                                default:
+                                  return;
+                              }
+                            })()}
+                          </div>
+                        </td>
+                      </div>
+                    </div>
+                  </div>
                 </tr>
               ))
             )}
           </tbody>
         </table>
+        <div>
+          <Pagination
+            activePage={page}
+            itemsCountPerPage={10}
+            totalItemsCount={totalItemsCount}
+            pageRangeDisplayed={5}
+            prevPageText={"‹"}
+            nextPageText={"›"}
+            onChange={handlePageChange}
+          />
+        </div>
       </div>
     </Layout>
   );

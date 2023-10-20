@@ -5,7 +5,6 @@ import InputPerson from "../assets/svg/person-input.svg";
 import InputPassword from "../assets/svg/input-password.svg";
 import { useMutation, useQuery } from "react-query";
 import { useForm } from "react-hook-form";
-
 import { ipData, login } from "../api";
 import { useNavigate } from "react-router-dom";
 
@@ -23,15 +22,10 @@ export default function LogIn() {
   const { data: getIpData } = useQuery("ipData", ipData);
 
   const onSubmit = ({ UserId, Password }) => {
-    // const encoder = new TextEncoder();
-    // const utf8Array2 = encoder.encode(Password);
-    // const binaryString2 = String.fromCharCode.apply(null, utf8Array2);
-    // const password = btoa(binaryString2);
-    // console.log(password);
-
     const ip = getIpData?.IPv4;
     mutate({ UserId, Password, ip });
   };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="login-container">
       <h1>로그인</h1>

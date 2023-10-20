@@ -35,6 +35,11 @@ export default function OrderItemOne({ lists, title }) {
   const itemRefs = useRef([]);
   const addRefs = useRef();
 
+  // 수정
+  // 순서 index와
+  // 수정
+  const { mutate } = useMutation(apiPurposeOfVisitEdit);
+
   const handleEditClick = (index, purposeOfVisitIndex) => {
     setEditIndex(index);
     const editPurposeOfVisit = purposeOfVisit?.filter(
@@ -42,6 +47,7 @@ export default function OrderItemOne({ lists, title }) {
     );
     setSelectEdit(editPurposeOfVisit);
     setEditTitle(editPurposeOfVisit[0].title);
+    // 방목목적 수정 하는 api 호출
   };
 
   const handleClick = (index, placeToVisitIndex) => {
@@ -71,14 +77,6 @@ export default function OrderItemOne({ lists, title }) {
     }
   };
 
-  const { mutate } = useMutation(apiPurposeOfVisitEdit, {
-    onSuccess: (data) => {
-      // console.log(data.result);
-      // setEditIndex(null);
-      window.location.reload();
-    },
-  });
-
   const handleChange = (e) => {
     setEditTitle(e.target.value);
   };
@@ -95,12 +93,20 @@ export default function OrderItemOne({ lists, title }) {
         itemOrder: selectEdit[0].itemOrder,
       },
     ]);
-    // console.log(selectEdit[0]);
-    // console.log(editTitle);
-  };
-  const handleDeleteClick = (index) => {
-    apiPurposeOfVisitDelete(index);
+    // queryClient.invalidateQueries("getPurposeOfVisit");
     window.location.reload();
+    setTimeout(() => {
+      setEditIndex(null);
+    }, 1000);
+  };
+
+  // 삭제
+  const handleDeleteClick = (index) => {
+    const check = window.confirm("삭제하시겠습니까?");
+    if (check) {
+      apiPurposeOfVisitDelete(index);
+      window.location.reload();
+    }
   };
 
   return (
@@ -111,23 +117,8 @@ export default function OrderItemOne({ lists, title }) {
           <ModalHeader>방문목적 추가</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <AddPurposeOfVisit />
+            <AddPurposeOfVisit onClose={onClose} />
           </ModalBody>
-          {/* <ModalFooter>
-            <Button width="100px" onClick={onClose}>
-              닫기
-            </Button>
-            <Button
-              width="100px"
-              height="35px"
-              color="white"
-              bg="#0066FF"
-              _hover={{ bg: "#0053CF" }}
-              mx="2"
-            >
-              저장
-            </Button>
-          </ModalFooter> */}
         </ModalContent>
       </Modal>
       <div className="location-first">
@@ -141,7 +132,7 @@ export default function OrderItemOne({ lists, title }) {
           <div>
             <ul>
               {items?.map((item, index) => (
-                <>
+                <div key={index}>
                   {editIndex === index ? (
                     <form onSubmit={handleSubmit}>
                       <div
@@ -154,7 +145,6 @@ export default function OrderItemOne({ lists, title }) {
                           color: selectedItem === index ? "white" : "",
                         }}
                       >
-                        {/* {console.log(itemRefs.current[index])} */}
                         {/* 1 */}
 
                         <div className="icon-group">
@@ -218,7 +208,6 @@ export default function OrderItemOne({ lists, title }) {
                     <div
                       className="item-group"
                       ref={(el) => (itemRefs.current[index] = el)}
-                      key={index}
                       style={{
                         backgroundColor:
                           selectedItem === index ? "#0066FF" : "",
@@ -272,7 +261,7 @@ export default function OrderItemOne({ lists, title }) {
                       </div>
                     </div>
                   )}
-                </>
+                </div>
               ))}
             </ul>
           </div>

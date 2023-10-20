@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import Layout from "../../components/Layout";
 import { ADMIN_LIST } from "../../lib/menuList";
 import { Button } from "@chakra-ui/react";
-import { useMutation, useQuery } from "react-query";
-import { apiNiceGetToken, ipData } from "../../api";
+import { useMutation } from "react-query";
+import { apiNiceGetToken } from "../../api";
 
 export default function AdminStatics() {
   const { mutate, data } = useMutation(apiNiceGetToken);

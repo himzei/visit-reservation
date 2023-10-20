@@ -6,17 +6,11 @@ import "./AdminManager.css";
 import React, { useState } from "react";
 import Layout from "../../components/Layout";
 import { ADMIN_LIST } from "../../lib/menuList";
-import SearchLocation from "../../components/SearchLocation";
-import SearchDate from "../../components/SearchDate";
-import SearchStatus from "../../components/SearchStatus";
-import SearchKeyword from "../../components/SearchKeyword";
 import EditIcon from "../../assets/svg/edit-icon.svg";
 import DeleteIcon from "../../assets/svg/delete-icon.svg";
-import AllPass from "../../components/AllPass";
-import ButtonSearch from "../../components/ButtonSearch";
+
 import {
   Button,
-  Checkbox,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -31,8 +25,8 @@ import { useQuery, useQueryClient } from "react-query";
 import AdminManagerWrite from "./AdminManagerWrite";
 import { apiDeleteVisitor, apiGetVisitor } from "../../api";
 import useVisitSite from "../../hooks/useVisitSite";
-import { dateNowChange } from "../../utils/dateNowChange";
 import { nameHidden } from "../../utils/nameHidden";
+import Pagination from "react-js-pagination";
 
 export default function AdminManager() {
   // refetch
@@ -42,6 +36,8 @@ export default function AdminManager() {
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
   const [selectEdit, setSelectEdit] = useState(null);
+
+  const [page, setPage] = useState(1);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -59,7 +55,10 @@ export default function AdminManager() {
   };
 
   const handleDeleteClick = async (index) => {
-    await apiDeleteVisitor(index);
+    const check = window.confirm("삭제하시겠습니까?");
+    if (check) {
+      await apiDeleteVisitor(index);
+    }
     queryClient.invalidateQueries("getVisitor");
   };
 
@@ -68,20 +67,23 @@ export default function AdminManager() {
   };
 
   // api search 없음
-  //
-
   const { data } = useQuery(
     [
       "getVisitor",
       {
         visitSiteIndex,
-        page: 1,
+        page: page,
         pageRange: 10,
         type: 0,
       },
     ],
     apiGetVisitor
   );
+
+  const totalItemsCount = data?.totalCnt;
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
 
   return (
     <>
@@ -113,8 +115,10 @@ export default function AdminManager() {
           <div className="search-group"></div>
           {/* 일괄발송 */}
           <div className="rigth-btn">
-            <AllPass title="일괄발송" />
-            <Button onClick={() => handleClickWrite()}>추가 </Button>
+            {/* <AllPass title="일괄발송" /> */}
+            <Button my={4} onClick={() => handleClickWrite()}>
+              추가{" "}
+            </Button>
           </div>
           {/* 테이블 */}
           <table>
@@ -130,28 +134,49 @@ export default function AdminManager() {
               </tr>
             </thead>
             <tbody>
-              {data?.visitors?.map((item, i) => (
-                <tr key={i}>
-                  <td>{i + 1}</td>
-                  <td>{nameHidden(item.name)}</td>
-                  <td>{item.tel}</td>
-                  <td>{item.carNumber}</td>
-                  <td>{item.placeToVisit}</td>
-                  <td>{item.purposeOfVisit}</td>
-                  <td>
-                    <div className="edit-delete">
-                      <div onClick={() => handleEditClick(item.visitorIndex)}>
-                        <img src={EditIcon} alt="edit-icon" />
-                      </div>
-                      <div onClick={() => handleDeleteClick(item.visitorIndex)}>
-                        <img src={DeleteIcon} alt="delete-icon" />
-                      </div>
-                    </div>
+              {!data ? (
+                <tr>
+                  <td colSpan={8}>
+                    <div>해당하는 데이터가 없습니다.</div>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                data?.visitors?.map((item, i) => (
+                  <tr key={i}>
+                    <td>{i + 1 + (page - 1) * 10}</td>
+                    <td>{nameHidden(item.name)}</td>
+                    <td>{item.tel}</td>
+                    <td>{item.carNumber}</td>
+                    <td>{item.placeToVisit}</td>
+                    <td>{item.purposeOfVisit}</td>
+                    <td>
+                      <div className="edit-delete">
+                        <div onClick={() => handleEditClick(item.visitorIndex)}>
+                          <img src={EditIcon} alt="edit-icon" />
+                        </div>
+                        <div
+                          onClick={() => handleDeleteClick(item.visitorIndex)}
+                        >
+                          <img src={DeleteIcon} alt="delete-icon" />
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
+          <div>
+            <Pagination
+              activePage={page}
+              itemsCountPerPage={10}
+              totalItemsCount={totalItemsCount}
+              pageRangeDisplayed={5}
+              prevPageText={"‹"}
+              nextPageText={"›"}
+              onChange={handlePageChange}
+            />
+          </div>
         </div>
       </Layout>
     </>

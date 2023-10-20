@@ -31,10 +31,17 @@
   color: white;
 }
 .teacher-approval thead tr {
+  display: grid;
+  grid-template-columns: 1fr 2fr 3fr 2fr 3fr 3fr 1fr 4fr 1fr;
 }
-.teacher-approval thead td {
+.teacher-approval thead p {
   padding: 10px 0;
   text-align: center;
+}
+
+.td-div-all {
+  display: grid;
+  grid-template-columns: 1fr 2fr 3fr 2fr 3fr 3fr 1fr 4fr 1fr;
 }
 
 .teacher-approval tbody tr {
@@ -46,9 +53,60 @@
   vertical-align: center;
 }
 
+.td-div-p {
+  display: none;
+}
+
 /* 테이블 끝 */
 
 .approval-status {
   display: flex;
   flex-direction: column;
+}
+
+.td-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) { 
+  thead {
+    display: none;
+  }
+
+  .teacher-approval tbody {
+    margin-bottom: 10px;
+  }
+
+  .teacher-approval tbody td {
+    padding: 5px 0;
+  }
+
+  .td-div-all {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 10px 0;
+  }
+  
+  .td-div {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .td-div-p {
+    display: flex;
+    width: 35%;
+  }
+    
+  .td-div-td {
+    width: 65%;
+  }
+  .teacher-approval tbody td {
+    text-align: start;
+  }
+
 }

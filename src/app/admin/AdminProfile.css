@@ -41,5 +41,35 @@ select:focus {
   width: 100%;
   padding: 20px 0;
   display: flex;
+
   justify-content: center;
+}
+
+.radio-container-span {
+  width: 200px;
+  display: flex;
+  justify-content: center;
+}
+.radio-container-span input {
+  width: 20px;
+  margin-right: 5px;
+}
+
+.auth-group {
+  display: flex;
+}
+.admin-profile .input-auth {
+  width: 200px;
+  transform: translateX(-26px);
+}
+.auth-group > button {
+  background-color: #00398f;
+  color: white;
+  padding: 4px 18px;
+  border-radius: 6px;
+}
+
+.admin-profile .error-style {
+  color: tomato;
+  transform: translateX(10px);
 }

@@ -7,9 +7,8 @@ import BottomIconWhite from "../assets/svg/arrow-bottom-white.svg";
 import { VisitSiteContext } from "../context/VisitSiteContext";
 
 export default function OrderItem({ lists, title }) {
-  const { handleAddModal, placeVisitIndex, setPlaceVisitIndex } =
-    useContext(VisitSiteContext);
-  const [refItems, setRefItems] = useState("");
+  const { handleAddModal, setPlaceVisitIndex } = useContext(VisitSiteContext);
+
   const [items, setItems] = useState(lists);
   const [selectedItem, setSelectedItem] = useState(null);
   const itemRefs = useRef([]);
@@ -47,58 +46,97 @@ export default function OrderItem({ lists, title }) {
   };
 
   return (
-    <div className="location-first">
-      <div className="" ref={(el) => (addRefs.current = el)}>
-        <div>{title}</div>
-        <div className="add-btn" onClick={handleCheckParent}>
-          + 추가
+    <>
+      <div className="location-first">
+        <div className="" ref={(el) => (addRefs.current = el)}>
+          <div>{title}</div>
+          <div className="add-btn" onClick={handleCheckParent}>
+            + 추가
+          </div>
         </div>
-      </div>
-      <div>
         <div>
-          <ul>
-            {items?.map((item, index) => (
-              <div
-                className="item-group"
-                ref={(el) => (itemRefs.current[index] = el)}
-                key={index}
-                style={{
-                  backgroundColor: selectedItem === index ? "#0066FF" : "",
-                  color: selectedItem === index ? "white" : "",
-                }}
-              >
-                {/* {console.log(itemRefs.current[index])} */}
-                {/* 1 */}
-
-                <div className="icon-group">
-                  <img
-                    onClick={() => moveDown(index)}
-                    src={selectedItem === index ? BottomIconWhite : BottomIcon}
-                    alt="bottom icon"
-                  />
-                  <img
-                    onClick={() => moveUp(index)}
-                    src={selectedItem === index ? UpIconWhite : UpIcon}
-                    alt="up icon"
-                  />
-                </div>
-
-                {/* 2 */}
+          <div>
+            <ul>
+              {items?.map((item, index) => (
                 <div
-                  className="edit-delete"
-                  onClick={() => handleClick(index, item.placeToVisitIndex)}
+                  className="item-group"
+                  ref={(el) => (itemRefs.current[index] = el)}
+                  key={index}
+                  style={{
+                    backgroundColor: selectedItem === index ? "#0066FF" : "",
+                    color: selectedItem === index ? "white" : "",
+                  }}
                 >
-                  <div>{item.title}</div>
-                  <div className="edit-delete__btn">
-                    <div>수정</div>
-                    <div>삭제</div>
+                  {/* {console.log(itemRefs.current[index])} */}
+                  {/* 1 */}
+
+                  <div className="icon-group">
+                    <img
+                      onClick={() => moveDown(index)}
+                      src={
+                        selectedItem === index ? BottomIconWhite : BottomIcon
+                      }
+                      alt="bottom icon"
+                    />
+                    <img
+                      onClick={() => moveUp(index)}
+                      src={selectedItem === index ? UpIconWhite : UpIcon}
+                      alt="up icon"
+                    />
+                  </div>
+
+                  {/* 2 */}
+                  <div
+                    className="edit-delete"
+                    onClick={() => handleClick(index, item.placeToVisitIndex)}
+                  >
+                    <div>{item.title}</div>
+                    <div className="edit-delete__btn">
+                      <div>수정</div>
+                      <div>삭제</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </ul>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
+      <div className="location-first">
+        <div className="">
+          <div>{title}</div>
+          <div className="add-btn">+ 추가</div>
+        </div>
+        <div>
+          <div>
+            <ul>
+              {items?.map((item, index) => (
+                <div className="item-group" key={index}>
+                  {/* {console.log(itemRefs.current[index])} */}
+                  {/* 1 */}
+
+                  <div className="icon-group">
+                    <img src={BottomIcon} alt="bottom icon" />
+                    <img src={UpIcon} alt="up icon" />
+                  </div>
+
+                  {/* 2 */}
+                  <div
+                    className="edit-delete"
+                    onClick={() => handleClick(index, item.placeToVisitIndex)}
+                  >
+                    <div>{item.title}</div>
+                    <div className="edit-delete__btn">
+                      <div>수정</div>
+                      <div>삭제</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

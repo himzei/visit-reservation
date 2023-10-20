@@ -3,20 +3,9 @@ import React, { useRef, useState } from "react";
 import Layout from "../../components/Layout";
 import { ADMIN_LIST } from "../../lib/menuList";
 import PhotoIcon from "../../assets/svg/photo-icon.svg";
-
 import OrderItem from "../../components/OrderItem";
 import DefaultLogo from "../../assets/png/__high-logo.png";
-import AddVisitSite from "../../components/AddVisitSite";
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { useMutation, useQuery } from "react-query";
 import {
   apiGetPurposeOfVisit,
@@ -27,8 +16,6 @@ import useVisitSite from "../../hooks/useVisitSite";
 import { VisitSiteContext } from "../../context/VisitSiteContext";
 import OrderItemOne from "../../components/OrderItemOne";
 import { useForm } from "react-hook-form";
-
-const LOCATION_CLASS = [{ title: "1" }, { title: "2" }, { title: "3" }];
 
 export default function AdminMainPage() {
   const { data: visitSite } = useVisitSite();
@@ -44,11 +31,11 @@ export default function AdminMainPage() {
   // 방문목적 설정
   const { isLoading: isLoadingPupposeOfVisit, data: dataPurposeOfVisit } =
     useQuery(["getPurposeOfVisit", visitSiteIndex], apiGetPurposeOfVisit);
+
   const purposeOfVisit = dataPurposeOfVisit?.purposeOfVisits;
 
   const lengthPurposeOfVisit = purposeOfVisit?.length;
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [imgFile, setImgFile] = useState("");
   const [imgPath, setImgPath] = useState("");
   const handleButtonClick = (e) => {
@@ -69,18 +56,24 @@ export default function AdminMainPage() {
     setImageFile(file);
   };
 
-  const handleAddModal = () => {
-    onOpen();
-  };
   const [placeVisitIndex, setPlaceVisitIndex] = useState(-1);
 
   const { handleSubmit } = useForm();
+  const handleReset = () => {
+    setImgPath("");
+    setImgFile("");
+  };
 
-  const { mutate, data } = useMutation(() =>
-    apiVisitSiteImageRegister(imageFile, visitSiteIndex)
+  const { mutate } = useMutation(
+    () => apiVisitSiteImageRegister(imageFile, visitSiteIndex),
+    {
+      onSuccess: (data) => {
+        if (data.result === 0) {
+          alert("이미지가 등록되었습니다.");
+        }
+      },
+    }
   );
-
-  console.log(data);
 
   const onSubmit = () => {
     mutate();
@@ -89,24 +82,12 @@ export default function AdminMainPage() {
   return (
     <VisitSiteContext.Provider
       value={{
-        handleAddModal,
         placeVisitIndex,
         setPlaceVisitIndex,
-        // PurposeOfVisit
         lengthPurposeOfVisit,
         purposeOfVisit,
       }}
     >
-      <Modal onClose={onClose} size="xl" isOpen={isOpen}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>방문지 추가</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <AddVisitSite />
-          </ModalBody>
-        </ModalContent>
-      </Modal>
       <Layout menu={ADMIN_LIST}>
         <div className="admin-main">
           {/* 이미지 업로드 */}
@@ -133,8 +114,8 @@ export default function AdminMainPage() {
                   color="white"
                   bg="#D44242"
                   _hover={{ bg: "#B23232" }}
-                  onClick={handleButtonClick}
                   mr="1"
+                  onClick={handleReset}
                 >
                   삭제
                 </Button>
@@ -170,15 +151,11 @@ export default function AdminMainPage() {
                 <h2>방문지 설정</h2>
               </div>
               <div className="location-group">
-                {/* 방문지 학년 */}
-
                 {!isLoadingVisitSite && (
-                  <OrderItem lists={locationGrade} title="학급" />
+                  <>
+                    <OrderItem lists={locationGrade} title="학급" />
+                  </>
                 )}
-
-                {/* 상세방문지 반 */}
-
-                <OrderItem lists={LOCATION_CLASS} title="학급" />
               </div>
             </div>
             {/* 1fr */}

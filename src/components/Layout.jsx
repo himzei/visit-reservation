@@ -18,7 +18,7 @@ export default function Layout({ children, menu }) {
         <div className="menu-container">
           {/* profile */}
           <div className="menu-profile">
-            <Avatar />
+            <Avatar name={data?.userName} />
             <p>{data?.userName}</p>
           </div>
           {/* menu */}

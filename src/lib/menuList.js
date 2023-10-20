@@ -13,13 +13,13 @@ export const SECURITY_LIST = [
 
 export const TEACHER_LIST = [
   {
-    title: "방문자현황",
+    title: "방문자 현황",
     subTitle: "방문자 확인 및 상태를 변경해 보세요.",
     url: "/teacher/today",
   },
   {
-    title: "방문승인",
-    subTitle: "방문예약 확인 및 상태를 변경해 보세요.",
+    title: "방문 승인 처리",
+    subTitle: "3개월 전과 후 대기중인 상태만 확인할 수 있어요",
     url: "/teacher/approval",
   },
   {
@@ -46,8 +46,8 @@ export const ADMIN_LIST = [
     url: "/admin/today",
   },
   {
-    title: "방문 예약 확인",
-    subTitle: "방문예약 현황을 확인해 보세요",
+    title: "방문 승인 처리",
+    subTitle: "3개월 전과 후 대기중인 상태만 확인할 수 있어요",
     url: "/admin/confirm",
   },
   {
@@ -80,11 +80,11 @@ export const ADMIN_LIST = [
     subTitle: "정책 관리 내용을 추가해 보세요",
     url: "/admin/policy",
   },
-  {
-    title: "통계",
-    subTitle: "방문객 통계를 확인해 보세요",
-    url: "/admin/statistics",
-  },
+  // {
+  //   title: "통계",
+  //   subTitle: "방문객 통계를 확인해 보세요",
+  //   url: "/admin/statistics",
+  // },
   {
     title: "내 정보 변경",
     subTitle: "내 정보를 변경해 보세요",

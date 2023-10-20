@@ -45,3 +45,22 @@ select:focus {
   display: flex;
   justify-content: center;
 }
+.radio-container {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+.radio-container div {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+.radio-container div input {
+  width: 50px;
+}
+
+.input-group .calendar {
+  width: 100%;
+  background-color: red;
+}

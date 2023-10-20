@@ -8,14 +8,21 @@ import { useQuery } from "react-query";
 import { apiGetVisitReservation } from "../../api";
 import useVisitSite from "../../hooks/useVisitSite";
 import { timeEnd, timeStart } from "../../utils/timeStatEnd";
+import SearchLocation from "../../components/SearchLocation";
+import SearchDate from "../../components/SearchDate";
+import SearchStatus from "../../components/SearchStatus";
+import SearchKeyword from "../../components/SearchKeyword";
+import Pagination from "react-js-pagination";
 
 export default function TeacherToday() {
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
+  const [page, setPage] = useState(1);
+
   const [searchOption, setSearchOption] = useState({
-    state: 3,
+    state: -1,
     placeToVisit: "",
     startDate: timeStart(),
     endDate: timeEnd(),
@@ -27,7 +34,7 @@ export default function TeacherToday() {
       "getVisitReservation",
       {
         visitSiteIndex,
-        page: 1,
+        page: page,
         pageRange: 10,
         state: searchOption.state,
         startDate: searchOption.startDate,
@@ -38,9 +45,34 @@ export default function TeacherToday() {
     ],
     apiGetVisitReservation
   );
+
+  const totalItemsCount = data?.totalCnt;
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
+
   return (
     <Layout menu={TEACHER_LIST}>
       <div className="teacher-today">
+        {/* search */}
+        <div className="search-group">
+          <SearchLocation
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchDate
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchStatus
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchKeyword
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+        </div>
         {/* 테이블 */}
         <table>
           <thead>
@@ -66,8 +98,7 @@ export default function TeacherToday() {
             ) : (
               data?.resevations?.map((item, i) => (
                 <tr key={i} className="table-hover">
-                  <td>{i + 1}</td>
-
+                  <td>{i + 1 + (page - 1) * 10}</td>
                   <td>{item.placeToVisit}</td>
                   <td>{nameHidden(item.visitorName)}</td>
                   <td>{item.carNumber}</td>
@@ -100,6 +131,17 @@ export default function TeacherToday() {
             )}
           </tbody>
         </table>
+        <div>
+          <Pagination
+            activePage={page}
+            itemsCountPerPage={10}
+            totalItemsCount={totalItemsCount}
+            pageRangeDisplayed={5}
+            prevPageText={"‹"}
+            nextPageText={"›"}
+            onChange={handlePageChange}
+          />
+        </div>
       </div>
     </Layout>
   );

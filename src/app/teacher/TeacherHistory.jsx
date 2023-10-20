@@ -9,7 +9,6 @@ import { TEACHER_LIST } from "../../lib/menuList";
 import SearchDate from "../../components/SearchDate";
 import SearchStatus from "../../components/SearchStatus";
 import SearchKeyword from "../../components/SearchKeyword";
-import { Button } from "@chakra-ui/button";
 import useVisitSite from "../../hooks/useVisitSite";
 import { useQuery } from "react-query";
 import { apiGetLog } from "../../api";
@@ -17,11 +16,14 @@ import { dateFormat } from "../../utils/dateFormat";
 import { dateNowChange } from "../../utils/dateNowChange";
 import SearchLocation from "../../components/SearchLocation";
 import { nameHidden } from "../../utils/nameHidden";
+import Pagination from "react-js-pagination";
 
 export default function TeacherHistory() {
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
+
+  const [page, setPage] = useState(1);
 
   const [searchOption, setSearchOption] = useState({
     state: -1,
@@ -36,7 +38,7 @@ export default function TeacherHistory() {
       "getLog",
       {
         visitSiteIndex,
-        page: 1,
+        page: page,
         pageRange: 10,
         state: searchOption.state,
         startDate: searchOption.startDate,
@@ -47,6 +49,11 @@ export default function TeacherHistory() {
     ],
     apiGetLog
   );
+
+  const totalItemsCount = data?.totalCnt;
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
 
   return (
     <Layout menu={TEACHER_LIST}>
@@ -106,6 +113,17 @@ export default function TeacherHistory() {
             )}
           </tbody>
         </table>
+        <div>
+          <Pagination
+            activePage={page}
+            itemsCountPerPage={10}
+            totalItemsCount={totalItemsCount}
+            pageRangeDisplayed={5}
+            prevPageText={"‹"}
+            nextPageText={"›"}
+            onChange={handlePageChange}
+          />
+        </div>
       </div>
     </Layout>
   );

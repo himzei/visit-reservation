@@ -3,11 +3,10 @@
 // 목록
 
 import "./AdminConfirm.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ADMIN_LIST } from "../../lib/menuList";
 import Layout from "../../components/Layout";
 import {
-  Checkbox,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -17,18 +16,18 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import SearchLocation from "../../components/SearchLocation";
-import SearchDate from "../../components/SearchDate";
-import SearchStatus from "../../components/SearchStatus";
-import SearchKeyword from "../../components/SearchKeyword";
 import AdminConfirmDetail from "./AdminConfirmDetail";
 import { useQuery } from "react-query";
 import { apiGetVisitReservation } from "../../api";
 import useVisitSite from "../../hooks/useVisitSite";
 import { dateFormat } from "../../utils/dateFormat";
-import { dateNowChange } from "../../utils/dateNowChange";
 import { nameHidden } from "../../utils/nameHidden";
-import { timeEnd, timeStart } from "../../utils/timeStatEnd";
+import { monthThreeEnd, monthThreeStart } from "../../utils/timeStatEnd";
+import { useLocation } from "react-router-dom";
+import { mobileFormat } from "../../utils/mobileFormat";
+
+import "./Paging.css";
+import Pagination from "react-js-pagination";
 
 export default function AdminConfirm() {
   // VISITSITEINDEX
@@ -37,21 +36,22 @@ export default function AdminConfirm() {
 
   const [selectData, setSelectData] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [page, setPage] = useState(1);
 
   // search
-  const [searchOption, setSearchOption] = useState({
-    state: -1,
+  const searchOption = {
+    state: 0,
     placeToVisit: "",
-    startDate: timeStart(),
-    endDate: timeEnd(),
+    startDate: monthThreeStart(),
+    endDate: monthThreeEnd(),
     searchValue: "",
-  });
+  };
   const { data } = useQuery(
     [
       "getVisitReservation",
       {
         visitSiteIndex,
-        page: 1,
+        page: page,
         pageRange: 10,
         state: searchOption.state,
         startDate: searchOption.startDate,
@@ -63,9 +63,27 @@ export default function AdminConfirm() {
     apiGetVisitReservation
   );
 
+  const totalItemsCount = data?.totalCnt;
   const handleEditClick = (index) => {
     onOpen();
     setSelectData(index);
+  };
+
+  const { search } = useLocation();
+
+  const queryParams = new URLSearchParams(search);
+  const visitreservation = queryParams.get("visitreservation");
+  useEffect(() => {
+    if (visitreservation) {
+      setSelectData(visitreservation);
+      onOpen();
+    }
+  }, [onOpen, visitreservation]);
+
+  // *******************************************************************************
+
+  const handlePageChange = (page) => {
+    setPage(page);
   };
 
   return (
@@ -83,46 +101,28 @@ export default function AdminConfirm() {
       </Modal>
       <div className="admin-confirm">
         {/* search */}
-        <div className="search-group">
-          <SearchLocation
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-          <SearchDate
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-          <SearchStatus
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-          <SearchKeyword
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-          {/* <ButtonSearch text="검색" /> */}
-        </div>
+
         {/* 테이블 */}
         <table>
           <thead>
             <tr>
-              <td>선택</td>
-              <td>방문지</td>
-              <td>방문객명</td>
-              <td>차량번호</td>
-              <td>방문예정일시</td>
-              <td>목적</td>
-              <td>예약일시</td>
-              <td>담당자</td>
-              <td>상태</td>
+              <p>No</p>
+              <p>방문지</p>
+              <p>방문객명</p>
+              <p>전화번호</p>
+              <p>차량번호</p>
+              <p>방문예정일시</p>
+              <p>목적</p>
+              <p>예약일시</p>
+              <p>상태</p>
             </tr>
           </thead>
           <tbody>
             {!data ? (
               <tr>
-                <td colSpan={8}>
+                <p colSpan={8}>
                   <div>해당하는 데이터가 없습니다.</div>
-                </td>
+                </p>
               </tr>
             ) : (
               data?.resevations?.map((item, i) => (
@@ -131,42 +131,123 @@ export default function AdminConfirm() {
                   key={i}
                   className="table-hover"
                 >
-                  <td>
-                    <Checkbox position="absolute" top="42%" />
-                  </td>
-
-                  <td>{item.placeToVisit}</td>
-                  <td>{nameHidden(item.visitorName)}</td>
-                  <td>{item.carNumber}</td>
-                  <td>{dateFormat(item.reservationDate)}</td>
-                  <td>{item.purposeOfVisit}</td>
-                  <td>{dateFormat(item.regDate)}</td>
-                  <td>{item.managerName}</td>
-                  <td>
-                    <div className="approval-status">
-                      {(() => {
-                        switch (item.state) {
-                          case 0:
-                            return <div>대기중</div>;
-                          case 1:
-                            return <div>승인</div>;
-                          case 2:
-                            return <div>미승인</div>;
-                          case 3:
-                            return <div>방문</div>;
-                          case 4:
-                            return <div>예약취소</div>;
-                          default:
-                            return;
-                        }
-                      })()}
+                  <div className="td-div-all">
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>No</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{i + 1 + (page - 1) * 10}</td>
+                      </div>
                     </div>
-                  </td>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>방문지</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{item.placeToVisit}</td>
+                      </div>
+                    </div>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>방문객명</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{nameHidden(item.visitorName)}</td>
+                      </div>
+                    </div>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>전화번호</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{mobileFormat(item.visitorTel)}</td>
+                      </div>
+                    </div>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>차량번호</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{item.carNumber}</td>
+                      </div>
+                    </div>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>방문예정일시</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{dateFormat(item.reservationDate)}</td>
+                      </div>
+                    </div>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>목적</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{item.purposeOfVisit}</td>
+                      </div>
+                    </div>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>예약일시</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>{dateFormat(item.regDate)}</td>
+                      </div>
+                    </div>
+
+                    <div className="td-div">
+                      <div className="td-div-p">
+                        <p>상태</p>
+                      </div>
+                      <div className="td-div-td">
+                        <td>
+                          <div className="approval-status">
+                            {(() => {
+                              switch (item.state) {
+                                case 0:
+                                  return <div>대기중</div>;
+                                case 1:
+                                  return <div>승인</div>;
+                                case 2:
+                                  return <div>미승인</div>;
+                                case 3:
+                                  return <div>방문</div>;
+                                case 4:
+                                  return <div>예약취소</div>;
+                                default:
+                                  return;
+                              }
+                            })()}
+                          </div>
+                        </td>
+                      </div>
+                    </div>
+                  </div>
                 </tr>
               ))
             )}
           </tbody>
         </table>
+        <div>
+          <Pagination
+            activePage={page}
+            itemsCountPerPage={10}
+            totalItemsCount={totalItemsCount}
+            pageRangeDisplayed={5}
+            prevPageText={"‹"}
+            nextPageText={"›"}
+            onChange={handlePageChange}
+          />
+        </div>
       </div>
     </Layout>
   );

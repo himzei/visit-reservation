@@ -2,7 +2,7 @@ import "./AdminUserDetail.css";
 import React from "react";
 import RegIcon1 from "../../assets/svg/person-input.svg";
 import RegIcon2 from "../../assets/svg/location-icon.svg";
-import { Button } from "@chakra-ui/react";
+import { Button, HStack } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import { apiPutManager } from "../../api";
@@ -168,23 +168,23 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
               초기화 하기
             </Button>
           </div>
-          <div>
-            <Button width="100px" onClick={() => handleCloseClick()}>
-              닫기
-            </Button>
-            <Button
-              type="submit"
-              width="100px"
-              height="35px"
-              color="white"
-              bg="#0066FF"
-              _hover={{ bg: "#0053CF" }}
-              mx="2"
-            >
-              저장
-            </Button>
-          </div>
         </section>
+        <HStack w="full" justifyContent="center" my="4">
+          <Button width="100px" onClick={() => handleCloseClick()}>
+            닫기
+          </Button>
+          <Button
+            type="submit"
+            width="100px"
+            height="35px"
+            color="white"
+            bg="#0066FF"
+            _hover={{ bg: "#0053CF" }}
+            mx="2"
+          >
+            저장
+          </Button>
+        </HStack>
       </form>
     </div>
   );

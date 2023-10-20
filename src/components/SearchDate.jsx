@@ -26,7 +26,7 @@ export default function SearchDate({ searchOption, setSearchOption }) {
       startDate: dateChange(startDate),
       endDate: dateChange(endDate),
     });
-  }, [startDate, endDate]);
+  }, [startDate, endDate, setSearchOption, searchOption]);
 
   return (
     <div className="search-date">

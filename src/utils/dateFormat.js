@@ -1,6 +1,6 @@
 export const dateFormat = (value) => {
   const dateStr = value.substr(0, 10);
-  const year = dateStr.split("-")[0];
+
   const month = dateStr.split("-")[1];
   const day = dateStr.split("-")[2];
 

@@ -4,12 +4,14 @@ import Layout from "../../components/Layout";
 import { ADMIN_LIST } from "../../lib/menuList";
 import {
   Button,
+  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -35,13 +37,8 @@ export default function AdminPolicy() {
   // 입력을 위안 useForm
   const { register, handleSubmit, reset } = useForm({ mode: "onChange" });
 
-  // 정책수정 USEMUTATION
-  // const { mutate: mutateEdit } = useMutation((editData) =>
-  //   apiPolicyEdit(editData)
-  // );
-
   // 정책읽기 USEQUERY
-  const { data: dataLists } = useQuery(
+  const { data: dataLists, isLoading } = useQuery(
     ["Agreement", visitSiteIndex],
     apiAgreement
   );
@@ -74,7 +71,7 @@ export default function AdminPolicy() {
   );
 
   // 정책수정
-  const handleEditClick = (index, id) => {
+  const handleEditClick = (id) => {
     onOpen();
     setAgreementIndex(id);
   };
@@ -103,111 +100,123 @@ export default function AdminPolicy() {
           </ModalBody>
         </ModalContent>
       </Modal>
-      <div className="admin-policy">
-        {agreements?.map((item, index) => (
-          <div key={index}>
+      {isLoading ? (
+        <HStack justifyContent="center" py="10">
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+          />
+        </HStack>
+      ) : (
+        <div className="admin-policy">
+          {agreements?.map((item, index) => (
+            <div key={index}>
+              <table>
+                <thead>
+                  <tr>
+                    <td>순번</td>
+                    <td>제목</td>
+                    <td>동의여부</td>
+                    <td width="50%">내용</td>
+                    <td></td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      {index + 1}
+                      <input
+                        type="hidden"
+                        value={item.agreementIndex}
+                        name="agreementIndex"
+                      />
+                    </td>
+                    <td width="25%">{item.title}</td>
+
+                    <td>{item.isMust ? "필수동의" : "선택동의"}</td>
+                    <div className="remark-container">
+                      <Markdown children={item.contents} />
+                    </div>
+                    <td>
+                      <div className="edit-delete">
+                        <Button
+                          onClick={() =>
+                            handleEditClick(index, item.agreementIndex)
+                          }
+                          type="post"
+                          bg="#67B17B"
+                          _hover={{ bg: "#328248" }}
+                          color="white"
+                          w="20"
+                          size="sm"
+                        >
+                          수정
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteClick(item.agreementIndex)}
+                          bg="#CC4E4E"
+                          _hover={{ bg: "#A72E2E" }}
+                          size="sm"
+                          color="white"
+                          w="20"
+                        >
+                          삭제
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ))}
+
+          <hr />
+          <div className="title">새 정책관리 작성하기</div>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="save-group">
+              <ButtonSearch text="저장" />
+            </div>
+            {/* 테이블 1 */}
             <table>
               <thead>
                 <tr>
-                  <td>순번</td>
                   <td>제목</td>
                   <td>동의여부</td>
                   <td width="50%">내용</td>
-                  <td></td>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>
-                    {index + 1}
-                    <input
-                      type="hidden"
-                      value={item.agreementIndex}
-                      name="agreementIndex"
-                    />
+                    <input {...register("title")} type="text" />
                   </td>
-                  <td width="25%">{item.title}</td>
 
-                  <td>{item.isMust ? "필수동의" : "선택동의"}</td>
-                  <div className="remark-container">
-                    <Markdown children={item.contents} />
-                  </div>
                   <td>
-                    <div className="edit-delete">
-                      <Button
-                        onClick={() =>
-                          handleEditClick(index, item.agreementIndex)
-                        }
-                        type="post"
-                        bg="#67B17B"
-                        _hover={{ bg: "#328248" }}
-                        color="white"
-                        w="20"
-                        size="sm"
-                      >
-                        수정
-                      </Button>
-                      <Button
-                        onClick={() => handleDeleteClick(item.agreementIndex)}
-                        bg="#CC4E4E"
-                        _hover={{ bg: "#A72E2E" }}
-                        size="sm"
-                        color="white"
-                        w="20"
-                      >
-                        삭제
-                      </Button>
+                    <div className="checkbox-container">
+                      <input
+                        type="checkbox"
+                        id="checkbox-write"
+                        {...register("isMust")}
+                      />
+                      <label htmlFor="checkbox-write">필수동의</label>
                     </div>
+                  </td>
+                  <td>
+                    <Textarea
+                      cols="50"
+                      rows="10"
+                      {...register("contents")}
+                    ></Textarea>
                   </td>
                 </tr>
               </tbody>
             </table>
-          </div>
-        ))}
-
-        <hr />
-        <div className="title">새 정책관리 작성하기</div>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="save-group">
-            <ButtonSearch text="저장" />
-          </div>
-          {/* 테이블 1 */}
-          <table>
-            <thead>
-              <tr>
-                <td>제목</td>
-                <td>동의여부</td>
-                <td width="50%">내용</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <input {...register("title")} type="text" />
-                </td>
-
-                <td>
-                  <div className="checkbox-container">
-                    <input
-                      type="checkbox"
-                      id="checkbox-write"
-                      {...register("isMust")}
-                    />
-                    <label htmlFor="checkbox-write">필수동의</label>
-                  </div>
-                </td>
-                <td>
-                  <Textarea
-                    cols="50"
-                    rows="10"
-                    {...register("contents")}
-                  ></Textarea>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </form>
-      </div>
+          </form>
+        </div>
+      )}
     </Layout>
   );
 }

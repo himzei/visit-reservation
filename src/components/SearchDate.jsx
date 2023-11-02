@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { dateChange } from "../utils/dateChange";
 
-export default function SearchDate({ searchOption, setSearchOption }) {
+export default function SearchDate({ searchOption, setSearchOption, size }) {
   const calcMonth = (value) => {
     const currentDate = new Date();
     let afterDate = new Date(currentDate);
@@ -26,13 +26,15 @@ export default function SearchDate({ searchOption, setSearchOption }) {
       startDate: dateChange(startDate),
       endDate: dateChange(endDate),
     });
-  }, [startDate, endDate, setSearchOption, searchOption]);
+  }, [startDate, endDate]);
 
   return (
     <div className="search-date">
       <span>예약일시 기간</span>
       <DatePicker
-        className="date-picker"
+        className={`date-picker ${
+          size === "large" ? "large-datepicker" : null
+        }`}
         selected={startDate}
         onChange={(date) => setStartDate(date)}
         dateFormat="yyyy/MM/dd"
@@ -40,7 +42,9 @@ export default function SearchDate({ searchOption, setSearchOption }) {
       <div className="divider">~</div>
 
       <DatePicker
-        className="date-picker"
+        className={`date-picker ${
+          size === "large" ? "large-datepicker" : null
+        }`}
         selected={endDate}
         onChange={(date) => setEndDate(date)}
         dateFormat="yyyy/MM/dd"

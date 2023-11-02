@@ -11,14 +11,19 @@ import {
   apiManagerGet,
   apiManagerPut,
   apiManagerRegister,
+  apiPutVisitReservationOne,
 } from "../../api";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import { Button, HStack } from "@chakra-ui/react";
 import { nameHidden } from "../../utils/nameHidden";
 import { mobileFormat } from "../../utils/mobileFormat";
+import { useEffect } from "react";
 
 export default function AdminConfirmDetail({ selectData, onClose }) {
+  const [isManagerIndex, setIsManagerIndex] = useState(null);
+  const [managerName, setManagerName] = useState(null);
+  const queryClient = useQueryClient();
   const { register, handleSubmit } = useForm({ mode: "onChange" });
 
   // VISITSITEINDEX
@@ -38,20 +43,19 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     ["getVisitReservationOne", { visitReservationIndex: selectData }],
     apiGetVisitReservationOne
   );
-
   // useMutation
   // 승인 반려 수정
-  // const { mutate: mutateState } = useMutation(
-  //   (formData) => apiPutVisitReservationOne(formData, selectData),
-  //   {
-  //     onSuccess: (data) => {
-  //       if (data?.result === 0) {
-  //         handleCloseClick();
-  //         queryClient.invalidateQueries("getVisitReservation");
-  //       }
-  //     },
-  //   }
-  // );
+  const { mutate: mutateState } = useMutation(
+    (formData) => apiPutVisitReservationOne(formData, selectData),
+    {
+      onSuccess: (data) => {
+        if (data?.result === 0) {
+          handleCloseClick();
+          queryClient.invalidateQueries("getVisitReservation");
+        }
+      },
+    }
+  );
 
   // useMutation
   // 매니져 배정 및 등록하기
@@ -77,34 +81,43 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     (formData) => apiManagerPut(formData, selectData, accountIndex),
     {
       onSuccess: (data) => {
-        console.log(data);
+        if (data.result === 0) {
+          queryClient.invalidateQueries("managerGet");
+        }
       },
     }
   );
 
   // useQuery
   // 배정된 매니져 불러오기
-  const { data: dataGetManager } = useQuery(
+  const { isLoading, data: dataGetManager } = useQuery(
     ["managerGet", { visitReservationIndex: selectData }],
     apiManagerGet
   );
 
-  const isManager = data?.managers.length > 0 ? true : false;
-  const managerIndex = data?.managers[0]?.managerIndex;
+  useEffect(() => {
+    if (!isLoading) {
+      setIsManagerIndex(dataGetManager?.managers[0]?.managerIndex);
+      setManagerName(dataGetManager?.managers[0]?.name);
+    }
+  });
+
   // 저장 버튼 클릭시
   // 담당자 선택 mutate 실행 및 상태 mutate 실행
   const onSubmit = (formData) => {
-    if (isManager) {
+    // console.log(formData.name);
+    console.log(managerName);
+    if (formData.name !== managerName) {
       // 매니져 수정
-
-      // alert(formData.name);
-      mutateEditManager({ formData, managerIndex });
-    } else {
-      // 매니져 추가
-      mutateManager(formData);
+      if (isManagerIndex !== null && isManagerIndex !== undefined) {
+        mutateEditManager({ formData, isManagerIndex });
+      } else {
+        // 매니져 추가
+        mutateManager(formData);
+      }
     }
 
-    // mutateState(formData);
+    mutateState(formData);
   };
 
   const handleCloseClick = () => {
@@ -180,8 +193,8 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
               {dataManager?.accounts?.map((item, index) => (
                 <option
                   key={index}
-                  value={item.name}
-                  selected={item.name === dataGetManager?.managers.at(-1).name}
+                  defaultValue={item.name}
+                  selected={item.name === dataGetManager?.managers[0]?.name}
                 >
                   {item.name}
                 </option>

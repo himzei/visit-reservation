@@ -1,8 +1,8 @@
 import "./SearchKeyword.css";
 
-export default function SearchKeyword({ text, searchOption, setSearchOption }) {
+export default function SearchData({ text, searchOption, setSearchOption }) {
   const handleChange = (e) => {
-    setSearchOption({ ...searchOption, searchValue: e.target.value });
+    setSearchOption({ ...searchOption, searchData: e.target.value });
   };
   return (
     <div className="search-keyword">

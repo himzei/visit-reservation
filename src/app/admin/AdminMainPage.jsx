@@ -5,7 +5,7 @@ import { ADMIN_LIST } from "../../lib/menuList";
 import PhotoIcon from "../../assets/svg/photo-icon.svg";
 import OrderItem from "../../components/OrderItem";
 import DefaultLogo from "../../assets/png/__high-logo.png";
-import { Button } from "@chakra-ui/react";
+import { Button, HStack, Spinner } from "@chakra-ui/react";
 import { useMutation, useQuery } from "react-query";
 import {
   apiGetPurposeOfVisit,
@@ -31,9 +31,7 @@ export default function AdminMainPage() {
   // 방문목적 설정
   const { isLoading: isLoadingPupposeOfVisit, data: dataPurposeOfVisit } =
     useQuery(["getPurposeOfVisit", visitSiteIndex], apiGetPurposeOfVisit);
-
   const purposeOfVisit = dataPurposeOfVisit?.purposeOfVisits;
-
   const lengthPurposeOfVisit = purposeOfVisit?.length;
 
   const [imgFile, setImgFile] = useState("");
@@ -150,8 +148,19 @@ export default function AdminMainPage() {
                 <img src={PhotoIcon} alt="icon2" />
                 <h2>방문지 설정</h2>
               </div>
+
               <div className="location-group">
-                {!isLoadingVisitSite && (
+                {isLoadingVisitSite ? (
+                  <HStack justifyContent="center" py="10">
+                    <Spinner
+                      thickness="4px"
+                      speed="0.65s"
+                      emptyColor="gray.200"
+                      color="blue.500"
+                      size="xl"
+                    />
+                  </HStack>
+                ) : (
                   <>
                     <OrderItem lists={locationGrade} title="학급" />
                   </>
@@ -165,7 +174,17 @@ export default function AdminMainPage() {
                 <h2>방문목적</h2>
               </div>
               <div className="purpose-group">
-                {!isLoadingPupposeOfVisit && (
+                {isLoadingPupposeOfVisit ? (
+                  <HStack justifyContent="center" py="10">
+                    <Spinner
+                      thickness="4px"
+                      speed="0.65s"
+                      emptyColor="gray.200"
+                      color="blue.500"
+                      size="xl"
+                    />
+                  </HStack>
+                ) : (
                   <OrderItemOne lists={purposeOfVisit} title="방문목적" />
                 )}
               </div>

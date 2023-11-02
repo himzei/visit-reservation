@@ -11,6 +11,7 @@ import DeleteIcon from "../../assets/svg/delete-icon.svg";
 
 import {
   Button,
+  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -18,6 +19,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   useDisclosure,
 } from "@chakra-ui/react";
 import AdminManagerDetail from "./AdminManagerDetail";
@@ -67,7 +69,7 @@ export default function AdminManager() {
   };
 
   // api search 없음
-  const { data } = useQuery(
+  const { data, isLoading } = useQuery(
     [
       "getVisitor",
       {
@@ -110,74 +112,88 @@ export default function AdminManager() {
         </ModalContent>
       </Modal>
       <Layout menu={ADMIN_LIST}>
-        <div className="admin-manager">
-          {/* search */}
-          <div className="search-group"></div>
-          {/* 일괄발송 */}
-          <div className="rigth-btn">
-            {/* <AllPass title="일괄발송" /> */}
-            <Button my={4} onClick={() => handleClickWrite()}>
-              추가{" "}
-            </Button>
-          </div>
-          {/* 테이블 */}
-          <table>
-            <thead>
-              <tr>
-                <td>No</td>
-                <td>방문객명</td>
-                <td>휴대전화</td>
-                <td>차량번호</td>
-                <td>방문지</td>
-                <td>목적</td>
-                <td></td>
-              </tr>
-            </thead>
-            <tbody>
-              {!data ? (
+        {isLoading ? (
+          <HStack justifyContent="center" py="10">
+            <Spinner
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="blue.500"
+              size="xl"
+            />
+          </HStack>
+        ) : (
+          <div className="admin-manager">
+            {/* search */}
+            <div className="search-group"></div>
+            {/* 일괄발송 */}
+            <div className="rigth-btn">
+              {/* <AllPass title="일괄발송" /> */}
+              <Button my={4} onClick={() => handleClickWrite()}>
+                추가{" "}
+              </Button>
+            </div>
+            {/* 테이블 */}
+            <table>
+              <thead>
                 <tr>
-                  <td colSpan={8}>
-                    <div>해당하는 데이터가 없습니다.</div>
-                  </td>
+                  <td>No</td>
+                  <td>방문객명</td>
+                  <td>휴대전화</td>
+                  <td>차량번호</td>
+                  <td>방문지</td>
+                  <td>목적</td>
+                  <td></td>
                 </tr>
-              ) : (
-                data?.visitors?.map((item, i) => (
-                  <tr key={i}>
-                    <td>{i + 1 + (page - 1) * 10}</td>
-                    <td>{nameHidden(item.name)}</td>
-                    <td>{item.tel}</td>
-                    <td>{item.carNumber}</td>
-                    <td>{item.placeToVisit}</td>
-                    <td>{item.purposeOfVisit}</td>
-                    <td>
-                      <div className="edit-delete">
-                        <div onClick={() => handleEditClick(item.visitorIndex)}>
-                          <img src={EditIcon} alt="edit-icon" />
-                        </div>
-                        <div
-                          onClick={() => handleDeleteClick(item.visitorIndex)}
-                        >
-                          <img src={DeleteIcon} alt="delete-icon" />
-                        </div>
-                      </div>
+              </thead>
+              <tbody>
+                {!data ? (
+                  <tr>
+                    <td colSpan={8}>
+                      <div>해당하는 데이터가 없습니다.</div>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-          <div>
-            <Pagination
-              activePage={page}
-              itemsCountPerPage={10}
-              totalItemsCount={totalItemsCount}
-              pageRangeDisplayed={5}
-              prevPageText={"‹"}
-              nextPageText={"›"}
-              onChange={handlePageChange}
-            />
+                ) : (
+                  data?.visitors?.map((item, i) => (
+                    <tr key={i}>
+                      <td>{totalItemsCount - i - (page - 1) * 10}</td>
+                      <td>{nameHidden(item.name)}</td>
+                      <td>{item.tel}</td>
+                      <td>{item.carNumber}</td>
+                      <td>{item.placeToVisit}</td>
+                      <td>{item.purposeOfVisit}</td>
+                      <td>
+                        <div className="edit-delete">
+                          <div
+                            onClick={() => handleEditClick(item.visitorIndex)}
+                          >
+                            <img src={EditIcon} alt="edit-icon" />
+                          </div>
+                          <div
+                            onClick={() => handleDeleteClick(item.visitorIndex)}
+                          >
+                            <img src={DeleteIcon} alt="delete-icon" />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+            <div>
+              <Pagination
+                activePage={page}
+                itemsCountPerPage={10}
+                totalItemsCount={totalItemsCount}
+                pageRangeDisplayed={5}
+                prevPageText={"‹"}
+                nextPageText={"›"}
+                onChange={handlePageChange}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </Layout>
     </>
   );

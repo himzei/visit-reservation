@@ -15,11 +15,14 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useState } from "react";
 
 export default function DirectRegister() {
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
+
+  const [dataChild, setDataChild] = useState();
 
   // 방문목적 불러오기
   const { data: dataPurposeOfVisits } = useQuery(
@@ -32,6 +35,12 @@ export default function DirectRegister() {
     ["getVisitSite", visitSiteIndex],
     apiGetVisitSite
   );
+
+  console.log(dataVisitSite);
+  const parentSite = dataVisitSite?.placeToVisits?.filter(
+    (item) => item.parentIndex === -1
+  );
+
   const {
     reset,
     register,
@@ -60,7 +69,23 @@ export default function DirectRegister() {
 
   const onSubmit = (formData) => {
     const reservationDate = divideDate(formData.date, formData.time);
-    mutate([reservationDate, formData]);
+    const placeToVisit = formData.placeToVisit1 + " " + formData.placeToVisit2;
+    mutate([reservationDate, { placeToVisit, ...formData }]);
+  };
+
+  const handleSiteChange = (e) => {
+    const title = e.target.value;
+    saveChildData(title);
+  };
+
+  const saveChildData = (title) => {
+    const { placeToVisitIndex } = parentSite.find(
+      (item) => item.title === title
+    );
+    const childSite = dataVisitSite?.placeToVisits?.filter(
+      (item) => item.parentIndex === parseInt(placeToVisitIndex)
+    );
+    setDataChild(childSite);
   };
 
   return (
@@ -127,17 +152,29 @@ export default function DirectRegister() {
               <img src={RegIcon3} alt="icon3" />
               <h2>방문장소 정보</h2>
             </div>
-            <div className="input-group">
-              <div>방문지</div>
-              <select {...register("placeToVisit")}>
+            <div className="input-group" onChange={handleSiteChange}>
+              <div>방문지1</div>
+              <select {...register("placeToVisit1")}>
                 <option>선택해주세요</option>
-                {dataVisitSite?.placeToVisits?.map((item, index) => (
+                {parentSite?.map((item, index) => (
                   <option key={index} value={item.title}>
                     {item.title}
                   </option>
                 ))}
               </select>
             </div>
+            <div className="input-group">
+              <div>방문지2</div>
+              <select {...register("placeToVisit2")}>
+                <option>선택해주세요</option>
+                {dataChild?.map((item, index) => (
+                  <option key={index} value={item.title}>
+                    {item.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="input-group">
               <div>방문목적</div>
               <select {...register("purposeOfVisit")}>

@@ -245,7 +245,12 @@ export async function apiAgreementOne({ queryKey }) {
 }
 
 // 방문지 등록하기
-export async function apiVisitSiteRegister(formData, visitSiteIndex) {
+export async function apiVisitSiteRegister(
+  formData,
+  visitSiteIndex,
+  checkIndex
+) {
+  console.log(checkIndex);
   return await fetch(`/api/PlaceToVisit`, {
     method: "POST",
     headers: {
@@ -256,8 +261,9 @@ export async function apiVisitSiteRegister(formData, visitSiteIndex) {
     body: JSON.stringify({
       visitSiteIndex,
       placeToVisit: {
-        parrentIndex: -1,
-
+        placeToVisitIndex: -1,
+        parentIndex: parseInt(checkIndex),
+        // itemOrder:
         title: formData.title,
       },
     }),
@@ -275,6 +281,45 @@ export async function apiGetVisitSite({ queryKey }) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${TOKEN}`,
     },
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
+// 방문지 수정하기
+export async function apiPlactToVisitEdit(props) {
+  const title = props[0];
+  const placeToVisitIndex = props[1].placeToVisitIndex;
+  const parentIndex = props[1].parentIndex;
+  const itemOrder = props[1].itemOrder;
+
+  return await fetch(`/api/PlaceToVisit/${placeToVisitIndex}`, {
+    method: "PUT",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    body: JSON.stringify({
+      placeToVisitIndex,
+      parentIndex,
+      itemOrder,
+      title,
+    }),
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
+// 방문지 삭제하기
+export async function apiPlaceToVisitDelete(placeToVisitIndex) {
+  console.log(placeToVisitIndex);
+  return await fetch(`/api/PlaceToVisit/${placeToVisitIndex}`, {
+    method: "DELETE",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+
     credentials: "include",
   }).then((res) => res.json());
 }
@@ -656,8 +701,8 @@ export async function apiManagerRegister(
           accountIndex: parseInt(accountIndex),
           name: formData.name,
           position: managerPosition,
-          auth: formData.auth,
-          state: parseInt(formData.state),
+          auth: parseInt(formData.auth),
+          state: 0,
           memo: formData.memo,
         },
       ],
@@ -668,11 +713,10 @@ export async function apiManagerRegister(
 
 // 매니져 수정하기
 export async function apiManagerPut(
-  { formData, managerIndex },
+  { formData, isManagerIndex: managerIndex },
   visitReservationIndex,
   accountIndex
 ) {
-  console.log(formData, managerIndex, visitReservationIndex);
   return await fetch(`/api/Manager/${managerIndex}`, {
     method: "PUT",
     headers: {

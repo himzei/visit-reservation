@@ -56,6 +56,10 @@ select:focus {
   display: flex;
   align-items: center;
 }
+.radio-container label,
+.radio-container input {
+  cursor: pointer;
+}
 .radio-container div input {
   width: 50px;
 }

@@ -58,41 +58,41 @@ export default function SecurityStatus() {
 
   return (
     <Layout menu={SECURITY_LIST}>
-      {isLoading ? (
-        <HStack justifyContent="center" py="10">
-          <Spinner
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="blue.500"
-            size="xl"
-          />
-        </HStack>
-      ) : (
-        <div className="security-container">
-          <section>
-            {/* search */}
-            <div className="search-group">
-              <SearchLocation
-                searchOption={searchOption}
-                setSearchOption={setSearchOption}
+      <div className="security-container">
+        <section>
+          {/* search */}
+          <div className="search-group">
+            <SearchLocation
+              searchOption={searchOption}
+              setSearchOption={setSearchOption}
+            />
+            <SearchDate
+              size="large"
+              searchOption={searchOption}
+              setSearchOption={setSearchOption}
+            />
+            <SearchStatus
+              searchOption={searchOption}
+              setSearchOption={setSearchOption}
+            />
+            <SearchKeyword
+              searchOption={searchOption}
+              setSearchOption={setSearchOption}
+            />
+            {/* <ButtonSearch text="검색" /> */}
+          </div>
+          {/* 테이블 */}
+          {isLoading ? (
+            <HStack justifyContent="center" py="10">
+              <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+                size="xl"
               />
-              <SearchDate
-                size="large"
-                searchOption={searchOption}
-                setSearchOption={setSearchOption}
-              />
-              <SearchStatus
-                searchOption={searchOption}
-                setSearchOption={setSearchOption}
-              />
-              <SearchKeyword
-                searchOption={searchOption}
-                setSearchOption={setSearchOption}
-              />
-              {/* <ButtonSearch text="검색" /> */}
-            </div>
-            {/* 테이블 */}
+            </HStack>
+          ) : (
             <table>
               <thead>
                 <tr>
@@ -148,20 +148,20 @@ export default function SecurityStatus() {
                 )}
               </tbody>
             </table>
-            <div>
-              <Pagination
-                activePage={page}
-                itemsCountPerPage={10}
-                totalItemsCount={totalItemsCount}
-                pageRangeDisplayed={5}
-                prevPageText={"‹"}
-                nextPageText={"›"}
-                onChange={handlePageChange}
-              />
-            </div>
-          </section>
-        </div>
-      )}
+          )}
+          <div>
+            <Pagination
+              activePage={page}
+              itemsCountPerPage={10}
+              totalItemsCount={totalItemsCount}
+              pageRangeDisplayed={5}
+              prevPageText={"‹"}
+              nextPageText={"›"}
+              onChange={handlePageChange}
+            />
+          </div>
+        </section>
+      </div>
     </Layout>
   );
 }

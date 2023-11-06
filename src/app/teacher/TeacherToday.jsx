@@ -54,38 +54,38 @@ export default function TeacherToday() {
 
   return (
     <Layout menu={TEACHER_LIST}>
-      {isLoading ? (
-        <HStack justifyContent="center" py="10">
-          <Spinner
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="blue.500"
-            size="xl"
+      <div className="teacher-today">
+        {/* search */}
+        <div className="search-group">
+          <SearchLocation
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
           />
-        </HStack>
-      ) : (
-        <div className="teacher-today">
-          {/* search */}
-          <div className="search-group">
-            <SearchLocation
-              searchOption={searchOption}
-              setSearchOption={setSearchOption}
+          <SearchDate
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchStatus
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchKeyword
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+        </div>
+        {/* 테이블 */}
+        {isLoading ? (
+          <HStack justifyContent="center" py="10">
+            <Spinner
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="blue.500"
+              size="xl"
             />
-            <SearchDate
-              searchOption={searchOption}
-              setSearchOption={setSearchOption}
-            />
-            <SearchStatus
-              searchOption={searchOption}
-              setSearchOption={setSearchOption}
-            />
-            <SearchKeyword
-              searchOption={searchOption}
-              setSearchOption={setSearchOption}
-            />
-          </div>
-          {/* 테이블 */}
+          </HStack>
+        ) : (
           <table>
             <thead>
               <tr>
@@ -143,19 +143,20 @@ export default function TeacherToday() {
               )}
             </tbody>
           </table>
-          <div>
-            <Pagination
-              activePage={page}
-              itemsCountPerPage={10}
-              totalItemsCount={totalItemsCount}
-              pageRangeDisplayed={5}
-              prevPageText={"‹"}
-              nextPageText={"›"}
-              onChange={handlePageChange}
-            />
-          </div>
+        )}
+
+        <div>
+          <Pagination
+            activePage={page}
+            itemsCountPerPage={10}
+            totalItemsCount={totalItemsCount}
+            pageRangeDisplayed={5}
+            prevPageText={"‹"}
+            nextPageText={"›"}
+            onChange={handlePageChange}
+          />
         </div>
-      )}
+      </div>
     </Layout>
   );
 }

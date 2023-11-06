@@ -54,40 +54,31 @@ export default function AdminToday() {
 
   return (
     <Layout menu={ADMIN_LIST}>
-      {isLoading ? (
-        <HStack justifyContent="center" py="10">
-          <Spinner
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="blue.500"
-            size="xl"
+      <div className="admin-today">
+        {/* search */}
+        <div className="search-group">
+          <SearchLocation
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
           />
-        </HStack>
-      ) : (
-        <div className="admin-today">
-          {/* search */}
-          <div className="search-group">
-            <SearchLocation
-              searchOption={searchOption}
-              setSearchOption={setSearchOption}
-            />
-            <SearchDate
-              searchOption={searchOption}
-              setSearchOption={setSearchOption}
-            />
-            <SearchStatus
-              searchOption={searchOption}
-              setSearchOption={setSearchOption}
-            />
-            <SearchKeyword
-              searchOption={searchOption}
-              setSearchOption={setSearchOption}
-            />
-            {/* <ButtonSearch text="검색" /> */}
-          </div>
-          {/* 테이블 */}
+          <SearchDate
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchStatus
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchKeyword
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          {/* <ButtonSearch text="검색" /> */}
+        </div>
 
+        {isLoading ? (
+          <></>
+        ) : (
           <table>
             <thead>
               <tr>
@@ -145,19 +136,20 @@ export default function AdminToday() {
               )}
             </tbody>
           </table>
-          <div>
-            <Pagination
-              activePage={page}
-              itemsCountPerPage={10}
-              totalItemsCount={totalItemsCount}
-              pageRangeDisplayed={5}
-              prevPageText={"‹"}
-              nextPageText={"›"}
-              onChange={handlePageChange}
-            />
-          </div>
+        )}
+
+        <div>
+          <Pagination
+            activePage={page}
+            itemsCountPerPage={10}
+            totalItemsCount={totalItemsCount}
+            pageRangeDisplayed={5}
+            prevPageText={"‹"}
+            nextPageText={"›"}
+            onChange={handlePageChange}
+          />
         </div>
-      )}
+      </div>
     </Layout>
   );
 }

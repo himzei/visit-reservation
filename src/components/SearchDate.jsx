@@ -37,7 +37,7 @@ export default function SearchDate({ searchOption, setSearchOption, size }) {
         }`}
         selected={startDate}
         onChange={(date) => setStartDate(date)}
-        dateFormat="yyyy/MM/dd"
+        dateFormat="yyyy-MM-dd"
       />
       <div className="divider">~</div>
 
@@ -47,7 +47,7 @@ export default function SearchDate({ searchOption, setSearchOption, size }) {
         }`}
         selected={endDate}
         onChange={(date) => setEndDate(date)}
-        dateFormat="yyyy/MM/dd"
+        dateFormat="yyyy-MM-dd"
       />
       <select onChange={(e) => handleChange(e)}>
         <option value={1} className="select-default">

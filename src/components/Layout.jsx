@@ -6,6 +6,7 @@ import useTokenLogin from "../hooks/useTokenLogin";
 
 export default function Layout({ children, menu }) {
   const { data } = useTokenLogin();
+
   const { pathname } = useLocation();
   const temp_data = menu.find((item) => item.url === pathname);
   const MAIN_TITLE = temp_data.title;

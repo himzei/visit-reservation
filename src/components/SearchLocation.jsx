@@ -2,6 +2,7 @@ import { useQuery } from "react-query";
 import useVisitSite from "../hooks/useVisitSite";
 import "./SearchLocation.css";
 import { apiGetVisitSite } from "../api";
+import { useState } from "react";
 
 export default function SearchLocation({ setSearchOption, searchOption }) {
   // VISITSITEINDEX
@@ -14,21 +15,46 @@ export default function SearchLocation({ setSearchOption, searchOption }) {
     apiGetVisitSite
   );
 
+  const [dataChild, setDataChild] = useState([]);
+
   const handleChange = (e) => {
-    setSearchOption({ ...searchOption, placeToVisit: e.target.value });
+    const value = e.target.value;
+    setSearchOption({ ...searchOption, placeToVisit: value });
+    const dataIndex = dataVisitSite?.placeToVisits?.find(
+      (item) => item.title === value
+    );
+
+    const tempChild = dataVisitSite?.placeToVisits?.filter(
+      (item) => item.parentIndex === dataIndex.placeToVisitIndex
+    );
+    setDataChild(tempChild);
   };
+
+  const dataVisitSiteParent = dataVisitSite?.placeToVisits?.filter(
+    (item) => item.parentIndex === -1
+  );
 
   return (
     <div className="search-location">
       <span>방문지</span>
       <select onChange={(e) => handleChange(e)}>
         <option value="">선택해주세요</option>
-        {dataVisitSite?.placeToVisits?.map((item, index) => (
+        {dataVisitSiteParent?.map((item, index) => (
           <option key={index} value={item.title}>
             {item.title}
           </option>
         ))}
       </select>
+      {dataChild.length > 0 && (
+        <select onChange={(e) => handleChange(e)}>
+          <option value="">선택해주세요</option>
+          {dataChild?.map((item, index) => (
+            <option key={index} value={item.title}>
+              {item.title}
+            </option>
+          ))}
+        </select>
+      )}
     </div>
   );
 }

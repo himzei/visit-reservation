@@ -62,50 +62,50 @@ export default function AdminHistory() {
 
   return (
     <Layout menu={ADMIN_LIST}>
-      {isLoading ? (
-        <HStack justifyContent="center" py="10">
-          <Spinner
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="blue.500"
-            size="xl"
+      <div className="admin-history">
+        {/* search */}
+        <div className="search-group">
+          <SearchLocation
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
           />
-        </HStack>
-      ) : (
-        <div className="admin-history">
-          {/* search */}
-          <div className="search-group">
-            <SearchLocation
-              searchOption={searchOption}
-              setSearchOption={setSearchOption}
+          <SearchDate
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchStatus
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+          <SearchData
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+          />
+        </div>
+        {/* 엑셀 다운로드 */}
+        <div className="excel-group">
+          {/* <AllPass title="일괄승인" /> */}
+          <CSVLink
+            className="btn-download"
+            onClick={handleCSVDownload}
+            data={data?.logs || []}
+            filename="downloads.csv"
+          >
+            CSV 다운로드
+          </CSVLink>
+        </div>
+        {/* 테이블 */}
+        {isLoading ? (
+          <HStack justifyContent="center" py="10">
+            <Spinner
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="blue.500"
+              size="xl"
             />
-            <SearchDate
-              searchOption={searchOption}
-              setSearchOption={setSearchOption}
-            />
-            <SearchStatus
-              searchOption={searchOption}
-              setSearchOption={setSearchOption}
-            />
-            <SearchData
-              searchOption={searchOption}
-              setSearchOption={setSearchOption}
-            />
-          </div>
-          {/* 엑셀 다운로드 */}
-          <div className="excel-group">
-            {/* <AllPass title="일괄승인" /> */}
-            <CSVLink
-              className="btn-download"
-              onClick={handleCSVDownload}
-              data={data?.logs || []}
-              filename="downloads.csv"
-            >
-              CSV 다운로드
-            </CSVLink>
-          </div>
-          {/* 테이블 */}
+          </HStack>
+        ) : (
           <table>
             <thead>
               <tr>
@@ -142,19 +142,19 @@ export default function AdminHistory() {
               )}
             </tbody>
           </table>
-          <div>
-            <Pagination
-              activePage={page}
-              itemsCountPerPage={10}
-              totalItemsCount={totalItemsCount}
-              pageRangeDisplayed={5}
-              prevPageText={"‹"}
-              nextPageText={"›"}
-              onChange={handlePageChange}
-            />
-          </div>
+        )}
+        <div>
+          <Pagination
+            activePage={page}
+            itemsCountPerPage={10}
+            totalItemsCount={totalItemsCount}
+            pageRangeDisplayed={5}
+            prevPageText={"‹"}
+            nextPageText={"›"}
+            onChange={handlePageChange}
+          />
         </div>
-      )}
+      </div>
     </Layout>
   );
 }

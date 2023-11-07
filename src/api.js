@@ -233,6 +233,8 @@ export async function apiAgreement({ queryKey }) {
 // 정책 불러오기 1개
 export async function apiAgreementOne({ queryKey }) {
   const AgreementIndex = queryKey[1];
+
+  console.log(AgreementIndex);
   return await fetch(`/api/Agreement/${AgreementIndex}`, {
     method: "GET",
     headers: {
@@ -608,6 +610,7 @@ export async function apiPutVisitReservationOne(
   formData,
   visitReservationIndex
 ) {
+  console.log(formData, visitReservationIndex);
   return await fetch(`/api/VisitReservation/${visitReservationIndex}/state`, {
     method: "PUT",
     headers: {

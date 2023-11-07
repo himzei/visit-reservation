@@ -71,9 +71,9 @@ export default function AdminPolicy() {
   );
 
   // 정책수정
-  const handleEditClick = (id) => {
+  const handleEditClick = (agreementIndex) => {
     onOpen();
-    setAgreementIndex(id);
+    setAgreementIndex(agreementIndex);
   };
 
   // 삭제 버튼 클릭시 이벤트 발생
@@ -143,9 +143,7 @@ export default function AdminPolicy() {
                     <td>
                       <div className="edit-delete">
                         <Button
-                          onClick={() =>
-                            handleEditClick(index, item.agreementIndex)
-                          }
+                          onClick={() => handleEditClick(item.agreementIndex)}
                           type="post"
                           bg="#67B17B"
                           _hover={{ bg: "#328248" }}

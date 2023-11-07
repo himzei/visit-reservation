@@ -18,7 +18,7 @@ export const TEACHER_LIST = [
     url: "/teacher/today",
   },
   {
-    title: "방문 승인 처리",
+    title: "방문 승인 대기자",
     subTitle: "3개월 전과 후 대기중인 상태만 확인할 수 있어요",
     url: "/teacher/approval",
   },
@@ -33,7 +33,7 @@ export const TEACHER_LIST = [
     url: "/teacher/register",
   },
   {
-    title: "내 정보 변경",
+    title: "비밀번호 변경",
     subTitle: "정보 변경을 해보세요.",
     url: "/teacher/profile",
   },
@@ -46,7 +46,7 @@ export const ADMIN_LIST = [
     url: "/admin/today",
   },
   {
-    title: "방문 승인 처리",
+    title: "방문 승인 대기자",
     subTitle: "3개월 전과 후 대기중인 상태만 확인할 수 있어요",
     url: "/admin/confirm",
   },
@@ -65,11 +65,7 @@ export const ADMIN_LIST = [
     subTitle: "상시 방문자 관리를 해보세요",
     url: "/admin/manager",
   },
-  {
-    title: "메인페이지 관리",
-    subTitle: "메인페이지 관리를 해보세요",
-    url: "/admin/main",
-  },
+
   {
     title: "사용자 관리",
     subTitle: "사용자 관리를 해보세요",
@@ -86,8 +82,13 @@ export const ADMIN_LIST = [
   //   url: "/admin/statistics",
   // },
   {
-    title: "내 정보 변경",
-    subTitle: "내 정보를 변경해 보세요",
+    title: "비밀번호 변경",
+    subTitle: "비밀번호를 변경해 보세요",
     url: "/admin/profile",
+  },
+  {
+    title: "설정",
+    subTitle: "메인페이지 관리를 해보세요",
+    url: "/admin/main",
   },
 ];

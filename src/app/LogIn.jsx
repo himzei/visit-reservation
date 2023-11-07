@@ -38,7 +38,11 @@ export default function LogIn() {
           <img className="input-icon" src={InputPerson} alt="input person" />
         </div>
         <div className="input-container">
-          <input {...register("Password")} type="text" placeholder="비밀번호" />
+          <input
+            {...register("Password")}
+            type="password"
+            placeholder="비밀번호"
+          />
           <img
             className="input-icon"
             src={InputPassword}

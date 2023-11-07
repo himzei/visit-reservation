@@ -91,6 +91,13 @@ export default function AdminMainPage() {
           {/* 이미지 업로드 */}
           <form onSubmit={handleSubmit(onSubmit)}>
             <section>
+              {/* 학교이름 */}
+              <div className="reg-title">
+                <img src={PhotoIcon} alt="icon2" />
+                <h2>학교이름</h2>
+              </div>
+              <div className="name-title">{visitSite?.visitSite?.name}</div>
+              {/* 대표이미지 */}
               <div className="reg-title">
                 <img src={PhotoIcon} alt="icon2" />
                 <h2>대표 이미지</h2>
@@ -211,6 +218,9 @@ export default function AdminMainPage() {
               저장
             </Button>
           </div>
+
+          {/* 알림톡 설정시간 */}
+          <div>알림톡 설정시간</div>
         </div>
       </Layout>
     </VisitSiteContext.Provider>

@@ -1,7 +1,7 @@
 import React from "react";
 import "./Layout.css";
-import { Avatar } from "@chakra-ui/react";
-import { Link, useLocation } from "react-router-dom";
+import { Avatar, Button } from "@chakra-ui/react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useTokenLogin from "../hooks/useTokenLogin";
 
 export default function Layout({ children, menu }) {
@@ -12,6 +12,14 @@ export default function Layout({ children, menu }) {
   const MAIN_TITLE = temp_data.title;
   const SUB_TITLE = temp_data.subTitle;
 
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.setItem("visitschool", "");
+    navigate("/");
+    window.location.reload();
+  };
+
   return (
     <div className="container">
       {/* grid 1 */}
@@ -21,6 +29,9 @@ export default function Layout({ children, menu }) {
           <div className="menu-profile">
             <Avatar name={data?.userName} />
             <p>{data?.userName}</p>
+            <Button onClick={handleLogout} size="sm">
+              로그아웃
+            </Button>
           </div>
           {/* menu */}
           <div className="menu-list">

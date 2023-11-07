@@ -43,6 +43,8 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     ["getVisitReservationOne", { visitReservationIndex: selectData }],
     apiGetVisitReservationOne
   );
+
+  console.log(data);
   // useMutation
   // 승인 반려 수정
   const { mutate: mutateState } = useMutation(
@@ -188,6 +190,10 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
               <div>방문시간</div>
               <div>{data?.visitReservation?.reservationDate.substr(11, 5)}</div>
             </div>
+            <div className="input-group">
+              <div>메모</div>
+              <div>{data?.visitReservation?.memo}</div>
+            </div>
           </section>
 
           {/* 담당자 선택 */}
@@ -222,14 +228,6 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
                 </option>
                 <option value="2">배정</option>
               </select>
-            </div>
-            <div className="input-group">
-              <div>메모</div>
-              <input
-                type="text"
-                defaultValue={data?.managers[0]?.memo}
-                {...register("memo")}
-              />
             </div>
           </section>
 

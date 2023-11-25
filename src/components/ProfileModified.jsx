@@ -1,10 +1,16 @@
+import "./ProfileModified.css";
 import React, { useState } from "react";
 import { Button, HStack, Input, Text, VStack } from "@chakra-ui/react";
 import PassIcon from "../assets/svg/input-password.svg";
 import { useForm } from "react-hook-form";
-import { useMutation } from "react-query";
-import { apiAccountPasswordPut } from "../api";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import {
+  apiAccountPasswordPut,
+  apiAtSettingGet,
+  apiAtSettingPost,
+} from "../api";
 import useUser from "../hooks/useUser";
+import { useEffect } from "react";
 
 export default function ProfileModified() {
   const [test, setTest] = useState("");
@@ -17,7 +23,7 @@ export default function ProfileModified() {
   const [resultAuth, setResultAuth] = useState(""); // setResultHint 상태 추가
 
   const [resultHint, setResultHint] = useState(""); // setResultHint 상태 추가
-
+  const queryClient = useQueryClient();
   // sms 인증
   const isEmpty = (str) => {
     return typeof str === "undefined" || str === null || str === "";
@@ -160,6 +166,66 @@ export default function ProfileModified() {
     }
     mutatePassword(data);
   };
+
+  const {
+    data: dataAtSetting,
+    refetch,
+    isLoading,
+  } = useQuery(["getAtsetting", accountIndex], apiAtSettingGet);
+
+  const [isReceivedMon, setIsReceivedMon] = useState();
+  const [isReceivedTue, setIsReceivedTue] = useState();
+  const [isReceivedWed, setIsReceivedWed] = useState();
+  const [isReceivedThu, setIsReceivedThu] = useState();
+  const [isReceivedFri, setIsReceivedFri] = useState();
+  const [isReceivedSat, setIsReceivedSat] = useState();
+  const [isReceivedSun, setIsReceivedSun] = useState();
+  const [startTime, setStartTime] = useState();
+  const [endTime, setEndTime] = useState();
+
+  useEffect(() => {
+    if (!isLoading) {
+      setIsReceivedMon(dataAtSetting?.atSetting?.isReceivedMon);
+      setIsReceivedTue(dataAtSetting?.atSetting?.isReceivedTue);
+      setIsReceivedWed(dataAtSetting?.atSetting?.isReceivedWed);
+      setIsReceivedThu(dataAtSetting?.atSetting?.isReceivedThu);
+      setIsReceivedFri(dataAtSetting?.atSetting?.isReceivedFri);
+      setIsReceivedSat(dataAtSetting?.atSetting?.isReceivedSat);
+      setIsReceivedSun(dataAtSetting?.atSetting?.isReceivedSun);
+      setStartTime(dataAtSetting?.atSetting?.startTime);
+      setEndTime(dataAtSetting?.atSetting?.endTime);
+    }
+  }, [dataAtSetting]);
+
+  console.log("hello", isReceivedFri);
+
+  const { mutate: mutateAlim } = useMutation(
+    (data) => apiAtSettingPost(data, accountIndex),
+    {
+      onSuccess: (data) => {
+        if (data.result === 0) {
+          queryClient.invalidateQueries("getAtsetting");
+          alert("변경되었습니다.");
+        }
+      },
+    }
+  );
+
+  const handleSubmitAlim = (e) => {
+    e.preventDefault();
+    mutateAlim({
+      startTime,
+      endTime,
+      isReceivedMon,
+      isReceivedTue,
+      isReceivedWed,
+      isReceivedThu,
+      isReceivedFri,
+      isReceivedSat,
+      isReceivedSun,
+    });
+  };
+
   return (
     <div className="admin-profile">
       <section>
@@ -314,6 +380,109 @@ export default function ProfileModified() {
           </Button>
         </div>
       </form>
+      {/* 알림톡 설정시간 */}
+      <section>
+        <form onSubmit={handleSubmitAlim}>
+          <div className="reg-title">
+            <img src={PassIcon} alt="icon2" />
+            <h2>알림톡 설정시간</h2>
+          </div>
+          <div className="alimtalk-time_container">
+            <label>
+              <input
+                type="checkbox"
+                name="isReceivedMon"
+                checked={isReceivedMon}
+                onChange={() =>
+                  setIsReceivedMon((isReceivedMon) => !isReceivedMon)
+                }
+              />
+              월
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="isReceivedTue"
+                checked={isReceivedTue}
+                onChange={() => setIsReceivedTue((item) => !item)}
+              />
+              화
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="isReceivedWed"
+                checked={isReceivedWed}
+                onChange={() => setIsReceivedWed((item) => !item)}
+              />
+              수
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="isReceivedThu"
+                checked={isReceivedThu}
+                onChange={() => setIsReceivedThu((item) => !item)}
+              />
+              목
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="isReceivedFri"
+                checked={isReceivedFri}
+                onChange={() => setIsReceivedFri((item) => !item)}
+              />
+              금
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="isReceivedSat"
+                checked={isReceivedSat}
+                onChange={() => setIsReceivedSat((item) => !item)}
+              />
+              토
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="isReceivedSun"
+                checked={isReceivedSun}
+                onChange={() => setIsReceivedSun((item) => !item)}
+              />
+              일
+            </label>
+          </div>
+          <div className="labelClass">
+            <label className="" type="datetime-local">
+              시작시간
+              <input
+                className="date-time"
+                type="time"
+                name="startTime"
+                defaultValue={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+              />
+            </label>
+            <label className="" type="datetime-local">
+              종료시간
+              <input
+                className="date-time"
+                type="time"
+                name="endTime"
+                defaultValue={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+              />
+            </label>
+          </div>
+          <div className="btn-container">
+            <Button mx="2" colorScheme="blue" type="submit">
+              전송하기
+            </Button>
+          </div>
+        </form>
+      </section>
     </div>
   );
 }

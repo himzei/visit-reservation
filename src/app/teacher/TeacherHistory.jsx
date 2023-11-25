@@ -97,7 +97,8 @@ export default function TeacherHistory() {
                 <td>방문지</td>
                 <td>방문객명</td>
                 <td>차량번호</td>
-                <td>방문예약일시</td>
+                <td>입실시간</td>
+                <td>퇴실시간</td>
                 <td>목적</td>
                 <td>담당자</td>
                 <td>상태</td>
@@ -116,7 +117,8 @@ export default function TeacherHistory() {
                     <td>{item.placeToVisit}</td>
                     <td>{nameHidden(item.visitorName)}</td>
                     <td>{item.carNumber}</td>
-                    <td>{dateFormat(item.regDate)}</td>
+                    <td>{dateFormat(item.visitDate)}</td>
+                    <td>{dateFormat(item.checkOutDate)}</td>
                     <td>{item.purposeOfVisit}</td>
                     <td>{item.managerName}</td>
                     <td></td>

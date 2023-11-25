@@ -36,7 +36,6 @@ export default function DirectRegister() {
     apiGetVisitSite
   );
 
-  console.log(dataVisitSite);
   const parentSite = dataVisitSite?.placeToVisits?.filter(
     (item) => item.parentIndex === -1
   );

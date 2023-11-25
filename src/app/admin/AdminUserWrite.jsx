@@ -5,32 +5,20 @@ import "./AdminUserWrite.css";
 import React from "react";
 import RegIcon1 from "../../assets/svg/person-input.svg";
 import { Button } from "@chakra-ui/react";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { useForm } from "react-hook-form";
 import useVisitSite from "../../hooks/useVisitSite";
-import { adminManagerRegister } from "../../api";
+import {
+  adminManagerRegister,
+  apiGetVisitSite,
+  managePlaceToVisitPost,
+} from "../../api";
+import { useState } from "react";
 
 export default function AdminUserWrite({ onClose }) {
   // VISIT SITE INDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
-
-  // useMutation
-  // 등록하기
-  const { mutate, data } = useMutation(
-    (formData) => adminManagerRegister(formData, visitSiteIndex),
-    {
-      onSuccess: (data) => {
-        if (data.result === 0) {
-          handleCloseClick();
-        }
-      },
-    }
-  );
-
-  if (data?.result === 0) {
-    window.location.reload();
-  }
 
   // input box 관리
   const {
@@ -40,12 +28,70 @@ export default function AdminUserWrite({ onClose }) {
     watch,
   } = useForm({ mode: "onChange" });
 
+  const { mutate: manageMutate } = useMutation(
+    (data) => managePlaceToVisitPost(data),
+    {
+      onSuccess: (data) => {
+        if (data.result === 0) {
+          alert("성공");
+        }
+      },
+    }
+  );
+
+  // useMutation
+  // 등록하기
+  const { mutate, data } = useMutation(
+    (formData) => adminManagerRegister(formData, visitSiteIndex),
+    {
+      onSuccess: (data) => {
+        if (data.result === 0) {
+          const accountIndex = data.accountIndex;
+          manageMutate({
+            accountIndex,
+            parentPlaceToVisitIndex: watch("placeToVisit2"),
+            placeToVisitIndex: watch("placeToVisit1"),
+          });
+          handleCloseClick();
+        }
+      },
+    }
+  );
+
+  // if (data?.result === 0) {
+  //   window.location.reload();
+  // }
+
   const onSubmit = (formData) => {
     mutate(formData);
   };
 
   const handleCloseClick = () => {
     onClose();
+  };
+
+  const [dataChild, setDataChild] = useState();
+
+  // 방문지 불러오기
+  const { data: dataVisitSite } = useQuery(
+    ["getVisitSite", visitSiteIndex],
+    apiGetVisitSite
+  );
+
+  const parentSite = dataVisitSite?.placeToVisits?.filter(
+    (item) => item.parentIndex === -1
+  );
+
+  const handleSiteChange = (e) => {
+    const title = e.target.value;
+    saveChildData(title);
+  };
+
+  const saveChildData = (placeToVisitIndex) => {
+    const childSite = dataVisitSite?.placeToVisits?.filter(
+      (item) => item.parentIndex === parseInt(placeToVisitIndex)
+    );
+    setDataChild(childSite);
   };
 
   return (
@@ -69,6 +115,34 @@ export default function AdminUserWrite({ onClose }) {
               })}
             />
             <span className="form-errors">{errors?.name?.message}</span>
+          </div>
+          {/* 방문지 */}
+          <div className="input-group" onChange={handleSiteChange}>
+            <div>방문지1</div>
+            <select {...register("placeToVisit1")}>
+              <option>선택해주세요</option>
+              {parentSite?.map((item, index) => (
+                <option key={index} value={item.placeToVisitIndex}>
+                  {item.title}
+                  {item.placeToVisitIndex}
+                </option>
+              ))}
+            </select>
+            <span className="form-errors">
+              {errors?.placeToVisit1?.message}
+            </span>
+          </div>
+          <div className="input-group">
+            <div>방문지2</div>
+            <select {...register("placeToVisit2")}>
+              <option>선택해주세요</option>
+              {dataChild?.map((item, index) => (
+                <option key={index} value={item.placeToVisitIndex}>
+                  {item.title}
+                  {item.placeToVisitIndex}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="input-group">
             <div>패스워드</div>

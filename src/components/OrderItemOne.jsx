@@ -109,6 +109,8 @@ export default function OrderItemOne({ lists, title }) {
     }
   };
 
+  const orderedItems = items.sort((a, b) => a.itemOrder - b.itemOrder);
+
   return (
     <>
       <Modal onClose={onClose} size="xl" isOpen={isOpen}>
@@ -131,7 +133,7 @@ export default function OrderItemOne({ lists, title }) {
         <div>
           <div>
             <ul>
-              {items?.map((item, index) => (
+              {orderedItems?.map((item, index) => (
                 <div key={index}>
                   {editIndex === index ? (
                     <form onSubmit={handleSubmit}>

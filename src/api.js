@@ -634,7 +634,7 @@ export async function apiGetLog({ queryKey }) {
   const searchParams = new URLSearchParams(paramsObj);
   const params = searchParams.toString();
   console.log(params);
-  return await fetch(`/api/Log/visitlog?${params}`, {
+  return await fetch(`/api/Log/visitvisitlog?${params}`, {
     method: "GET",
     headers: {
       accept: "*",
@@ -793,6 +793,106 @@ export async function apiAccountPasswordPut(
     body: JSON.stringify({
       nowPassword,
       newPassword,
+    }),
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
+// 알림톡
+export async function apiAtSettingGet({ queryKey }) {
+  const accountIndex = queryKey[1];
+
+  return await fetch(`/api/Account/${accountIndex}/atsetting`, {
+    method: "GET",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
+export async function apiAtSettingPost(data, accountIndex) {
+  const startTime = `${data.startTime}:00`;
+  const endTime = `${data.endTime}:00`;
+
+  return await fetch(`/api/Account/${accountIndex}/atsetting`, {
+    method: "POST",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    body: JSON.stringify({
+      isReceivedAT: true,
+      startTime,
+      endTime,
+      isReceivedMon: data.isReceivedMon,
+      isReceivedTue: data.isReceivedTue,
+      isReceivedWed: data.isReceivedWed,
+      isReceivedThu: data.isReceivedThu,
+      isReceivedFri: data.isReceivedFri,
+      isReceivedSat: data.isReceivedSat,
+      isReceivedSun: data.isReceivedSun,
+    }),
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
+// 담당자별 면담횟수 통계
+export async function apiManagerInterviewStatis({ queryKey }) {
+  const { visitSiteIndex, startDate, endDate } = queryKey[1];
+
+  return await fetch(
+    `/api/Statistics/manager-interview?visitSiteIndex=${visitSiteIndex}&startDate=${startDate}&endDate=${endDate}`,
+    {
+      method: "GET",
+      headers: {
+        accept: "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${TOKEN}`,
+      },
+      credentials: "include",
+    }
+  ).then((res) => res.json());
+}
+
+// 방문객별 면담횟수 통계
+export async function apiVisitorInterviewStatis({ queryKey }) {
+  const { visitSiteIndex, startDate, endDate } = queryKey[1];
+
+  return await fetch(
+    `/api/Statistics/visitor-interview?visitSiteIndex=${visitSiteIndex}&startDate=${startDate}&endDate=${endDate}`,
+    {
+      method: "GET",
+      headers: {
+        accept: "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${TOKEN}`,
+      },
+      credentials: "include",
+    }
+  ).then((res) => res.json());
+}
+
+// manager 방문지 등록
+export async function managePlaceToVisitPost({
+  accountIndex,
+  parentPlaceToVisitIndex,
+  placeToVisitIndex,
+}) {
+  // console.log("api", accountIndex, parentPlaceToVisitIndex, placeToVisitIndex);
+  return await fetch(`/api/Account/${accountIndex}/manage-placetovisit`, {
+    method: "POST",
+    headers: {
+      accept: "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    body: JSON.stringify({
+      parentPlaceToVisitIndex,
+      placeToVisitIndex,
     }),
     credentials: "include",
   }).then((res) => res.json());

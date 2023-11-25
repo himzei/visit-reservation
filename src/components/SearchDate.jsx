@@ -4,7 +4,12 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { dateChange } from "../utils/dateChange";
 
-export default function SearchDate({ searchOption, setSearchOption, size }) {
+export default function SearchDate({
+  searchOption,
+  setSearchOption,
+  size,
+  title = "예약일시 시간",
+}) {
   const calcMonth = (value) => {
     const currentDate = new Date();
     let afterDate = new Date(currentDate);
@@ -30,7 +35,7 @@ export default function SearchDate({ searchOption, setSearchOption, size }) {
 
   return (
     <div className="search-date">
-      <span>예약일시 기간</span>
+      <span>{title}</span>
       <DatePicker
         className={`date-picker ${
           size === "large" ? "large-datepicker" : null

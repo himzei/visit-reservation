@@ -8,6 +8,7 @@ import useVisitSite from "../../hooks/useVisitSite";
 import {
   apiGetManager,
   apiGetVisitReservationOne,
+  apiGetVisitSite,
   apiManagerGet,
   apiManagerPut,
   apiManagerRegister,
@@ -39,12 +40,35 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
 
   // useQuery
   // 디테일 불러오기
+
   const { isLoading: dataIsLoading, data } = useQuery(
     ["getVisitReservationOne", { visitReservationIndex: selectData }],
     apiGetVisitReservationOne
   );
 
-  console.log(data);
+  // 방문지 불러오기
+  const { data: dataVisitSite } = useQuery(
+    ["getVisitSite", visitSiteIndex],
+    apiGetVisitSite
+  );
+
+  const placeToVisit = data?.visitors[0]?.placeToVisit;
+  const temp = dataVisitSite?.placeToVisits?.find(
+    (item) => item.title === placeToVisit
+  );
+  const selectToVisitIndex = temp?.placeToVisitIndex;
+  // console.log(selectToVisitIndex);
+
+  const tempAccount = dataManager?.accounts;
+
+  // 불러온 모든 매니져 중에 방문지가 현재 불러온 페이지의 방문지와 같은 경우만 리스트
+  const selectAccount = tempAccount.filter(
+    (item) => item.managePlaceToVisit?.placeToVisitIndex === selectToVisitIndex
+  );
+
+  const inChargedManger =
+    selectAccount.length !== 0 ? selectAccount : dataManager.accounts;
+
   // useMutation
   // 승인 반려 수정
   const { mutate: mutateState } = useMutation(
@@ -207,7 +231,7 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
               <div>이름</div>
               <select {...register("name")} onChange={(e) => handleChange(e)}>
                 <option>선택해주세요</option>
-                {dataManager?.accounts?.map((item, index) => (
+                {inChargedManger.map((item, index) => (
                   <option
                     key={index}
                     defaultValue={item.name}

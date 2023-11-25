@@ -15,10 +15,10 @@ import { apiGetLog } from "../../api";
 import useVisitSite from "../../hooks/useVisitSite";
 import { dateFormat } from "../../utils/dateFormat";
 import { dateNowChange } from "../../utils/dateNowChange";
-import { nameHidden } from "../../utils/nameHidden";
 import Pagination from "react-js-pagination";
 import SearchData from "../../components/SearchData";
 import { HStack, Spinner } from "@chakra-ui/react";
+import { mobileDash } from "../../utils/mobileDash";
 
 export default function AdminHistory() {
   // VISITSITEINDEX
@@ -49,6 +49,8 @@ export default function AdminHistory() {
     ],
     apiGetLog
   );
+
+  console.log(data);
 
   const totalItemsCount = data?.totalCnt;
   const handlePageChange = (page) => {
@@ -112,11 +114,13 @@ export default function AdminHistory() {
                 <td>No</td>
                 <td>방문지</td>
                 <td>방문객명</td>
+                <td>전화번호</td>
                 <td>차량번호</td>
-                <td>방문예약일시</td>
+                <td>입실시간</td>
+                <td>퇴실시간</td>
+
                 <td>목적</td>
                 <td>담당자</td>
-                <td>상태</td>
               </tr>
             </thead>
             <tbody>
@@ -131,12 +135,13 @@ export default function AdminHistory() {
                   <tr key={i}>
                     <td>{totalItemsCount - i - (page - 1) * 10}</td>
                     <td>{item.placeToVisit}</td>
-                    <td>{nameHidden(item.visitorName)}</td>
+                    <td>{item.visitorName}</td>
+                    <td>{mobileDash(item.tel)}</td>
                     <td>{item.carNumber}</td>
-                    <td>{dateFormat(item.regDate)}</td>
+                    <td>{dateFormat(item.visitDate)}</td>
+                    <td>{dateFormat(item.checkOutDate)}</td>
                     <td>{item.purposeOfVisit}</td>
                     <td>{item.managerName}</td>
-                    <td></td>
                   </tr>
                 ))
               )}

@@ -122,8 +122,28 @@ export async function apiGetManager({ queryKey }) {
 
 // 사용자관리 수정하기
 export async function apiPutManager(formData) {
-  const { accountIndex, userId, password, name, tel, auth, position } =
-    formData;
+  const {
+    accountIndex,
+    email,
+    password,
+    name,
+    tel,
+    auth,
+    position,
+    placeToVisit1,
+    placeToVisit2,
+  } = formData;
+  console.log({
+    accountIndex: accountIndex,
+    email: email,
+    password: password,
+    name: name,
+    tel: tel,
+    auth: auth,
+    position: position,
+    placeToVisit1: placeToVisit1,
+    placeToVisit: placeToVisit2,
+  });
 
   return await fetch(`/api/Account/${accountIndex}`, {
     method: "PUT",
@@ -133,12 +153,17 @@ export async function apiPutManager(formData) {
       Authorization: `Bearer ${TOKEN}`,
     },
     body: JSON.stringify({
-      userId,
+      accountIndex: parseInt(accountIndex),
+      userId: email,
       password,
       name,
       tel,
-      auth,
+      auth: parseInt(auth),
       position,
+      managePlaceToVisit: {
+        placeToVisitIndex: parseInt(placeToVisit1),
+        parentPlaceToVisitIndex: parseInt(placeToVisit2),
+      },
     }),
     credentials: "include",
   }).then((res) => res.json());

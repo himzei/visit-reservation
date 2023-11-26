@@ -5,11 +5,7 @@ import RegIcon2 from "../../assets/svg/location-icon.svg";
 import { Button, HStack } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
-import {
-  apiGetVisitSite,
-  apiPutManager,
-  managePlaceToVisitPost,
-} from "../../api";
+import { apiGetVisitSite, apiPutManager } from "../../api";
 import useVisitSite from "../../hooks/useVisitSite";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -27,37 +23,36 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
     formState: { errors },
   } = useForm({ mode: "onChange" });
 
-  const { mutate: manageMutate } = useMutation(
-    (data) => managePlaceToVisitPost(data),
-    {
-      onSuccess: (data) => {
-        if (data.result === 0) {
-          alert("성공");
-        }
-      },
-    }
-  );
-
-  console.log(watch("placeToVisit1"));
-  console.log(watch("placeToVisit2"));
-
   const { mutate } = useMutation((formData) => apiPutManager(formData), {
     onSuccess: (formData) => {
       if (formData.result === 0) {
-        manageMutate({
-          accountIndex: selectEdit.accountIndex,
-          parentPlaceToVisitIndex: watch("placeToVisit2"),
-          placeToVisitIndex: watch("placeToVisit1"),
-        });
+        alert("성공");
 
         onClose();
       }
       queryClient.invalidateQueries("getManager");
     },
   });
+  const [placeToVisit1, setPlaceToVisit1] = useState(
+    selectEdit.managePlaceToVisit?.placeToVisitIndex
+  );
+  const [placeToVisit2, setPlaceToVisit2] = useState(
+    selectEdit.managePlaceToVisit?.parentPlaceToVisitIndex
+  );
+
+  const handlePlaceToVisit1 = (e) => {
+    setPlaceToVisit1(e.target.value);
+  };
+  const handlePlaceToVisit2 = (e) => {
+    setPlaceToVisit2(e.target.value);
+  };
 
   const onSubmit = (formData) => {
-    mutate(formData);
+    mutate({
+      placeToVisit1,
+      placeToVisit2,
+      ...formData,
+    });
   };
 
   const handleCloseClick = () => {
@@ -82,7 +77,6 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
 
   const handleSiteChange = (e) => {
     const title = e.target.value;
-    console.log(title);
     saveChildData(title);
   };
 
@@ -125,9 +119,9 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
           <div className="input-group" onChange={handleSiteChange}>
             <div>방문지1</div>
             <select
-              {...register("placeToVisit1")}
-
+              // {...register("placeToVisit1")}
               // defaultValue={selectEdit.managePlaceToVisit?.placeToVisitIndex}
+              onChange={(e) => handlePlaceToVisit1(e)}
             >
               <option>선택해주세요</option>
               {parentSite?.map((item, index) => (
@@ -135,10 +129,7 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
                   key={index}
                   value={item.placeToVisitIndex}
                   selected={
-                    item.placeToVisitIndex ==
-                    selectEdit.managePlaceToVisit?.placeToVisitIndex
-                      ? true
-                      : false
+                    item.placeToVisitIndex === placeToVisit1 ? true : false
                   }
                 >
                   {item.title}
@@ -153,16 +144,16 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
           </div>
           <div className="input-group">
             <div>방문지2</div>
-            <select {...register("placeToVisit2")}>
+            <select
+              onChange={(e) => handlePlaceToVisit2(e)}
+              // {...register("placeToVisit2")}
+            >
               {dataChild?.map((item, index) => (
                 <option
                   key={index}
                   value={item.placeToVisitIndex}
                   selected={
-                    item.placeToVisitIndex ==
-                    selectEdit.managePlaceToVisit?.parentPlaceToVisitIndex
-                      ? true
-                      : false
+                    item.placeToVisitIndex === placeToVisit2 ? true : false
                   }
                 >
                   {item.title}

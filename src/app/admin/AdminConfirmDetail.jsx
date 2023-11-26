@@ -62,12 +62,12 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
   const tempAccount = dataManager?.accounts;
 
   // 불러온 모든 매니져 중에 방문지가 현재 불러온 페이지의 방문지와 같은 경우만 리스트
-  const selectAccount = tempAccount.filter(
+  const selectAccount = tempAccount?.filter(
     (item) => item.managePlaceToVisit?.placeToVisitIndex === selectToVisitIndex
   );
 
   const inChargedManger =
-    selectAccount.length !== 0 ? selectAccount : dataManager.accounts;
+    selectAccount?.length !== 0 ? selectAccount : dataManager.accounts;
 
   // useMutation
   // 승인 반려 수정
@@ -231,7 +231,7 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
               <div>이름</div>
               <select {...register("name")} onChange={(e) => handleChange(e)}>
                 <option>선택해주세요</option>
-                {inChargedManger.map((item, index) => (
+                {inChargedManger?.map((item, index) => (
                   <option
                     key={index}
                     defaultValue={item.name}

@@ -5,7 +5,7 @@ import ProfileModified from "../../components/ProfileModified";
 
 export default function AdminProfile() {
   return (
-    <Layout menu={ADMIN_LIST}>
+    <Layout menu={ADMIN_LIST} title="비밀번호 변경">
       <ProfileModified />
     </Layout>
   );

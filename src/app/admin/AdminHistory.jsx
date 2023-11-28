@@ -20,6 +20,8 @@ import SearchData from "../../components/SearchData";
 import { HStack, Spinner } from "@chakra-ui/react";
 import { mobileDash } from "../../utils/mobileDash";
 
+import NumberMeeting from "../../components/NumberMetting";
+
 export default function AdminHistory() {
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
@@ -159,6 +161,9 @@ export default function AdminHistory() {
             onChange={handlePageChange}
           />
         </div>
+      </div>
+      <div>
+        <NumberMeeting />
       </div>
     </Layout>
   );

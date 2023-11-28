@@ -22,6 +22,8 @@ import useVisitSite from "../../hooks/useVisitSite";
 import { apiAgreement, apiPolicyDelete, apiPolicyRegister } from "../../api";
 import AdminPolicyEdit from "./AdminPolicyEdit";
 import Markdown from "react-markdown";
+import SettingSchoolName from "../../components/SettingSchoolName";
+import SettingVisitPurpose from "../../components/SettingVisitPurpose";
 
 export default function AdminPolicy() {
   const [agreementIndex, setAgreementIndex] = useState(null);
@@ -215,6 +217,8 @@ export default function AdminPolicy() {
           </form>
         </div>
       )}
+      <SettingSchoolName />
+      <SettingVisitPurpose />
     </Layout>
   );
 }

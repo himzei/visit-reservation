@@ -141,6 +141,7 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
         // 매니져 추가
         mutateManager(formData);
       }
+      console.log(formData);
     }
 
     mutateState(formData);

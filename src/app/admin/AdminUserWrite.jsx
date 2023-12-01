@@ -124,7 +124,6 @@ export default function AdminUserWrite({ onClose }) {
               {parentSite?.map((item, index) => (
                 <option key={index} value={item.placeToVisitIndex}>
                   {item.title}
-                  {item.placeToVisitIndex}
                 </option>
               ))}
             </select>
@@ -139,7 +138,6 @@ export default function AdminUserWrite({ onClose }) {
               {dataChild?.map((item, index) => (
                 <option key={index} value={item.placeToVisitIndex}>
                   {item.title}
-                  {item.placeToVisitIndex}
                 </option>
               ))}
             </select>

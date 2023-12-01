@@ -117,7 +117,7 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
           </div>
 
           <div className="input-group" onChange={handleSiteChange}>
-            <div>방문지1</div>
+            <div>방문지 대분류</div>
             <select
               // {...register("placeToVisit1")}
               // defaultValue={selectEdit.managePlaceToVisit?.placeToVisitIndex}
@@ -143,7 +143,7 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
             </span>
           </div>
           <div className="input-group">
-            <div>방문지2</div>
+            <div>방문지 중분류</div>
             <select
               onChange={(e) => handlePlaceToVisit2(e)}
               // {...register("placeToVisit2")}
@@ -162,7 +162,7 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
             </select>
           </div>
 
-          <div className="input-group">
+          {/* <div className="input-group">
             <div>패스워드</div>
             <input
               type="password"
@@ -186,7 +186,7 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
                 ? "패스워드를 일치시켜 주세요"
                 : null}
             </span>
-          </div>
+          </div> */}
           <div className="input-group">
             <div>휴대전화번호</div>
             <input

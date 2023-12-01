@@ -46,7 +46,7 @@ export const ADMIN_LIST = [
     url: "/admin/confirm",
   },
   {
-    title: "방문자 현황",
+    title: "방문자 승인 현황",
     subTitle: "금일 방문자 현황을 확인해 보세요",
     url: "/admin/today",
   },

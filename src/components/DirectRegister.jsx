@@ -152,7 +152,7 @@ export default function DirectRegister() {
               <h2>방문장소 정보</h2>
             </div>
             <div className="input-group" onChange={handleSiteChange}>
-              <div>방문지1</div>
+              <div>방문지 대분류</div>
               <select {...register("placeToVisit1")}>
                 <option>선택해주세요</option>
                 {parentSite?.map((item, index) => (
@@ -163,7 +163,7 @@ export default function DirectRegister() {
               </select>
             </div>
             <div className="input-group">
-              <div>방문지2</div>
+              <div>방문지 중분류</div>
               <select {...register("placeToVisit2")}>
                 <option>선택해주세요</option>
                 {dataChild?.map((item, index) => (

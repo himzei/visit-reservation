@@ -12,11 +12,18 @@ export default function LogIn() {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
   const { mutate } = useMutation(login, {
-    onSuccess: (data) => {
+    onSuccess: (data) => { 
       localStorage.setItem("visitschool", data.token);
+      console.log(data.token)
       navigate("/");
       window.location.reload();
     },
+    // 
+    onError: (error) => {
+      // 로그인 실패 시 경고창 표시
+      alert("아이디와 비밀번호를 확인해 주세요.");
+      console.error("로그인 오류:", error);
+    }
   });
 
   const { data: getIpData } = useQuery("ipData", ipData);
@@ -31,7 +38,7 @@ export default function LogIn() {
       <h1>로그인</h1>
       <div className="login-image">
         <img src={Person} alt="person" />
-      </div>
+      </div> 
       <div className="login-input">
         <div className="input-container">
           <input {...register("UserId")} type="text" placeholder="아이디" />
@@ -44,7 +51,7 @@ export default function LogIn() {
             placeholder="비밀번호"
           />
           <img
-            className="input-icon"
+            className="input-icon" 
             src={InputPassword}
             alt="input password"
           />

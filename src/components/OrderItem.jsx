@@ -134,7 +134,6 @@ export default function OrderItem({ lists }) {
     }, 1000);
   };
 
-  console.log(editSecondTitle);
   const handleSubmitSecond = (e) => {
     e.preventDefault();
 
@@ -177,7 +176,6 @@ export default function OrderItem({ lists }) {
       (item) => item.placeToVisitIndex === placeToVisitIndex
     );
 
-    console.log(editPlaceToVisit);
     setSelectSecondEdit(editPlaceToVisit);
     setEditSecondTitle(editPlaceToVisit[0].title);
     // 방목목적 수정 하는 api 호출
@@ -201,7 +199,7 @@ export default function OrderItem({ lists }) {
       <Modal onClose={onClose} size="xl" isOpen={isOpen}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>방문지 추가</ModalHeader>
+          <ModalHeader>방문지 추가(2)</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <AddPlaceToVisit onClose={onClose} checkIndex={checkIndex} />

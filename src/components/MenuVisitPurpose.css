@@ -1,0 +1,43 @@
+.draggable-menu {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.group-drag {
+  display: flex;
+  gap: 20px;
+}
+.drag-parent-lists {
+  border: 1px solid lightgray;
+  display: flex;
+  flex-direction: column;
+}
+.drag-parent-lists {
+  width: 400px;
+}
+.setting-draggable-list {
+  width: 400px;
+
+  cursor: pointer;
+  border: 1px solid lightgray;
+}
+.draggable-title {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 10px;
+  background-color: lightgray;
+}
+.draggable-group {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 10px;
+}
+.edit-delete-btn {
+  display: flex;
+  gap: 4px;
+}
+.draggable-contents {
+  height: 400px;
+  overflow-y: scroll;
+}

@@ -8,6 +8,8 @@ import OrderItemOne from "./OrderItemOne";
 import { Button, HStack, Spinner } from "@chakra-ui/react";
 import { useState } from "react";
 import { VisitSiteContext } from "../context/VisitSiteContext";
+import MenuVisitPurpose from "./MenuVisitPurpose";
+import MenuPlaceToVisit from "./MenuPlaceToVisit";
 
 export default function SettingVisitPurpose() {
   const { data: visitSite } = useVisitSite();
@@ -57,7 +59,8 @@ export default function SettingVisitPurpose() {
                 </HStack>
               ) : (
                 <>
-                  <OrderItem lists={locationGrade} title="학급" />
+                  <MenuPlaceToVisit lists={locationGrade} title="학급" />
+                  {/* <OrderItem lists={locationGrade} title="학급" /> */}
                 </>
               )}
             </div>
@@ -80,31 +83,11 @@ export default function SettingVisitPurpose() {
                   />
                 </HStack>
               ) : (
-                <OrderItemOne lists={purposeOfVisit} title="방문목적" />
+                // <OrderItemOne lists={purposeOfVisit} title="방문목적" />
+                <MenuVisitPurpose lists={purposeOfVisit} title="방문목적" />
               )}
             </div>
           </div>
-        </div>
-
-        <div className="btn-container">
-          <Button
-            w="120px"
-            mx="1"
-            bg="#A8A8A8"
-            color="white"
-            _hover={{ bg: "#737373" }}
-          >
-            되돌리기
-          </Button>
-          <Button
-            w="120px"
-            mx="1"
-            bg="#0066FF"
-            color="white"
-            _hover={{ bg: "#0040A1" }}
-          >
-            저장
-          </Button>
         </div>
       </div>
     </VisitSiteContext.Provider>

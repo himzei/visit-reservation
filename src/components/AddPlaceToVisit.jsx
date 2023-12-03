@@ -21,6 +21,7 @@ export default function AddPlaceToVisit({ onClose, checkIndex }) {
         if (data.result === 0) {
           queryClient.invalidateQueries("getVisitSite");
           onClose();
+          window.location.reload();
         }
       },
     }

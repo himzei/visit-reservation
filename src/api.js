@@ -301,7 +301,7 @@ export async function apiVisitSiteRegister(
 // 방문지 불러오기
 export async function apiGetVisitSite({ queryKey }) {
   const visitSiteIndex = queryKey[1];
-  console.log(visitSiteIndex) 
+  console.log(visitSiteIndex);
   return await fetch(`/api/PlaceToVisit?visitSiteIndex=${visitSiteIndex}`, {
     method: "GET",
     headers: {
@@ -319,6 +319,8 @@ export async function apiPlactToVisitEdit(props) {
   const placeToVisitIndex = props[1].placeToVisitIndex;
   const parentIndex = props[1].parentIndex;
   const itemOrder = props[1].itemOrder;
+
+  alert(itemOrder);
 
   return await fetch(`/api/PlaceToVisit/${placeToVisitIndex}`, {
     method: "PUT",
@@ -460,7 +462,7 @@ export async function apiVisitorRegister(formData, visitSiteIndex) {
   }).then((res) => res.json());
 }
 
-// 상시방문자 불러오기 
+// 상시방문자 불러오기
 // queryKey : getVisitor
 export async function apiGetVisitor({ queryKey }) {
   const { visitSiteIndex, page, type, pageRange } = queryKey[1];
@@ -601,8 +603,8 @@ export async function apiGetVisitReservation({ queryKey }) {
     searchValue,
     placeToVisit,
   } = queryKey[1];
-  console.log("확인2:",visitSiteIndex);
-  console.log(queryKey[1])  
+  console.log("확인2:", visitSiteIndex);
+  console.log(queryKey[1]);
   return await fetch(
     `/api/VisitReservation/search?visitSiteIndex=${visitSiteIndex}&startDate=${startDate}&endDate=${endDate}&page=${page}&pageRange=${pageRange}&state=${state}&searchValue=${searchValue}&placeToVisit=${placeToVisit}`,
     {
@@ -615,7 +617,6 @@ export async function apiGetVisitReservation({ queryKey }) {
       credentials: "include",
     }
   ).then((res) => res.json());
-  
 }
 
 // VisitReservation-Search

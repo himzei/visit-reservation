@@ -1,7 +1,6 @@
 import "./AdminUserDetail.css";
 import React from "react";
 import RegIcon1 from "../../assets/svg/person-input.svg";
-import RegIcon2 from "../../assets/svg/location-icon.svg";
 import { Button, HStack } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
@@ -17,7 +16,6 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
   const {
-    watch,
     register,
     handleSubmit,
     formState: { errors },
@@ -27,7 +25,6 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
     onSuccess: (formData) => {
       if (formData.result === 0) {
         alert("성공");
-
         onClose();
       }
       queryClient.invalidateQueries("getManager");
@@ -59,8 +56,6 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
     onClose();
   };
 
-  const [dataChild, setDataChild] = useState();
-
   useEffect(() => {
     saveChildData(selectEdit.managePlaceToVisit?.placeToVisitIndex);
   }, []);
@@ -69,6 +64,10 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
   const { data: dataVisitSite } = useQuery(
     ["getVisitSite", visitSiteIndex],
     apiGetVisitSite
+  );
+
+  let dataChild = dataVisitSite?.placeToVisits?.filter(
+    (item) => item.parentIndex === parseInt(placeToVisit1)
   );
 
   const parentSite = dataVisitSite?.placeToVisits?.filter(
@@ -84,7 +83,7 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
     const childSite = dataVisitSite?.placeToVisits?.filter(
       (item) => item.parentIndex === parseInt(placeToVisitIndex)
     );
-    setDataChild(childSite);
+    dataChild = childSite;
   };
 
   return (
@@ -162,31 +161,6 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
             </select>
           </div>
 
-          {/* <div className="input-group">
-            <div>패스워드</div>
-            <input
-              type="password"
-              defaultValue={selectEdit.password}
-              {...register("password", {
-                required: "패스워드를 입력해 주세요",
-              })}
-            />
-            <span className="form-errors">{errors?.password?.message}</span>
-          </div>
-          <div className="input-group">
-            <div>패스워드 확인</div>
-            <input
-              type="password"
-              {...register("password2", {
-                required: "이름을 입력해 주세요",
-              })}
-            />
-            <span className="form-errors">
-              {watch("password") !== watch("password2")
-                ? "패스워드를 일치시켜 주세요"
-                : null}
-            </span>
-          </div> */}
           <div className="input-group">
             <div>휴대전화번호</div>
             <input
@@ -204,19 +178,7 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
           </div>
           <div className="input-group">
             <div>이메일</div>
-            <input
-              type="text"
-              defaultValue={selectEdit.userId}
-              {...register("email", {
-                required: "이메일을 입력해 주세요",
-                pattern: {
-                  value:
-                    /[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$/i,
-                  message: "이메일 형식으로 입력해 주세요",
-                },
-              })}
-            />
-            <span className="form-errors">{errors?.email?.message}</span>
+            <input type="text" value={selectEdit.userId} disabled />
           </div>
           <div className="input-group" {...register("state")}>
             <div>직책</div>
@@ -253,7 +215,7 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
             </select>
           </div>
         </section>
-        <section>
+        {/* <section>
           <div className="reg-title">
             <img src={RegIcon2} alt="icon2" />
             <h2>비밀번호 초기화</h2>
@@ -269,7 +231,7 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
               초기화 하기
             </Button>
           </div>
-        </section>
+        </section> */}
         <HStack w="full" justifyContent="center" my="4">
           <Button width="100px" onClick={() => handleCloseClick()}>
             닫기

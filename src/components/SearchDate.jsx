@@ -13,7 +13,7 @@ export default function SearchDate({
   const calcMonth = (value) => {
     const currentDate = new Date();
     let afterDate = new Date(currentDate);
-    afterDate.setMonth(currentDate.getMonth() + parseInt(value));
+    afterDate.setMonth(currentDate.getMonth() - parseInt(value));
     return afterDate;
   };
 
@@ -22,7 +22,8 @@ export default function SearchDate({
 
   const handleChange = (e) => {
     const duration = e.target.value;
-    setEndDate(calcMonth(duration));
+    setStartDate(calcMonth(duration));
+    setEndDate(new Date());
   };
 
   useEffect(() => {
@@ -58,10 +59,10 @@ export default function SearchDate({
         <option value={1} className="select-default">
           기간선택
         </option>
-        <option value={3}>3개월</option>
-        <option value={6}>6개월</option>
-        <option value={9}>9개월</option>
-        <option value={12}>12개월</option>
+        <option value={3}>3개월전~현재</option>
+        <option value={6}>6개월전~현재</option>
+        <option value={9}>9개월전~현재</option>
+        <option value={12}>12개월전~현재</option>
       </select>
     </div>
   );

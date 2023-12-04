@@ -52,9 +52,8 @@ export default function AdminHistory() {
     apiGetLog
   );
 
-  console.log(data);
-
   const totalItemsCount = data?.totalCnt;
+
   const handlePageChange = (page) => {
     setPage(page);
   };
@@ -120,7 +119,6 @@ export default function AdminHistory() {
                 <td>차량번호</td>
                 <td>입실시간</td>
                 <td>퇴실시간</td>
-
                 <td>목적</td>
                 <td>담당자</td>
               </tr>
@@ -163,7 +161,10 @@ export default function AdminHistory() {
         </div>
       </div>
       <div>
-        <NumberMeeting />
+        <NumberMeeting
+          searchOption={searchOption}
+          setSearchOption={setSearchOption}
+        />
       </div>
     </Layout>
   );

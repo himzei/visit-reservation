@@ -95,9 +95,7 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
         accountIndex
       ),
     {
-      onSuccess: (data) => {
-        console.log(data);
-      },
+      onSuccess: (data) => {},
     }
   );
 
@@ -132,7 +130,6 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
   // 담당자 선택 mutate 실행 및 상태 mutate 실행
   const onSubmit = (formData) => {
     // console.log(formData.name);
-    console.log(managerName);
     if (formData.name !== managerName) {
       // 매니져 수정
       if (isManagerIndex !== null && isManagerIndex !== undefined) {
@@ -141,7 +138,6 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
         // 매니져 추가
         mutateManager(formData);
       }
-      console.log(formData);
     }
 
     mutateState(formData);

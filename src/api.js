@@ -133,17 +133,17 @@ export async function apiPutManager(formData) {
     placeToVisit1,
     placeToVisit2,
   } = formData;
-  console.log({
-    accountIndex: accountIndex,
-    email: email,
-    password: password,
-    name: name,
-    tel: tel,
-    auth: auth,
-    position: position,
-    placeToVisit1: placeToVisit1,
-    placeToVisit: placeToVisit2,
-  });
+  // console.log({
+  //   accountIndex: accountIndex,
+  //   email: email,
+  //   password: password,
+  //   name: name,
+  //   tel: tel,
+  //   auth: auth,
+  //   position: position,
+  //   placeToVisit1: placeToVisit1,
+  //   placeToVisit: placeToVisit2,
+  // });
 
   return await fetch(`/api/Account/${accountIndex}`, {
     method: "PUT",
@@ -205,7 +205,6 @@ export async function apiPolicyRegister(formData, visitSiteIndex) {
 
 // 정책 삭제
 export async function apiPolicyDelete(agreementIndex) {
-  console.log(agreementIndex);
   return await fetch(`/api/Agreement/${agreementIndex}`, {
     method: "DELETE",
     headers: {
@@ -259,7 +258,6 @@ export async function apiAgreement({ queryKey }) {
 export async function apiAgreementOne({ queryKey }) {
   const AgreementIndex = queryKey[1];
 
-  console.log(AgreementIndex);
   return await fetch(`/api/Agreement/${AgreementIndex}`, {
     method: "GET",
     headers: {
@@ -277,7 +275,6 @@ export async function apiVisitSiteRegister(
   visitSiteIndex,
   checkIndex
 ) {
-  console.log(checkIndex);
   return await fetch(`/api/PlaceToVisit`, {
     method: "POST",
     headers: {
@@ -301,7 +298,7 @@ export async function apiVisitSiteRegister(
 // 방문지 불러오기
 export async function apiGetVisitSite({ queryKey }) {
   const visitSiteIndex = queryKey[1];
-  console.log(visitSiteIndex);
+
   return await fetch(`/api/PlaceToVisit?visitSiteIndex=${visitSiteIndex}`, {
     method: "GET",
     headers: {
@@ -339,7 +336,6 @@ export async function apiPlactToVisitEdit(props) {
 
 // 방문지 삭제하기
 export async function apiPlaceToVisitDelete(placeToVisitIndex) {
-  console.log(placeToVisitIndex);
   return await fetch(`/api/PlaceToVisit/${placeToVisitIndex}`, {
     method: "DELETE",
     headers: {
@@ -601,8 +597,6 @@ export async function apiGetVisitReservation({ queryKey }) {
     searchValue,
     placeToVisit,
   } = queryKey[1];
-  console.log("확인2:", visitSiteIndex);
-  console.log(queryKey[1]);
   return await fetch(
     `/api/VisitReservation/search?visitSiteIndex=${visitSiteIndex}&startDate=${startDate}&endDate=${endDate}&page=${page}&pageRange=${pageRange}&state=${state}&searchValue=${searchValue}&placeToVisit=${placeToVisit}`,
     {
@@ -638,7 +632,6 @@ export async function apiPutVisitReservationOne(
   formData,
   visitReservationIndex
 ) {
-  console.log(formData, visitReservationIndex);
   return await fetch(`/api/VisitReservation/${visitReservationIndex}/state`, {
     method: "PUT",
     headers: {
@@ -661,7 +654,7 @@ export async function apiGetLog({ queryKey }) {
   const paramsObj = queryKey[1];
   const searchParams = new URLSearchParams(paramsObj);
   const params = searchParams.toString();
-  console.log(params);
+
   return await fetch(`/api/Log/visitvisitlog?${params}`, {
     method: "GET",
     headers: {

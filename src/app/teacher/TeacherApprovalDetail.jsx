@@ -87,7 +87,6 @@ export default function TeacherApprovalDetail({ selectData, onClose }) {
   const onSubmit = (formData) => {
     if (isManager) {
       // 매니져 수정
-      console.log(formData);
       // alert(formData.name);
       // mutateEditManager(formData);
     } else {

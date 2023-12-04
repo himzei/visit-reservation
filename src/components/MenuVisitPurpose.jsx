@@ -13,12 +13,8 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import AddPurposeOfVisit from "./AddPurposeOfVisit";
-import {
-  apiGetPurposeOfVisit,
-  apiPurposeOfVisitDelete,
-  apiPurposeOfVisitEdit,
-} from "../api";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { apiPurposeOfVisitDelete, apiPurposeOfVisitEdit } from "../api";
+import { useMutation } from "react-query";
 import useVisitSite from "../hooks/useVisitSite";
 
 export default function MenuVisitPurpose({ lists, title }) {
@@ -33,18 +29,11 @@ export default function MenuVisitPurpose({ lists, title }) {
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
-  const queryClient = useQueryClient();
-
-  const { refetch } = useQuery(
-    ["getPurposeOfVisit", visitSiteIndex],
-    apiGetPurposeOfVisit
-  );
-
   const { mutate } = useMutation(apiPurposeOfVisitEdit, {
     onSuccess: (data) => {
-      queryClient.invalidateQueries("getPurposeOfVisit");
       if (data.result === 0) {
-        setEditIndex(null);
+        window.location.reload();
+        // setEditIndex(null);
       }
     },
   });

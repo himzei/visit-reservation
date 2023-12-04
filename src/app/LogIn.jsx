@@ -14,7 +14,6 @@ export default function LogIn() {
   const { mutate } = useMutation(login, {
     onSuccess: (data) => {
       localStorage.setItem("visitschool", data.token);
-      console.log(data.token);
       navigate("/");
       window.location.reload();
     },

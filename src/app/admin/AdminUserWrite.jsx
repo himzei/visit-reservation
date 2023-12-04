@@ -41,7 +41,7 @@ export default function AdminUserWrite({ onClose }) {
 
   // useMutation
   // 등록하기
-  const { mutate, data } = useMutation(
+  const { mutate } = useMutation(
     (formData) => adminManagerRegister(formData, visitSiteIndex),
     {
       onSuccess: (data) => {
@@ -53,6 +53,7 @@ export default function AdminUserWrite({ onClose }) {
             placeToVisitIndex: watch("placeToVisit1"),
           });
           handleCloseClick();
+          window.location.reload();
         }
       },
     }
@@ -142,30 +143,7 @@ export default function AdminUserWrite({ onClose }) {
               ))}
             </select>
           </div>
-          <div className="input-group">
-            <div>패스워드</div>
-            <input
-              type="password"
-              {...register("password", {
-                required: "패스워드를 입력해 주세요",
-              })}
-            />
-            <span className="form-errors">{errors?.password?.message}</span>
-          </div>
-          <div className="input-group">
-            <div>패스워드 확인</div>
-            <input
-              type="password"
-              {...register("password2", {
-                required: "이름을 입력해 주세요",
-              })}
-            />
-            <span className="form-errors">
-              {watch("password") !== watch("password2")
-                ? "패스워드를 일치시켜 주세요"
-                : null}
-            </span>
-          </div>
+
           <div className="input-group">
             <div>휴대전화번호</div>
             <input
@@ -180,6 +158,18 @@ export default function AdminUserWrite({ onClose }) {
             />
             <span className="form-errors">{errors?.tel?.message}</span>
           </div>
+
+          <div className="input-group">
+            <div>패스워드</div>
+            <input
+              type="text"
+              defaultValue={
+                watch("tel")?.length >= 11 ? watch("tel")?.slice(-4) : null
+              }
+            />
+            <span className="form-errors">{errors?.password?.message}</span>
+          </div>
+
           <div className="input-group">
             <div>이메일</div>
             <input

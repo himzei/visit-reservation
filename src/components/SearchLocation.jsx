@@ -25,7 +25,7 @@ export default function SearchLocation({ setSearchOption, searchOption }) {
     );
 
     const tempChild = dataVisitSite?.placeToVisits?.filter(
-      (item) => item.parentIndex === dataIndex.placeToVisitIndex
+      (item) => item.parentIndex === dataIndex?.placeToVisitIndex
     );
     setDataChild(tempChild);
   };
@@ -38,14 +38,14 @@ export default function SearchLocation({ setSearchOption, searchOption }) {
     <div className="search-location">
       <span>방문지</span>
       <select onChange={(e) => handleChange(e)}>
-        <option value="">선택해주세요</option>
+        <option>선택해주세요</option>
         {dataVisitSiteParent?.map((item, index) => (
           <option key={index} value={item.title}>
             {item.title}
           </option>
         ))}
       </select>
-      {dataChild.length > 0 && (
+      {dataChild && (
         <select onChange={(e) => handleChange(e)}>
           <option value="">선택해주세요</option>
           {dataChild?.map((item, index) => (

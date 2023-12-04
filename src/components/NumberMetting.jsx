@@ -1,19 +1,12 @@
 import { useQuery } from "react-query";
-import SearchDate from "./SearchDate";
 import { apiManagerInterviewStatis, apiVisitorInterviewStatis } from "../api";
 import useVisitSite from "../hooks/useVisitSite";
-import { timeEnd, timeStart } from "../utils/timeStatEnd";
-import { useState } from "react";
 import { mobileDash } from "../utils/mobileDash";
 
-export default function NumberMeeting() {
+export default function NumberMeeting({ searchOption, setSearchOption }) {
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
-  const [searchOption, setSearchOption] = useState({
-    startDate: timeStart(),
-    endDate: timeEnd(),
-  });
   // 담당자 면담 통계
   const { data: managerInterview } = useQuery(
     [
@@ -47,11 +40,11 @@ export default function NumberMeeting() {
           {/* <img src={PhotoIcon} alt="icon2" /> */}
           <h2>기간별 담당자 및 방문객 면담횟수</h2>
         </div>
-        <SearchDate
+        {/* <SearchDate
           searchOption={searchOption}
           setSearchOption={setSearchOption}
           title=""
-        />
+        /> */}
         <div className="interview-container">
           <div>
             <h3>담당자</h3>
@@ -59,8 +52,8 @@ export default function NumberMeeting() {
               <thead>
                 <tr>
                   <td>No</td>
-                  <td>이름</td>
-                  <td>상담횟수</td>
+                  <td>담당자</td>
+                  <td>방문횟수</td>
                 </tr>
               </thead>
               <tbody>
@@ -80,14 +73,16 @@ export default function NumberMeeting() {
               <thead>
                 <tr>
                   <td>No</td>
-                  <td>전화번호</td>
-                  <td>상담횟수</td>
+                  <td>이름</td>
+                  <td>연락처</td>
+                  <td>방문횟수</td>
                 </tr>
               </thead>
               <tbody>
                 {visitorInterview?.visitorInterviews?.map((item, index) => (
                   <tr>
                     <td>{index + 1}</td>
+                    <td>이름(백작업)</td>
                     <td>{mobileDash(item.visitorTel)}</td>
                     <td>{item.interviewCnt}</td>
                   </tr>

@@ -10,7 +10,6 @@ export default function Layout({ children, menu }) {
 
   const { pathname } = useLocation();
   const temp_data = menu.find((item) => item.url === pathname);
-  console.log(temp_data)
   const MAIN_TITLE = temp_data?.title || "설정";
   const SUB_TITLE = temp_data?.subTitle;
 

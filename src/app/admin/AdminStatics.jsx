@@ -7,7 +7,6 @@ import { apiNiceGetToken } from "../../api";
 
 export default function AdminStatics() {
   const { mutate, data } = useMutation(apiNiceGetToken);
-  console.log(data);
 
   useEffect(() => {
     if (navigator.geolocation) {

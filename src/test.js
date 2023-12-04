@@ -15,7 +15,6 @@ const NiceTokenDatas = () => {
     .then((res) => res.json())
     .then((data) => {
       // 호출 성공
-      console.log("복호화 호출 결과:", data);
       setTokenData(data);
     })
     .catch((error) => {

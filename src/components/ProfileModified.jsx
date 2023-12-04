@@ -106,11 +106,11 @@ export default function ProfileModified() {
     //console.log(checkInputValue, test.toString())
 
     if (checkInputValue === test.toString()) {
-      console.log("문자 인증 값과 작성한 인증값이 동일함");
+      // console.log("문자 인증 값과 작성한 인증값이 동일함");
       setResultAuth("인증되었습니다.");
       setAgreeState(true); // 본인인증 성공 시 agreeState를 true로 설정
     } else if (agreeState === false) {
-      console.log("문자 인증 값과 작성한 인증값이 동일하지않음");
+      // console.log("문자 인증 값과 작성한 인증값이 동일하지않음");
       alert("인증번호가 다릅니다.");
       // 상태 업데이트로 UI 변경
       setResultAuth("다시 시도해주세요.");
@@ -167,11 +167,10 @@ export default function ProfileModified() {
     mutatePassword(data);
   };
 
-  const {
-    data: dataAtSetting,
-    refetch,
-    isLoading,
-  } = useQuery(["getAtsetting", accountIndex], apiAtSettingGet);
+  const { data: dataAtSetting, isLoading } = useQuery(
+    ["getAtsetting", accountIndex],
+    apiAtSettingGet
+  );
 
   const [isReceivedMon, setIsReceivedMon] = useState();
   const [isReceivedTue, setIsReceivedTue] = useState();
@@ -197,7 +196,7 @@ export default function ProfileModified() {
     }
   }, [dataAtSetting]);
 
-  console.log("hello", isReceivedFri);
+  // console.log("hello", isReceivedFri);
 
   const { mutate: mutateAlim } = useMutation(
     (data) => apiAtSettingPost(data, accountIndex),
@@ -236,7 +235,7 @@ export default function ProfileModified() {
         {/* 인증수단 */}
         <VStack spacing={4} w="full" alignItems="flex-start">
           <HStack>
-            <Text width="250px">전화번호 인증</Text>
+            <Text width="250px">비밀번호 변경</Text>
             <Input
               className=""
               {...register("tel", {
@@ -376,7 +375,7 @@ export default function ProfileModified() {
             되돌리기
           </Button>
           <Button type="submit" mx="2" colorScheme="blue">
-            등록하기
+            변경하기
           </Button>
         </div>
       </form>
@@ -478,7 +477,7 @@ export default function ProfileModified() {
           </div>
           <div className="btn-container">
             <Button mx="2" colorScheme="blue" type="submit">
-              전송하기
+              설정하기
             </Button>
           </div>
         </form>

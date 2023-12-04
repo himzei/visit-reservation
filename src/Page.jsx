@@ -9,7 +9,7 @@ export default function Page() {
       <HStack w="1024px">
         <HStack alignItems="flex-start">
           {/* 1 */}
-          <Link to="/security/status">
+          <Link to="/security/today">
             <Button>
               <Text fontWeight="600" fontSize="20">
                 지킴이페이지 이동

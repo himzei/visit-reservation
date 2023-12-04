@@ -6,7 +6,6 @@ import "./SecurityRegister.css";
 import React from "react";
 import Layout from "../../components/Layout";
 import { SECURITY_LIST } from "../../lib/menuList";
-import RegIcon1 from "../../assets/svg/security-register1.svg";
 import RegIcon2 from "../../assets/svg/security-register2.svg";
 import RegIcon3 from "../../assets/svg/security-register3.svg";
 import { Button } from "@chakra-ui/react";

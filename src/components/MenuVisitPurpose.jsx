@@ -13,14 +13,18 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import AddPurposeOfVisit from "./AddPurposeOfVisit";
-import { apiPurposeOfVisitDelete, apiPurposeOfVisitEdit } from "../api";
-import { useMutation } from "react-query";
+import {
+  apiGetPurposeOfVisit,
+  apiPurposeOfVisitDelete,
+  apiPurposeOfVisitEdit,
+} from "../api";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import useVisitSite from "../hooks/useVisitSite";
 
 export default function MenuVisitPurpose({ lists, title }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [visitOfPurpose, setVisitOfPurpose] = useState(
-    lists.sort((a, b) => a.itemOrder - b.itemOrder)
+    lists?.sort((a, b) => a.itemOrder - b.itemOrder) || []
   );
   const [selectEdit, setSelectEdit] = useState(null);
   const [editTitle, setEditTitle] = useState("");
@@ -29,12 +33,19 @@ export default function MenuVisitPurpose({ lists, title }) {
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
+  const queryClient = useQueryClient();
+
+  const { refetch } = useQuery(
+    ["getPurposeOfVisit", visitSiteIndex],
+    apiGetPurposeOfVisit
+  );
+
   const { mutate } = useMutation(apiPurposeOfVisitEdit, {
     onSuccess: (data) => {
+      queryClient.invalidateQueries("getPurposeOfVisit");
       if (data.result === 0) {
         setEditIndex(null);
       }
-      window.location.reload();
     },
   });
   const handleChange = (e) => {
@@ -74,7 +85,7 @@ export default function MenuVisitPurpose({ lists, title }) {
   };
 
   const handleOrderSave = () => {
-    visitOfPurpose.map((item, index) => {
+    visitOfPurpose?.map((item, index) => {
       mutate([
         item.title,
         {
@@ -114,7 +125,7 @@ export default function MenuVisitPurpose({ lists, title }) {
               delayOnTouchOnly={true}
               delay={2}
             >
-              {visitOfPurpose.map((item, index) => (
+              {visitOfPurpose?.map((item, index) => (
                 <div key={index}>
                   {editIndex === index ? (
                     <form onSubmit={handleSubmit}>

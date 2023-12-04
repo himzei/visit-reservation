@@ -14,7 +14,7 @@ import { useState } from "react";
 import { ReactSortable } from "react-sortablejs";
 import AddPlaceToVisit from "./AddPlaceToVisit";
 import useVisitSite from "../hooks/useVisitSite";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { apiPlaceToVisitDelete, apiPlactToVisitEdit } from "../api";
 import { useEffect } from "react";
 
@@ -53,42 +53,30 @@ export default function MenuPlaceToVisit({ lists, title }) {
 
   const [placeToVisit, setPlaceToVisit] = useState(
     lists
-      .filter((item) => item.parentIndex === -1)
+      ?.filter((item) => item.parentIndex === -1)
       .sort((a, b) => a.itemOrder - b.itemOrder)
   );
 
   useEffect(() => {
     const temp = lists
-      .filter((item) => item.parentIndex === placeVisitIndex)
+      ?.filter((item) => item.parentIndex === placeVisitIndex)
       .sort((a, b) => (a.itemOrder = b.itemOrder));
     setPlaceToVisitSecond(temp);
   }, [placeVisitIndex]);
 
+  const queryClient = useQueryClient();
   const { mutate } = useMutation(apiPlactToVisitEdit, {
     onSuccess: (data) => {
       if (data.result === 0) {
         setEditIndex(null);
+        queryClient.invalidateQueries(["getVisitSite"]);
       }
-      window.location.reload();
     },
   });
 
-  console.log(placeToVisitSecond);
-
   const handleOrderSave = () => {
-    // placeToVisit.map((item, index) => {
-    //   mutate([
-    //     item.title,
-    //     {
-    //       visitSiteIndex,
-    //       placeToVisitIndex: item.placeToVisitIndex,
-    //       parentIndex: item.parentIndex,
-    //       itemOrder: index + 1,
-    //     },
-    //   ]);
-    // });
-    placeToVisitSecond.map((item, index) => {
-      console.log([
+    placeToVisit?.map((item, index) => {
+      mutate([
         item.title,
         {
           visitSiteIndex,
@@ -98,6 +86,17 @@ export default function MenuPlaceToVisit({ lists, title }) {
         },
       ]);
     });
+    // placeToVisitSecond.map((item, index) => {
+    //   console.log([
+    //     item.title,
+    //     {
+    //       visitSiteIndex,
+    //       placeToVisitIndex: item.placeToVisitIndex,
+    //       parentIndex: item.parentIndex,
+    //       itemOrder: index + 1,
+    //     },
+    //   ]);
+    // });
   };
 
   const handleEditClick = (index, placeToVisitIndex) => {
@@ -183,7 +182,7 @@ export default function MenuPlaceToVisit({ lists, title }) {
                 delayOnTouchOnly={true}
                 delay={2}
               >
-                {placeToVisit.map((item, index) => (
+                {placeToVisit?.map((item, index) => (
                   <div key={index}>
                     {editIndex === index ? (
                       <form onSubmit={handleSubmit}>

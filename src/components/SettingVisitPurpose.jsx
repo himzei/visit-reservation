@@ -2,10 +2,7 @@ import { useQuery } from "react-query";
 import { apiGetPurposeOfVisit, apiGetVisitSite } from "../api";
 import PhotoIcon from "../assets/svg/photo-icon.svg";
 import useVisitSite from "../hooks/useVisitSite";
-import OrderItem from "./OrderItem";
-import OrderItemOne from "./OrderItemOne";
-
-import { Button, HStack, Spinner } from "@chakra-ui/react";
+import { HStack, Spinner } from "@chakra-ui/react";
 import { useState } from "react";
 import { VisitSiteContext } from "../context/VisitSiteContext";
 import MenuVisitPurpose from "./MenuVisitPurpose";

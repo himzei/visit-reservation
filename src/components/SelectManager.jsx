@@ -1,6 +1,4 @@
-import { useForm } from "react-hook-form";
 import RegIcon3 from "../assets/svg/person-icon.svg";
-import { useQuery } from "react-query";
 
 export default function SelectManager({ data }) {
   return (

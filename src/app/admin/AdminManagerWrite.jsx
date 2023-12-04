@@ -46,7 +46,7 @@ export default function AdminManagerWrite({ onClose }) {
     {
       onSuccess: (data) => {
         if (data.result === 0) {
-          queryClient.invalidateQueries("getVisitor");
+          queryClient.invalidateQueries({ queryKey: ["getVisitor"] });
           onClose();
         }
       },

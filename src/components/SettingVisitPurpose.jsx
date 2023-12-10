@@ -15,12 +15,12 @@ export default function SettingVisitPurpose() {
     ["getVisitSite", visitSiteIndex],
     apiGetVisitSite
   );
-  const locationGrade = dataVisitSite?.placeToVisits;
+  const locationGrade = dataVisitSite?.placeToVisits || [];
 
   // 방문목적 설정
   const { isLoading: isLoadingPupposeOfVisit, data: dataPurposeOfVisit } =
     useQuery(["getPurposeOfVisit", visitSiteIndex], apiGetPurposeOfVisit);
-  const purposeOfVisit = dataPurposeOfVisit?.purposeOfVisits;
+  const purposeOfVisit = dataPurposeOfVisit?.purposeOfVisits || [];
   const lengthPurposeOfVisit = purposeOfVisit?.length;
 
   const [placeVisitIndex, setPlaceVisitIndex] = useState(-1);

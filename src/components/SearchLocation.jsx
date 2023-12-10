@@ -14,11 +14,12 @@ export default function SearchLocation({ setSearchOption, searchOption }) {
     ["getVisitSite", visitSiteIndex],
     apiGetVisitSite
   );
-
+  const [firstVisit, setFirstVist] = useState();
   const [dataChild, setDataChild] = useState([]);
 
   const handleChange = (e) => {
     const value = e.target.value;
+    setFirstVist(value);
     setSearchOption({ ...searchOption, placeToVisit: value });
     const dataIndex = dataVisitSite?.placeToVisits?.find(
       (item) => item.title === value
@@ -28,6 +29,14 @@ export default function SearchLocation({ setSearchOption, searchOption }) {
       (item) => item.parentIndex === dataIndex?.placeToVisitIndex
     );
     setDataChild(tempChild);
+  };
+
+  const handleChildChange = (e) => {
+    const value = e.target.value;
+    setSearchOption({
+      ...searchOption,
+      placeToVisit: `${firstVisit}${value}` || `${firstVisit} ${value}`,
+    });
   };
 
   const dataVisitSiteParent = dataVisitSite?.placeToVisits?.filter(
@@ -45,9 +54,10 @@ export default function SearchLocation({ setSearchOption, searchOption }) {
           </option>
         ))}
       </select>
+
       {dataChild && (
-        <select onChange={(e) => handleChange(e)}>
-          <option value="">선택해주세요</option>
+        <select onChange={(e) => handleChildChange(e)}>
+          <option>선택해주세요</option>
           {dataChild?.map((item, index) => (
             <option key={index} value={item.title}>
               {item.title}

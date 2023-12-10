@@ -11,6 +11,8 @@ import {
   apiPutVisitor,
 } from "../../api";
 import { Button, Grid, HStack, Stack } from "@chakra-ui/react";
+import { useState } from "react";
+import { useEffect } from "react";
 
 export default function AdminManagerDetail({ selectEdit, onClose }) {
   const queryClient = useQueryClient();
@@ -30,6 +32,32 @@ export default function AdminManagerDetail({ selectEdit, onClose }) {
     apiGetVisitSite
   );
 
+  const firstPlace = selectEdit.placeToVisit.split(" ")[0];
+  const secondPlace = selectEdit.placeToVisit.split(" ")[1];
+
+  const [firstData, setFirstData] = useState(firstPlace);
+  const [dataChild, setDataChild] = useState();
+
+  const parentSite = dataVisitSite?.placeToVisits?.filter(
+    (item) => item.parentIndex === -1
+  );
+
+  const handleSiteChange = (e) => {
+    const title = e.target.value;
+    setFirstData(title);
+  };
+
+  useEffect(() => {
+    const { placeToVisitIndex } = parentSite?.find(
+      (item) => item.title === firstData
+    );
+
+    const tempChild = dataVisitSite?.placeToVisits?.filter(
+      (item) => item.parentIndex === parseInt(placeToVisitIndex)
+    );
+    setDataChild(tempChild);
+  }, [firstData]);
+
   const handleClose = () => {
     onClose();
   };
@@ -48,7 +76,10 @@ export default function AdminManagerDetail({ selectEdit, onClose }) {
     onSettled: () => queryClient.invalidateQueries("getVisitor"),
   });
   const onSubmit = (formData) => {
-    mutate(formData);
+    mutate({
+      ...formData,
+      placeToVisit: formData.placeToVisit1 + " " + formData.placeToVisit2,
+    });
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -108,13 +139,30 @@ export default function AdminManagerDetail({ selectEdit, onClose }) {
             <h2>방문장소 정보</h2>
           </div>
           <div className="input-group">
-            <div>방문지</div>
-            <select {...register("placeToVisit")}>
-              {dataVisitSite?.placeToVisits?.map((item, index) => (
+            <div>방문지 대분류</div>
+            <select {...register("placeToVisit1")} onChange={handleSiteChange}>
+              <option>선택해주세요</option>
+              {parentSite?.map((item, index) => (
                 <option
                   key={index}
                   defaultValue={item.title}
-                  selected={item.title === selectEdit.placeToVisit}
+                  selected={item.title === firstPlace}
+                >
+                  {item.title}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="input-group">
+            <div>방문지 중분류</div>
+            <select {...register("placeToVisit2")}>
+              <option>선택해주세요</option>
+              {dataChild?.map((item, index) => (
+                <option
+                  key={index}
+                  defaultValue={item.title}
+                  selected={item.title === secondPlace}
                 >
                   {item.title}
                 </option>
@@ -124,6 +172,7 @@ export default function AdminManagerDetail({ selectEdit, onClose }) {
           <div className="input-group">
             <div>방문 목적</div>
             <select {...register("purposeOfVisit")}>
+              <option>선택해주세요</option>
               {dataPurposeOfVisits?.purposeOfVisits?.map((item, index) => (
                 <option
                   key={index}

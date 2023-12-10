@@ -11,6 +11,7 @@ import {
 } from "../../api";
 import useVisitSite from "../../hooks/useVisitSite";
 import { Button, Grid, HStack, Stack, Text, VStack } from "@chakra-ui/react";
+import { useState } from "react";
 
 export default function AdminManagerWrite({ onClose }) {
   const queryClient = useQueryClient();
@@ -29,12 +30,31 @@ export default function AdminManagerWrite({ onClose }) {
     apiGetPurposeOfVisit
   );
 
+  const [dataChild, setDataChild] = useState();
   // 방문지 불러오기
   const { data: dataVisitSite } = useQuery(
     ["getVisitSite", visitSiteIndex],
     apiGetVisitSite
   );
 
+  const parentSite = dataVisitSite?.placeToVisits?.filter(
+    (item) => item.parentIndex === -1
+  );
+
+  const handleSiteChange = (e) => {
+    const title = e.target.value;
+    saveChildData(title);
+  };
+
+  const saveChildData = (title) => {
+    const { placeToVisitIndex } = parentSite?.find(
+      (item) => item.title === title
+    );
+    const childSite = dataVisitSite?.placeToVisits?.filter(
+      (item) => item.parentIndex === parseInt(placeToVisitIndex)
+    );
+    setDataChild(childSite);
+  };
   const {
     register,
     handleSubmit,
@@ -54,7 +74,10 @@ export default function AdminManagerWrite({ onClose }) {
   );
 
   const onSubmit = (formData) => {
-    mutate(formData);
+    mutate({
+      ...formData,
+      placeToVisit: formData.placeToVisit1 + " " + formData.placeToVisit2,
+    });
   };
 
   return (
@@ -107,9 +130,22 @@ export default function AdminManagerWrite({ onClose }) {
             <h2>방문장소 정보</h2>
           </div>
           <div className="input-group">
-            <div>방문지</div>
-            <select {...register("placeToVisit")}>
-              {dataVisitSite?.placeToVisits?.map((item, index) => (
+            <div>방문지 대분류</div>
+            <select {...register("placeToVisit1")} onChange={handleSiteChange}>
+              <option>선택해주세요</option>
+              {parentSite?.map((item, index) => (
+                <option key={index} value={item.title}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="input-group">
+            <div>방문지 중분류</div>
+            <select {...register("placeToVisit2")}>
+              <option>선택해주세요</option>
+              {dataChild?.map((item, index) => (
                 <option key={index} value={item.title}>
                   {item.title}
                 </option>

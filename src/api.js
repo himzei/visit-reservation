@@ -54,6 +54,7 @@ export async function apiTokenLogin() {
 
 // 사용자관리 - 관리자등록
 export async function adminManagerRegister(formData, visitSiteIndex) {
+  console.log(formData);
   return await fetch(`/api/Account`, {
     method: "POST",
     headers: {

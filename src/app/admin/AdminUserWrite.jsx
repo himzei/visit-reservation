@@ -162,6 +162,7 @@ export default function AdminUserWrite({ onClose }) {
           <div className="input-group">
             <div>패스워드</div>
             <input
+              {...register("password")}
               type="text"
               defaultValue={
                 watch("tel")?.length >= 11 ? watch("tel")?.slice(-4) : null

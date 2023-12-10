@@ -46,29 +46,43 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     apiGetVisitReservationOne
   );
 
+  // 상세데이터에서 방문지 정보 불러오기
+  // 불러온 방문지 데이터에서 PlaceToVisitIndex 값 추출
+  // plceToVisitIndex 값으로 등록된 매니져의와 비교하여 필터링
+  const tempString = data?.visitors[0]?.placeToVisit;
+  const stringVisit = tempString?.split(" ")[0].substr(0, 4);
+
   // 방문지 불러오기
   const { data: dataVisitSite } = useQuery(
     ["getVisitSite", visitSiteIndex],
     apiGetVisitSite
   );
-
-  const placeToVisit = data?.visitors[0]?.placeToVisit;
-  const temp = dataVisitSite?.placeToVisits?.find(
-    (item) => item.title === placeToVisit
+  console.log(dataVisitSite);
+  const tempVisit = dataVisitSite?.placeToVisits?.find((item) =>
+    stringVisit?.includes(item.title)
   );
-  const selectToVisitIndex = temp?.placeToVisitIndex;
-  // console.log(selectToVisitIndex);
+
+  // 방문지의 선택지
+  const selectedIndex = tempVisit?.placeToVisitIndex;
+
+  // 39
+
+  console.log(selectedIndex);
 
   const tempAccount = dataManager?.accounts;
 
   // 불러온 모든 매니져 중에 방문지가 현재 불러온 페이지의 방문지와 같은 경우만 리스트
   const selectAccount = tempAccount?.filter(
-    (item) => item.managePlaceToVisit?.placeToVisitIndex === selectToVisitIndex
+    (item) =>
+      item.managePlaceToVisit?.placeToVisitIndex === parseInt(selectedIndex)
   );
 
-  const inChargedManger =
-    selectAccount?.length !== 0 ? selectAccount : dataManager.accounts;
+  // console.log(selectAccount);
 
+  const inChargedManger =
+    selectAccount?.length !== 0 ? selectAccount : dataManager?.accounts;
+
+  // console.log(inChargedManger);
   // useMutation
   // 승인 반려 수정
   const { mutate: mutateState } = useMutation(

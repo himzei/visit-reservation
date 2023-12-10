@@ -25,6 +25,7 @@ export default function MenuPlaceToVisit({ lists, title }) {
   const [selectEdit, setSelectEdit] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editIndex, setEditIndex] = useState(null);
+  const [editSecondIndex, setEditSecondIndex] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const [placeVisitIndex, setPlaceVisitIndex] = useState(0);
   const [placeToVisitSecond, setPlaceToVisitSecond] = useState([]);
@@ -54,13 +55,13 @@ export default function MenuPlaceToVisit({ lists, title }) {
   const [placeToVisit, setPlaceToVisit] = useState(
     lists
       ?.filter((item) => item.parentIndex === -1)
-      .sort((a, b) => a.itemOrder - b.itemOrder)
+      .sort((a, b) => parseInt(a?.itemOrder) - (parseInt(b?.itemOrder) || 1))
   );
 
   useEffect(() => {
     const temp = lists
       ?.filter((item) => item.parentIndex === placeVisitIndex)
-      .sort((a, b) => (a.itemOrder = b.itemOrder));
+      .sort((a, b) => parseInt(a?.itemOrder) - (parseInt(b?.itemOrder) || 1));
     setPlaceToVisitSecond(temp);
   }, [placeVisitIndex]);
 
@@ -70,6 +71,7 @@ export default function MenuPlaceToVisit({ lists, title }) {
       if (data.result === 0) {
         setEditIndex(null);
         queryClient.invalidateQueries(["getVisitSite"]);
+        window.location.reload();
       }
     },
   });
@@ -86,21 +88,25 @@ export default function MenuPlaceToVisit({ lists, title }) {
         },
       ]);
     });
-    // placeToVisitSecond.map((item, index) => {
-    //   console.log([
-    //     item.title,
-    //     {
-    //       visitSiteIndex,
-    //       placeToVisitIndex: item.placeToVisitIndex,
-    //       parentIndex: item.parentIndex,
-    //       itemOrder: index + 1,
-    //     },
-    //   ]);
-    // });
+    placeToVisitSecond.map((item, index) => {
+      mutate([
+        item.title,
+        {
+          visitSiteIndex,
+          placeToVisitIndex: item.placeToVisitIndex,
+          parentIndex: item.parentIndex,
+          itemOrder: index + 1,
+        },
+      ]);
+    });
   };
 
-  const handleEditClick = (index, placeToVisitIndex) => {
-    setEditIndex(index);
+  const handleEditClick = (index, placeToVisitIndex, secondSelect) => {
+    if (secondSelect === "select") {
+      setEditSecondIndex(index);
+    } else {
+      setEditIndex(index);
+    }
     const editPlaceToVisit = lists?.filter(
       (item) => item.placeToVisitIndex === placeToVisitIndex
     );
@@ -136,7 +142,7 @@ export default function MenuPlaceToVisit({ lists, title }) {
     ]);
   };
 
-  const handleClick = (index, placeToVisitIndex) => {
+  const handleClick = (index, placeToVisitIndex, second) => {
     setSelectedItem(index);
     setPlaceVisitIndex(placeToVisitIndex);
   };
@@ -160,7 +166,7 @@ export default function MenuPlaceToVisit({ lists, title }) {
           <ModalHeader>방문지 추가(2)</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <AddPlaceToVisit onClose={onClose} checkIndex={checkIndex} />
+            <AddPlaceToVisit onClose={onClose} checkIndex={placeVisitIndex} />
           </ModalBody>
         </ModalContent>
       </Modal>
@@ -277,7 +283,7 @@ export default function MenuPlaceToVisit({ lists, title }) {
               >
                 {placeToVisitSecond?.map((item, index) => (
                   <div key={index}>
-                    {editIndex === index ? (
+                    {editSecondIndex === index ? (
                       <form onSubmit={handleSubmit}>
                         <div className="draggable-group">
                           <div>
@@ -303,7 +309,7 @@ export default function MenuPlaceToVisit({ lists, title }) {
                                 저장
                               </Button>
                             </div>
-                            <div onClick={() => setEditIndex(null)}>
+                            <div onClick={() => setEditSecondIndex(null)}>
                               <Button
                                 colorScheme="red"
                                 variant="outline"
@@ -321,7 +327,11 @@ export default function MenuPlaceToVisit({ lists, title }) {
                         <div className="edit-delete-btn">
                           <div
                             onClick={() =>
-                              handleEditClick(index, item.placeToVisitIndex)
+                              handleEditClick(
+                                index,
+                                item.placeToVisitIndex,
+                                "select"
+                              )
                             }
                           >
                             <Button size="xs">수정</Button>

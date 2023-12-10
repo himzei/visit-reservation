@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { apiVisitSiteRegister } from "../api";
 
 export default function AddPlaceToVisit({ onClose, checkIndex }) {
+  console.log(checkIndex);
   const queryClient = useQueryClient();
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;

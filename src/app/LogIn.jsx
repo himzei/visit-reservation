@@ -14,7 +14,15 @@ export default function LogIn() {
   const { mutate } = useMutation(login, {
     onSuccess: (data) => {
       localStorage.setItem("visitschool", data.token);
-      navigate("/");
+      if (data.auth === 0) {
+        navigate("/admin/confirm");
+      } else if (data.auth === 1) {
+        navigate("/teacher/today");
+      } else if (data.auth === 2) {
+        navigate("/security/today");
+      }
+
+      console.log(data);
       window.location.reload();
     },
     //

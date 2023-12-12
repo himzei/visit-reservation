@@ -1,6 +1,6 @@
 import { Outlet, createBrowserRouter } from "react-router-dom";
 import NotFound from "./app/NotFound";
-import Page from "./Page";
+
 import LogIn from "./app/LogIn";
 import SecurityStatus from "./app/security/SecurityStatus";
 import TeacherApproval from "./app/teacher/TeacherApproval";
@@ -31,7 +31,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Page />,
+        element: <LogIn />,
       },
       {
         path: "login",

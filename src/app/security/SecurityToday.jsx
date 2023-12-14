@@ -33,6 +33,8 @@ export default function SecurityToday() {
     ],
     apiGetVisitReservation
   );
+
+  console.log(data);
   const totalItemsCount = data?.totalCnt;
   const handlePageChange = (page) => {
     setPage(page);

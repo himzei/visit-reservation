@@ -598,6 +598,16 @@ export async function apiGetVisitReservation({ queryKey }) {
     searchValue,
     placeToVisit,
   } = queryKey[1];
+  console.log(
+    visitSiteIndex,
+    startDate,
+    endDate,
+    page,
+    pageRange,
+    state,
+    searchValue,
+    placeToVisit
+  );
   return await fetch(
     `/api/VisitReservation/search?visitSiteIndex=${visitSiteIndex}&startDate=${startDate}&endDate=${endDate}&page=${page}&pageRange=${pageRange}&state=${state}&searchValue=${searchValue}&placeToVisit=${placeToVisit}`,
     {

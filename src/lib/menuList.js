@@ -32,11 +32,6 @@ export const TEACHER_LIST = [
     subTitle: "방문객 예약을 등록해 보세요.",
     url: "/teacher/register",
   },
-  {
-    title: "비밀번호 변경",
-    subTitle: "정보 변경을 해보세요.",
-    url: "/teacher/profile",
-  },
 ];
 
 export const ADMIN_LIST = [

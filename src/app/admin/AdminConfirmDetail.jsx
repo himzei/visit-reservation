@@ -167,8 +167,8 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
   const handleChange = (e) => {
     const name = e.target.value;
     const temp = dataManager?.accounts?.find((item) => item.name === name);
-    setNanagerPosition(temp.position);
-    setAccountIndex(temp.accountIndex);
+    setNanagerPosition(temp?.position);
+    setAccountIndex(temp?.accountIndex);
   };
 
   return (
@@ -241,7 +241,7 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
             <div className="input-group">
               <div>이름</div>
               <select {...register("name")} onChange={(e) => handleChange(e)}>
-                <option>선택해주세요</option>
+                <option value="">선택해주세요</option>
                 {inChargedManger?.map((item, index) => (
                   <option
                     key={index}

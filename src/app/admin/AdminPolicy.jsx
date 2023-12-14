@@ -174,10 +174,10 @@ export default function AdminPolicy() {
           ))}
 
           <hr />
-          <div className="title">새 정책관리 작성하기</div>
+          <div className="title">공지 및 동의 정보 작성하기</div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="save-group">
-              <ButtonSearch text="저장" />
+              <ButtonSearch text="추가" />
             </div>
             {/* 테이블 1 */}
             <table>

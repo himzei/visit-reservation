@@ -8,6 +8,8 @@ import { IoIosSettings } from "react-icons/io";
 export default function Layout({ children, menu }) {
   const { data } = useTokenLogin();
 
+  console.log(data);
+
   const { pathname } = useLocation();
   const temp_data = menu.find((item) => item.url === pathname);
   const MAIN_TITLE = temp_data?.title || "설정";
@@ -31,9 +33,19 @@ export default function Layout({ children, menu }) {
             <div className="avatar-group">
               <Avatar name={data?.userName} />
               <div className="icon-setting">
-                <Link to="/admin/profile">
-                  <IoIosSettings size="20px" />
-                </Link>
+                {data?.auth === 0 ? (
+                  <Link to="/admin/profile">
+                    <IoIosSettings size="20px" />
+                  </Link>
+                ) : data?.auth === 1 ? (
+                  <Link to="/teacher/profile">
+                    <IoIosSettings size="20px" />
+                  </Link>
+                ) : (
+                  <Link to="/security/profile">
+                    <IoIosSettings size="20px" />
+                  </Link>
+                )}
               </div>
             </div>
             <p>{data?.userName}</p>

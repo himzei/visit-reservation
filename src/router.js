@@ -22,6 +22,7 @@ import SecurityToday from "./app/security/SecurityToday";
 import TeacherToday from "./app/teacher/TeacherToday";
 import ProtectedRouteSecurity from "./components/ProtectedRouteSecurity";
 import ProtectedRouteTeacher from "./components/ProtectedRouteTeacher";
+import SecurityProfile from "./app/security/SecurityProfile";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
           {
             path: "today",
             element: <SecurityToday />,
+          },
+          {
+            path: "profile",
+            element: <SecurityProfile />,
           },
         ],
       },

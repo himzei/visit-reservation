@@ -30,6 +30,8 @@ export default function TeacherToday() {
     searchValue: "",
   });
 
+  console.log(searchOption);
+
   const { data, isLoading } = useQuery(
     [
       "getVisitReservation",

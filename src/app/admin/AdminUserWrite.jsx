@@ -45,6 +45,9 @@ export default function AdminUserWrite({ onClose }) {
     (formData) => adminManagerRegister(formData, visitSiteIndex),
     {
       onSuccess: (data) => {
+        if (data.result === -2) {
+          alert("이미 등록된 아이디/이메일입니다. ");
+        }
         if (data.result === 0) {
           const accountIndex = data.accountIndex;
           manageMutate({
@@ -64,7 +67,7 @@ export default function AdminUserWrite({ onClose }) {
   // }
 
   const onSubmit = (formData) => {
-    console.log({
+    mutate({
       ...formData,
       password: watch("tel")?.length >= 11 ? watch("tel")?.slice(-4) : null,
     });
@@ -181,6 +184,10 @@ export default function AdminUserWrite({ onClose }) {
               type="text"
               {...register("email", {
                 required: "이메일을 입력해 주세요",
+                pattern: {
+                  value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                  message: "이메일 형식에 맞게 입력해 주세요",
+                },
               })}
             />
             <span className="form-errors">{errors?.email?.message}</span>
@@ -191,12 +198,14 @@ export default function AdminUserWrite({ onClose }) {
           </div>
           <div className="input-group">
             <div>분류</div>
-            <select {...register("auth", { required: true })}>
+            <select {...register("auth", { required: "분류를 선택하세요" })}>
               {/* 관리자가 관리자를 생성못함 */}
               {/* <option className="select-default" value={0}>
                 관리자
               </option> */}
-              <option className="select-default">선택하세요</option>
+              <option className="select-default" value="">
+                선택하세요
+              </option>
               <option className="select-default" value={1}>
                 담당자
               </option>
@@ -204,6 +213,7 @@ export default function AdminUserWrite({ onClose }) {
                 지킴이실
               </option>
             </select>
+            <span className="form-errors">{errors?.auth?.message}</span>
           </div>
         </section>
         <section>

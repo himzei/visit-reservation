@@ -2,7 +2,11 @@ import "./SearchDate.css";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { dateChange } from "../utils/dateChange";
+import {
+  dateChange,
+  dateChangeEnd,
+  dateChangeStart,
+} from "../utils/dateChange";
 
 export default function SearchDate({
   searchOption,
@@ -17,8 +21,8 @@ export default function SearchDate({
     return afterDate;
   };
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(calcMonth(1));
+  const [startDate, setStartDate] = useState(calcMonth(1));
+  const [endDate, setEndDate] = useState(new Date());
 
   const handleChange = (e) => {
     const duration = e.target.value;
@@ -29,8 +33,8 @@ export default function SearchDate({
   useEffect(() => {
     setSearchOption({
       ...searchOption,
-      startDate: dateChange(startDate),
-      endDate: dateChange(endDate),
+      startDate: dateChangeStart(startDate),
+      endDate: dateChangeEnd(endDate),
     });
   }, [startDate, endDate]);
 

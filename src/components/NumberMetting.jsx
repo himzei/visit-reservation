@@ -82,7 +82,7 @@ export default function NumberMeeting({ searchOption, setSearchOption }) {
                 {visitorInterview?.visitorInterviews?.map((item, index) => (
                   <tr>
                     <td>{index + 1}</td>
-                    <td>이름(백작업)</td>
+                    <td>{item.visitorName}</td>
                     <td>{mobileDash(item.visitorTel)}</td>
                     <td>{item.interviewCnt}</td>
                   </tr>

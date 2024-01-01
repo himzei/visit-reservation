@@ -11,6 +11,7 @@ import {
 } from "../api";
 import useUser from "../hooks/useUser";
 import { useEffect } from "react";
+import { BiSolidHelpCircle } from "react-icons/bi";
 
 export default function ProfileModified() {
   const [test, setTest] = useState("");
@@ -483,6 +484,24 @@ export default function ProfileModified() {
             </Button>
           </div>
         </form>
+      </section>
+      <section>
+        <div className="help-container">
+          <div className="help-title">
+            <span>
+              <BiSolidHelpCircle />
+            </span>
+            <span>도움말</span>
+          </div>
+          <div class="help-content">
+            <p className="help_question">
+              Q. 비밀번호를 5번 틀려서 로그인이 안돼요
+            </p>
+            <p className="help_answer">
+              A. 썬코리아 (041-425-2063) 로 문의주세요.
+            </p>
+          </div>
+        </div>
       </section>
     </div>
   );

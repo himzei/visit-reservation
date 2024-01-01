@@ -13,11 +13,14 @@ import SearchDate from "../../components/SearchDate";
 import SearchKeyword from "../../components/SearchKeyword";
 import Pagination from "react-js-pagination";
 import { HStack, Spinner } from "@chakra-ui/react";
+import useTokenLogin from "../../hooks/useTokenLogin";
 
 export default function TeacherToday() {
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
+  const { data: userData } = useTokenLogin();
+  console.log(userData);
 
   const [page, setPage] = useState(1);
 
@@ -28,8 +31,6 @@ export default function TeacherToday() {
     endDate: timeEnd(),
     searchValue: "",
   });
-
-  console.log(searchOption);
 
   const { data, isLoading } = useQuery(
     [

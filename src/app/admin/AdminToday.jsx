@@ -10,7 +10,6 @@ import useVisitSite from "../../hooks/useVisitSite";
 import { timeEnd, timeStart } from "../../utils/timeStatEnd";
 import SearchLocation from "../../components/SearchLocation";
 import SearchDate from "../../components/SearchDate";
-import SearchStatus from "../../components/SearchStatus";
 import SearchKeyword from "../../components/SearchKeyword";
 import Pagination from "react-js-pagination";
 
@@ -46,6 +45,7 @@ export default function AdminToday() {
     apiGetVisitReservation
   );
 
+  console.log(data);
   const totalItemsCount = data?.totalCnt;
   const handlePageChange = (page) => {
     setPage(page);
@@ -64,10 +64,10 @@ export default function AdminToday() {
             searchOption={searchOption}
             setSearchOption={setSearchOption}
           />
-          <SearchStatus
+          {/* <SearchStatus
             searchOption={searchOption}
             setSearchOption={setSearchOption}
-          />
+          /> */}
           <SearchKeyword
             searchOption={searchOption}
             setSearchOption={setSearchOption}
@@ -90,6 +90,7 @@ export default function AdminToday() {
                 <td>예약일시</td>
                 <td>담당자</td>
                 <td>상태</td>
+                <td>비고</td>
               </tr>
             </thead>
             <tbody>
@@ -130,6 +131,7 @@ export default function AdminToday() {
                         })()}
                       </div>
                     </td>
+                    <td>{item.stateReason}</td>
                   </tr>
                 ))
               )}

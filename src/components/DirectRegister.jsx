@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { divideDate } from "../utils/divideDate";
 import RegIcon2 from "../assets/svg/security-register2.svg";
 import RegIcon3 from "../assets/svg/security-register3.svg";
-import { Button } from "@chakra-ui/react";
+import { Button, Spinner } from "@chakra-ui/react";
 import {
   apiGetPurposeOfVisit,
   apiGetVisitSite,
@@ -47,7 +47,7 @@ export default function DirectRegister() {
     formState: { errors },
   } = useForm({ mode: "onChange" });
 
-  const { mutate } = useMutation(
+  const { isLoading, mutate } = useMutation(
     (formData) => apiVisitReservationRegister(visitSiteIndex, formData),
     {
       onSuccess: () => {
@@ -74,17 +74,21 @@ export default function DirectRegister() {
 
   const handleSiteChange = (e) => {
     const title = e.target.value;
+    // console.log(typeof title);
+
     saveChildData(title);
   };
 
   const saveChildData = (title) => {
-    const { placeToVisitIndex } = parentSite.find(
-      (item) => item.title === title
-    );
-    const childSite = dataVisitSite?.placeToVisits?.filter(
-      (item) => item.parentIndex === parseInt(placeToVisitIndex)
-    );
-    setDataChild(childSite);
+    if (title !== "") {
+      const { placeToVisitIndex } = parentSite.find(
+        (item) => item.title === title
+      );
+      const childSite = dataVisitSite?.placeToVisits?.filter(
+        (item) => item.parentIndex === parseInt(placeToVisitIndex)
+      );
+      setDataChild(childSite);
+    }
   };
 
   return (
@@ -117,6 +121,7 @@ export default function DirectRegister() {
             <div className="input-group">
               <div>휴대전화번호</div>
               <input
+                maxLength="11"
                 {...register("tel", {
                   required: "모바일 번호를 입력해 주세요",
                   pattern: {
@@ -132,10 +137,21 @@ export default function DirectRegister() {
             <div className="input-group">
               <div>차량번호</div>
               <input
-                {...register("carNumber")}
+                maxLength="4"
+                {...register("carNumber", {
+                  maxLength: {
+                    value: 4,
+                    message: "최대 4자리까지만 입력이 됩니다.",
+                  },
+                  pattern: {
+                    value: /^\d+$/,
+                    message: "숫자만 입력이 가능합니다.",
+                  },
+                })}
                 type="text"
-                placeholder="차량번호를 입력해 주세요."
+                placeholder="차량번호 뒷 4자리를 입력해 주세요."
               />
+              <span className="form-errors">{errors?.carNumber?.message}</span>
             </div>
             <div className="input-group">
               <div>메모</div>
@@ -153,14 +169,21 @@ export default function DirectRegister() {
             </div>
             <div className="input-group" onChange={handleSiteChange}>
               <div>방문지 대분류</div>
-              <select {...register("placeToVisit1")}>
-                <option>선택해주세요</option>
+              <select
+                {...register("placeToVisit1", {
+                  required: "방문지 대분류는 필수 입력 사항입니다.",
+                })}
+              >
+                <option value="">선택해주세요</option>
                 {parentSite?.map((item, index) => (
                   <option key={index} value={item.title}>
                     {item.title}
                   </option>
                 ))}
               </select>
+              <span className="form-errors more-left">
+                {errors?.placeToVisit1?.message}
+              </span>
             </div>
             <div className="input-group">
               <div>방문지 중분류</div>
@@ -176,28 +199,57 @@ export default function DirectRegister() {
 
             <div className="input-group">
               <div>방문목적</div>
-              <select {...register("purposeOfVisit")}>
-                <option>선택해주세요</option>
+              <select
+                {...register("purposeOfVisit", {
+                  required: "방문목적은 필수 입력 사항입니다.",
+                })}
+              >
+                <option value="">선택해주세요</option>
                 {dataPurposeOfVisits?.purposeOfVisits?.map((item, index) => (
                   <option key={index} value={item.title}>
                     {item.title}
                   </option>
                 ))}
               </select>
+              <span className="form-errors more-left">
+                {errors?.purposeOfVisit?.message}
+              </span>
             </div>
             <div className="input-group ">
               <div>방문일시</div>
-              <input type="date" {...register("date", { required: true })} />
+              <input
+                type="date"
+                {...register("date", {
+                  required: "방문일시는 필수 입력 사항입니다.",
+                })}
+              />
+              <span className="form-errors more-left">
+                {errors?.date?.message}
+              </span>
             </div>
             <div className="input-group ">
               <div>방문시간</div>
-              <input type="time" {...register("time", { required: true })} />
+              <input
+                type="time"
+                {...register("time", {
+                  required: "방문시간은 필수 입력 사항입니다.",
+                })}
+              />
+              <span className="form-errors more-left">
+                {errors?.time?.message}
+              </span>
             </div>
           </section>
           <div className="btn-container">
-            <Button type="submit" colorScheme="blue">
-              등록하기
-            </Button>
+            {isLoading ? (
+              <Button colorScheme="blue" w="24">
+                <Spinner />
+              </Button>
+            ) : (
+              <Button type="submit" colorScheme="blue" w="24">
+                등록하기
+              </Button>
+            )}
           </div>
         </div>
       </form>

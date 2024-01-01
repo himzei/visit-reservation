@@ -720,6 +720,14 @@ export async function apiManagerRegister(
   managerPosition,
   accountIndex
 ) {
+  console.log(
+    "api",
+    formData,
+    visitSiteIndex,
+    visitReservationIndex,
+    managerPosition,
+    accountIndex
+  );
   return await fetch(`/api/Manager`, {
     method: "POST",
     headers: {
@@ -732,12 +740,12 @@ export async function apiManagerRegister(
       visitReservationIndex,
       managers: [
         {
-          managerIndex: -1,
+          // managerIndex: -1,
           accountIndex: parseInt(accountIndex),
           name: formData.name,
           position: managerPosition,
           auth: parseInt(formData.auth),
-          state: 0,
+          state: parseInt(formData.auth),
           memo: formData.memo,
         },
       ],
@@ -752,6 +760,11 @@ export async function apiManagerPut(
   visitReservationIndex,
   accountIndex
 ) {
+  console.log("managerIndex: ", managerIndex);
+  console.log("accountIndex: ", accountIndex);
+  console.log("name: ", formData.name);
+  console.log("auth(0-담당,1-협조,2-배정): ", formData.auth);
+
   return await fetch(`/api/Manager/${managerIndex}`, {
     method: "PUT",
     headers: {
@@ -763,7 +776,10 @@ export async function apiManagerPut(
       managerIndex,
       accountIndex,
       name: formData.name,
-      position: formData.managerPosition,
+
+      auth: parseInt(formData.auth),
+      state: 0,
+      memo: "",
     }),
     credentials: "include",
   }).then((res) => res.json());

@@ -19,13 +19,26 @@ import { useForm } from "react-hook-form";
 import { Button, HStack, Spinner } from "@chakra-ui/react";
 import { nameHidden } from "../../utils/nameHidden";
 import { mobileFormat } from "../../utils/mobileFormat";
-import { useEffect } from "react";
 
 export default function AdminConfirmDetail({ selectData, onClose }) {
-  const [isManagerIndex, setIsManagerIndex] = useState(null);
-  const [managerName, setManagerName] = useState(null);
   const queryClient = useQueryClient();
-  const { register, handleSubmit } = useForm({ mode: "onChange" });
+  // useQuery
+  // 배정된 매니져 불러오기
+  const { data: dataGetManager } = useQuery(
+    ["managerGet", { visitReservationIndex: selectData }],
+    apiManagerGet
+  );
+
+  const chargedManager = dataGetManager?.managers[0];
+  // 콤보박스 셀렉트를 하기위한 구문
+  const managerAuth = chargedManager?.auth;
+  const isManagerIndex = chargedManager?.managerIndex;
+  const managerName = chargedManager?.name;
+
+  const { register, handleSubmit } = useForm({
+    mode: "onChange",
+    defaultValues: { name: chargedManager, auth: managerAuth },
+  });
 
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
@@ -40,7 +53,6 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
 
   // useQuery
   // 디테일 불러오기
-
   const { isLoading: dataIsLoading, data } = useQuery(
     ["getVisitReservationOne", { visitReservationIndex: selectData }],
     apiGetVisitReservationOne
@@ -57,18 +69,13 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     ["getVisitSite", visitSiteIndex],
     apiGetVisitSite
   );
-  console.log(dataVisitSite);
+
   const tempVisit = dataVisitSite?.placeToVisits?.find((item) =>
     stringVisit?.includes(item.title)
   );
 
   // 방문지의 선택지
   const selectedIndex = tempVisit?.placeToVisitIndex;
-
-  // 39
-
-  console.log(selectedIndex);
-
   const tempAccount = dataManager?.accounts;
 
   // 불러온 모든 매니져 중에 방문지가 현재 불러온 페이지의 방문지와 같은 경우만 리스트
@@ -126,43 +133,36 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     }
   );
 
-  // useQuery
-  // 배정된 매니져 불러오기
-  const { isLoading, data: dataGetManager } = useQuery(
-    ["managerGet", { visitReservationIndex: selectData }],
-    apiManagerGet
-  );
-
-  useEffect(() => {
-    if (!isLoading) {
-      setIsManagerIndex(dataGetManager?.managers[0]?.managerIndex);
-      setManagerName(dataGetManager?.managers[0]?.name);
-    }
-  });
-
   // 저장 버튼 클릭시
   // 담당자 선택 mutate 실행 및 상태 mutate 실행
   const onSubmit = (formData) => {
-    // console.log(formData.name);
-    if (formData.name !== managerName) {
-      // 매니져 수정
-      if (isManagerIndex !== null && isManagerIndex !== undefined) {
-        mutateEditManager({ formData, isManagerIndex });
-      } else {
-        // 매니져 추가
-        mutateManager(formData);
-      }
+    // 매니져 수정
+    if (chargedManager === undefined) {
+      // alert("매지저 배정전");
+      mutateManager(formData);
+    } else {
+      // alert("매니져 배정됨");
+      // console.log(formData);
+      mutateEditManager({ formData, isManagerIndex });
     }
 
-    mutateState(formData);
+    if (window.confirm("수정 하시겠습니까?")) {
+      mutateState(formData);
+      window.location.reload();
+    }
   };
 
   const handleCloseClick = () => {
     onClose();
   };
 
+  // const temp = dataManager?.accounts?.find((item) => item.name === name);
+
+  // console.log(managerName);
+  // console.log(initManagerName);
   const [managerPosition, setNanagerPosition] = useState("");
-  const [accountIndex, setAccountIndex] = useState(0);
+  // accountIndex?
+  const [accountIndex, setAccountIndex] = useState(isManagerIndex);
 
   const handleChange = (e) => {
     const name = e.target.value;
@@ -241,12 +241,12 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
             <div className="input-group">
               <div>이름</div>
               <select {...register("name")} onChange={(e) => handleChange(e)}>
-                <option value="">선택해주세요</option>
+                <option value="">선택하세요</option>
                 {inChargedManger?.map((item, index) => (
                   <option
                     key={index}
                     defaultValue={item.name}
-                    selected={item.name === dataGetManager?.managers[0]?.name}
+                    selected={item.name === managerName}
                   >
                     {item.name}
                   </option>
@@ -257,11 +257,15 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
               <div>권한</div>
               <select {...register("auth")}>
                 <option>선택</option>
-                <option value="0">담당</option>
-                <option value="1" selected>
+                <option value="0" selected={managerAuth === 0}>
+                  담당
+                </option>
+                <option value="1" selected={managerAuth === 1}>
                   협조
                 </option>
-                <option value="2">배정</option>
+                <option value="2" selected={managerAuth === 2}>
+                  배정
+                </option>
               </select>
             </div>
           </section>

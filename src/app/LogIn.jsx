@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Login.css";
 import Person from "../assets/svg/person.svg";
 import InputPerson from "../assets/svg/person-input.svg";
@@ -9,8 +9,11 @@ import { ipData, login } from "../api";
 import { useNavigate } from "react-router-dom";
 
 export default function LogIn() {
+  const [loginAttempts, setLoginAttempts] = useState(0);
+  const [isAccountLocked, setIsAccountLocked] = useState(false);
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
+
   const { mutate } = useMutation(login, {
     onSuccess: (data) => {
       localStorage.setItem("visitschool", data.token);
@@ -22,14 +25,23 @@ export default function LogIn() {
         navigate("/security/today");
       }
 
-      console.log(data);
       window.location.reload();
     },
     //
     onError: (error) => {
       // 로그인 실패 시 경고창 표시
-      alert("아이디와 비밀번호를 확인해 주세요.");
+      alert(
+        `[${
+          loginAttempts + 1
+        }/5 비밀번호 오류]아이디와 비밀번호를 확인해 주세요.`
+      );
       console.error("로그인 오류:", error);
+      const newLoginAttempts = loginAttempts + 1;
+      setLoginAttempts(newLoginAttempts);
+
+      if (newLoginAttempts >= 5) {
+        setIsAccountLocked(true);
+      }
     },
   });
 
@@ -37,6 +49,7 @@ export default function LogIn() {
 
   const onSubmit = ({ UserId, Password }) => {
     const ip = getIpData?.IPv4;
+
     mutate({ UserId, Password, ip });
   };
 
@@ -48,7 +61,12 @@ export default function LogIn() {
       </div>
       <div className="login-input">
         <div className="input-container">
-          <input {...register("UserId")} type="text" placeholder="아이디" />
+          <input
+            {...register("UserId")}
+            type="text"
+            placeholder="아이디"
+            disabled={isAccountLocked}
+          />
           <img className="input-icon" src={InputPerson} alt="input person" />
         </div>
         <div className="input-container">
@@ -56,6 +74,7 @@ export default function LogIn() {
             {...register("Password")}
             type="password"
             placeholder="비밀번호"
+            disabled={isAccountLocked}
           />
           <img
             className="input-icon"
@@ -64,6 +83,11 @@ export default function LogIn() {
           />
         </div>
       </div>
+      {isAccountLocked && (
+        <div className="warning">
+          비밀번호를 5회이상 틀렸습니다. 관리자에 문의주세요
+        </div>
+      )}
       {/* button */}
       <button type="submit" className="input-button">
         Login

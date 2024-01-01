@@ -8,8 +8,6 @@ import { IoIosSettings } from "react-icons/io";
 export default function Layout({ children, menu }) {
   const { data } = useTokenLogin();
 
-  console.log(data);
-
   const { pathname } = useLocation();
   const temp_data = menu.find((item) => item.url === pathname);
   const MAIN_TITLE = temp_data?.title || "설정";
@@ -18,9 +16,11 @@ export default function Layout({ children, menu }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.setItem("visitschool", "");
-    navigate("/");
-    window.location.reload();
+    if (window.confirm("로그아웃 하시겠습니까?")) {
+      localStorage.setItem("visitschool", "");
+      navigate("/");
+      window.location.reload();
+    }
   };
 
   return (

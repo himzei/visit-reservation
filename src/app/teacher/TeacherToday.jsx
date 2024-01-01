@@ -10,7 +10,6 @@ import useVisitSite from "../../hooks/useVisitSite";
 import { timeEnd, timeStart } from "../../utils/timeStatEnd";
 import SearchLocation from "../../components/SearchLocation";
 import SearchDate from "../../components/SearchDate";
-import SearchStatus from "../../components/SearchStatus";
 import SearchKeyword from "../../components/SearchKeyword";
 import Pagination from "react-js-pagination";
 import { HStack, Spinner } from "@chakra-ui/react";
@@ -67,10 +66,10 @@ export default function TeacherToday() {
             searchOption={searchOption}
             setSearchOption={setSearchOption}
           />
-          <SearchStatus
+          {/* <SearchStatus
             searchOption={searchOption}
             setSearchOption={setSearchOption}
-          />
+          /> */}
           <SearchKeyword
             searchOption={searchOption}
             setSearchOption={setSearchOption}

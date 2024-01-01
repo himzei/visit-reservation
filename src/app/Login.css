@@ -72,3 +72,7 @@ input:focus {
 .input-button:hover {
   background-color: #002050;
 }
+.warning {
+  color: tomato;
+  font-size: 14px;
+}

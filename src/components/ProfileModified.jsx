@@ -319,66 +319,68 @@ export default function ProfileModified() {
           </HStack>
         </VStack>
       </section>
-      <form onSubmit={handleSubmit(onValid)}>
-        <section>
-          <div className="reg-title">
-            <img src={PassIcon} alt="icon2" />
-            <h2>비밀번호 변경</h2>
-          </div>
-          <div className="input-group">
-            <div>현재비밀번호</div>
-            <input
-              {...register("nowPassword", {
-                required: "'현재 비밀번호를 입력해 주세요.",
-              })}
-              type="password"
-              placeholder="현재 비밀번호를 입력해 주세요."
-            />
-          </div>
-          <div className="error-style">{errors?.nowPassword?.message}</div>
-          <div className="input-group">
-            <div>새 비밀번호</div>
-            <input
-              {...register("newPassword", {
-                required: "'새 비밀번호'를 입력해 주세요.",
-                minLength: {
-                  message: "4자 이상으로 설정해야 합니다.",
-                  value: 4,
-                },
-              })}
-              type="password"
-              placeholder="새 비밀번호를 입력해 주세요."
-            />
-          </div>
+      {resultAuth && (
+        <form onSubmit={handleSubmit(onValid)}>
+          <section>
+            <div className="reg-title">
+              <img src={PassIcon} alt="icon2" />
+              <h2>비밀번호 변경</h2>
+            </div>
+            <div className="input-group">
+              <div>현재비밀번호</div>
+              <input
+                {...register("nowPassword", {
+                  required: "'현재 비밀번호를 입력해 주세요.",
+                })}
+                type="password"
+                placeholder="현재 비밀번호를 입력해 주세요."
+              />
+            </div>
+            <div className="error-style">{errors?.nowPassword?.message}</div>
+            <div className="input-group">
+              <div>새 비밀번호</div>
+              <input
+                {...register("newPassword", {
+                  required: "'새 비밀번호'를 입력해 주세요.",
+                  minLength: {
+                    message: "4자 이상으로 설정해야 합니다.",
+                    value: 4,
+                  },
+                })}
+                type="password"
+                placeholder="새 비밀번호를 입력해 주세요."
+              />
+            </div>
 
-          <div className="error-style">{errors?.newPassword?.message}</div>
-          <div className="input-group">
-            <div>새 비밀번호 확인</div>
-            <input
-              {...register("newPassword2", {
-                required: "'새 비밀번호 확인'을 입력해 주세요.",
-              })}
-              type="password"
-              placeholder="새 비밀번호 확인을 입력해 주세요."
-            />
-          </div>
+            <div className="error-style">{errors?.newPassword?.message}</div>
+            <div className="input-group">
+              <div>새 비밀번호 확인</div>
+              <input
+                {...register("newPassword2", {
+                  required: "'새 비밀번호 확인'을 입력해 주세요.",
+                })}
+                type="password"
+                placeholder="새 비밀번호 확인을 입력해 주세요."
+              />
+            </div>
 
-          <div className="error-style">{errors?.newPassword2?.message}</div>
-        </section>
-        <div className="btn-container">
-          <Button
-            onClick={() => startAuthTimer()}
-            mx="2"
-            colorScheme="blue"
-            variant="outline"
-          >
-            되돌리기
-          </Button>
-          <Button type="submit" mx="2" colorScheme="blue">
-            변경하기
-          </Button>
-        </div>
-      </form>
+            <div className="error-style">{errors?.newPassword2?.message}</div>
+          </section>
+          <div className="btn-container">
+            <Button
+              onClick={() => startAuthTimer()}
+              mx="2"
+              colorScheme="blue"
+              variant="outline"
+            >
+              되돌리기
+            </Button>
+            <Button type="submit" mx="2" colorScheme="blue">
+              변경하기
+            </Button>
+          </div>
+        </form>
+      )}
       {/* 알림톡 설정시간 */}
       <section>
         <form onSubmit={handleSubmitAlim}>

@@ -8,7 +8,6 @@ import Layout from "../../components/Layout";
 import { ADMIN_LIST } from "../../lib/menuList";
 import SearchLocation from "../../components/SearchLocation";
 import SearchDate from "../../components/SearchDate";
-import SearchStatus from "../../components/SearchStatus";
 import { CSVLink } from "react-csv";
 import { useQuery } from "react-query";
 import { apiGetLog } from "../../api";
@@ -52,6 +51,8 @@ export default function AdminHistory() {
     apiGetLog
   );
 
+  console.log(data);
+
   const totalItemsCount = data?.totalCnt;
 
   const handlePageChange = (page) => {
@@ -76,10 +77,10 @@ export default function AdminHistory() {
             searchOption={searchOption}
             setSearchOption={setSearchOption}
           />
-          <SearchStatus
+          {/* <SearchStatus
             searchOption={searchOption}
             setSearchOption={setSearchOption}
-          />
+          /> */}
           <SearchData
             searchOption={searchOption}
             setSearchOption={setSearchOption}

@@ -7,7 +7,6 @@ import React, { useState } from "react";
 import Layout from "../../components/Layout";
 import { TEACHER_LIST } from "../../lib/menuList";
 import SearchDate from "../../components/SearchDate";
-import SearchStatus from "../../components/SearchStatus";
 import useVisitSite from "../../hooks/useVisitSite";
 import { useQuery } from "react-query";
 import { apiGetLog } from "../../api";
@@ -69,10 +68,10 @@ export default function TeacherHistory() {
             searchOption={searchOption}
             setSearchOption={setSearchOption}
           />
-          <SearchStatus
+          {/* <SearchStatus
             searchOption={searchOption}
             setSearchOption={setSearchOption}
-          />
+          /> */}
           <SearchData
             searchOption={searchOption}
             setSearchOption={setSearchOption}

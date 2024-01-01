@@ -68,3 +68,9 @@ select:focus {
   width: 100%;
   background-color: red;
 }
+
+.input-selected {
+  background-color: lightgray;
+
+  font-weight: 500;
+}

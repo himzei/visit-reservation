@@ -37,7 +37,11 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
 
   console.log(managerName);
 
-  const { register, handleSubmit } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     mode: "onChange",
     defaultValues: { name: chargedManager, auth: managerAuth },
   });
@@ -241,36 +245,58 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
                 <img src={RegIcon3} alt="icon3" />
                 <h2>담당자 선택</h2>
               </div>
-
+              <div className="input-group input-selected">
+                <div>선택된 담당자</div>
+                <div>{managerName}</div>
+              </div>
+              <div className="input-group input-selected">
+                <div>권한</div>
+                <div>
+                  {managerAuth === 0
+                    ? "담담"
+                    : managerAuth === 1
+                    ? "협조"
+                    : "배정"}
+                </div>
+              </div>
               <div className="input-group">
                 <div>이름</div>
-                <select {...register("name")} onChange={(e) => handleChange(e)}>
+                <select
+                  {...register("name", {
+                    required: "담당자 선택은 필수 입력사항입니다. ",
+                  })}
+                  onChange={(e) => handleChange(e)}
+                >
                   <option value="">선택하세요</option>
                   {inChargedManger?.map((item, index) => (
                     <option
                       key={index}
                       value={item.name}
-                      selected={!isLoading && item.name === managerName}
+                      // selected={!isLoitem.name === managerName}
                     >
                       {item.name}
                     </option>
                   ))}
                 </select>
+                <span className="form-errors more-left">
+                  {errors?.name?.message}
+                </span>
               </div>
               <div className="input-group">
                 <div>권한</div>
-                <select {...register("auth")}>
-                  <option>선택</option>
-                  <option value="0" selected={managerAuth === 0}>
-                    담당
-                  </option>
-                  <option value="1" selected={managerAuth === 1}>
-                    협조
-                  </option>
-                  <option value="2" selected={managerAuth === 2}>
-                    배정
-                  </option>
+                <select
+                  {...register("auth", {
+                    required: "권한은 필수 입력사항입니다. ",
+                  })}
+                >
+                  <option value="">선택하세요</option>
+                  <option value="0">담당</option>
+                  <option value="1">협조</option>
+                  <option value="2">배정</option>
                 </select>
+                <span className="form-errors more-left">
+                  {errors?.auth?.message}
+                </span>
               </div>
             </section>
           )}

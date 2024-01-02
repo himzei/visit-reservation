@@ -112,10 +112,15 @@ export default function DirectRegister() {
                     value: 2,
                     message: "최소 2글자 이상 입력해주세요",
                   },
+                  pattern: {
+                    value: /^[a-zA-Z가-힣\s]+$/, // 영문자, 한글, 공백만 허용하는 정규식
+                    message: "특수문자는 입력할 수 없습니다",
+                  },
                 })}
                 type="text"
                 placeholder="성함을 입력해 주세요."
               />
+              <span className="form-errors">{errors?.name?.message}</span>
               <span className="form-errors">{errors?.name?.message}</span>
             </div>
             <div className="input-group">
@@ -158,7 +163,8 @@ export default function DirectRegister() {
               <input
                 {...register("memo")}
                 type="text"
-                placeholder="메모를 입력해 주세요."
+                maxLength="100"
+                placeholder="최대 100자까지 입력해 주세요."
               />
             </div>
           </section>

@@ -3,7 +3,7 @@
 // 목록
 
 import "./TeacherHistory.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import { TEACHER_LIST } from "../../lib/menuList";
 import SearchDate from "../../components/SearchDate";
@@ -33,6 +33,14 @@ export default function TeacherHistory() {
     searchData: "",
   });
 
+  const [initialLogin, setInitialLogin] = useState(localStorage.getItem("initialLogin"));
+
+  // 로컬 스토리지에서 initialLogin 값이 변경되었을 때 감지
+  useEffect(() => {
+    const loginStatus = localStorage.getItem("initialLogin");
+    setInitialLogin(loginStatus);
+  }, []);
+
   const { data, isLoading } = useQuery(
     [
       "getLog",
@@ -57,88 +65,93 @@ export default function TeacherHistory() {
 
   return (
     <Layout menu={TEACHER_LIST}>
-      <div className="teacher-history">
-        {/* 검색 */}
-        <div className="teacher-history__search">
-          <SearchLocation
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-          <SearchDate
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-          {/* <SearchStatus
+
+      {initialLogin !== "4" && (
+        <>
+
+          <div className="teacher-history">
+            {/* 검색 */}
+            <div className="teacher-history__search">
+              <SearchLocation
+                searchOption={searchOption}
+                setSearchOption={setSearchOption}
+              />
+              <SearchDate
+                searchOption={searchOption}
+                setSearchOption={setSearchOption}
+              />
+              {/* <SearchStatus
             searchOption={searchOption}
             setSearchOption={setSearchOption}
           /> */}
-          <SearchData
-            searchOption={searchOption}
-            setSearchOption={setSearchOption}
-          />
-        </div>
+              <SearchData
+                searchOption={searchOption}
+                setSearchOption={setSearchOption}
+              />
+            </div>
 
-        {/* 테이블 */}
-        {isLoading ? (
-          <HStack justifyContent="center" py="10">
-            <Spinner
-              thickness="4px"
-              speed="0.65s"
-              emptyColor="gray.200"
-              color="blue.500"
-              size="xl"
-            />
-          </HStack>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <td>방문지</td>
-                <td>방문객명</td>
-                <td>차량번호</td>
-                <td>입실시간</td>
-                <td>퇴실시간</td>
-                <td>목적</td>
-                <td>담당자</td>
-                <td>상태</td>
-              </tr>
-            </thead>
-            <tbody>
-              {!data ? (
-                <tr>
-                  <td colSpan={8}>
-                    <div>해당하는 데이터가 없습니다.</div>
-                  </td>
-                </tr>
-              ) : (
-                data?.logs?.map((item, i) => (
-                  <tr key={i}>
-                    <td>{item.placeToVisit}</td>
-                    <td>{nameHidden(item.visitorName)}</td>
-                    <td>{item.carNumber}</td>
-                    <td>{dateFormat(item.visitDate)}</td>
-                    <td>{dateFormat(item.checkOutDate)}</td>
-                    <td>{item.purposeOfVisit}</td>
-                    <td>{item.managerName}</td>
-                    <td></td>
+            {/* 테이블 */}
+            {isLoading ? (
+              <HStack justifyContent="center" py="10">
+                <Spinner
+                  thickness="4px"
+                  speed="0.65s"
+                  emptyColor="gray.200"
+                  color="blue.500"
+                  size="xl"
+                />
+              </HStack>
+            ) : (
+              <table>
+                <thead>
+                  <tr>
+                    <td>방문지</td>
+                    <td>방문객명</td>
+                    <td>차량번호</td>
+                    <td>입실시간</td>
+                    <td>퇴실시간</td>
+                    <td>목적</td>
+                    <td>담당자</td>
+                    <td>상태</td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        )}
-        <div>
-          <Pagination
-            activePage={page}
-            itemsCountPerPage={10}
-            totalItemsCount={totalItemsCount}
-            pageRangeDisplayed={5}
-            prevPageText={"‹"}
-            nextPageText={"›"}
-            onChange={handlePageChange}
-          />
-        </div>
-      </div>
+                </thead>
+                <tbody>
+                  {!data ? (
+                    <tr>
+                      <td colSpan={8}>
+                        <div>해당하는 데이터가 없습니다.</div>
+                      </td>
+                    </tr>
+                  ) : (
+                    data?.logs?.map((item, i) => (
+                      <tr key={i}>
+                        <td>{item.placeToVisit}</td>
+                        <td>{nameHidden(item.visitorName)}</td>
+                        <td>{item.carNumber}</td>
+                        <td>{dateFormat(item.visitDate)}</td>
+                        <td>{dateFormat(item.checkOutDate)}</td>
+                        <td>{item.purposeOfVisit}</td>
+                        <td>{item.managerName}</td>
+                        <td></td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            )}
+            <div>
+              <Pagination
+                activePage={page}
+                itemsCountPerPage={10}
+                totalItemsCount={totalItemsCount}
+                pageRangeDisplayed={5}
+                prevPageText={"‹"}
+                nextPageText={"›"}
+                onChange={handlePageChange}
+              />
+            </div>
+          </div>
+        </>)}
     </Layout>
   );
 }

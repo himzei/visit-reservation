@@ -23,7 +23,13 @@ export async function login({ UserId, Password, ip }) {
       ip,
     }),
     credentials: "include",
-  }).then((res) => res.json());
+  }).then((res) => {
+    if (!res.ok) {
+      // 실패한 경우의 처리
+      throw new Error("로그인 실패: " + res.status);
+    }
+    return res.json();
+  });
 }
 
 // Visit Site Index

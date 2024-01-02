@@ -22,13 +22,21 @@ export default function ProfileModified() {
   const [showAfterAuth, setShowAfterAuth] = useState(false);
   const [agreeState, setAgreeState] = useState(false); // agreeState를 useState로 변경
   const [resultAuth, setResultAuth] = useState(""); // setResultHint 상태 추가
-
   const [resultHint, setResultHint] = useState(""); // setResultHint 상태 추가
   const queryClient = useQueryClient();
   // sms 인증
   const isEmpty = (str) => {
     return typeof str === "undefined" || str === null || str === "";
   };
+
+  const [initialLogin, setInitialLogin] = useState(localStorage.getItem("initialLogin"));
+
+  // 로컬 스토리지에서 initialLogin 값이 변경되었을 때 감지
+  useEffect(() => {
+    const loginStatus = localStorage.getItem("initialLogin");
+    setInitialLogin(loginStatus);
+  }, []);
+
 
   // sms 인증
   const startAuthTimer = () => {
@@ -79,6 +87,7 @@ export default function ProfileModified() {
       .then((data) => {
         switch (data.result) {
           case 0:
+
             // 상태 업데이트로 UI 변경
             setShowAfterAuth(true); // 인증번호 입력란 표시
             setShowBeforeAuth(false); // 본인인증 버튼 숨김
@@ -344,8 +353,8 @@ export default function ProfileModified() {
                 {...register("newPassword", {
                   required: "'새 비밀번호'를 입력해 주세요.",
                   minLength: {
-                    message: "4자 이상으로 설정해야 합니다.",
-                    value: 4,
+                    message: "8자 이상으로 설정해야 합니다.",
+                    value: 8,
                   },
                 })}
                 type="password"
@@ -382,109 +391,112 @@ export default function ProfileModified() {
           </div>
         </form>
       )}
-      {/* 알림톡 설정시간 */}
-      <section>
-        <form onSubmit={handleSubmitAlim}>
-          <div className="reg-title">
-            <img src={PassIcon} alt="icon2" />
-            <h2>알림톡 설정시간</h2>
-          </div>
-          <div className="alimtalk-time_container">
-            <label>
-              <input
-                type="checkbox"
-                name="isReceivedMon"
-                checked={isReceivedMon}
-                onChange={() =>
-                  setIsReceivedMon((isReceivedMon) => !isReceivedMon)
-                }
-              />
-              월
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="isReceivedTue"
-                checked={isReceivedTue}
-                onChange={() => setIsReceivedTue((item) => !item)}
-              />
-              화
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="isReceivedWed"
-                checked={isReceivedWed}
-                onChange={() => setIsReceivedWed((item) => !item)}
-              />
-              수
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="isReceivedThu"
-                checked={isReceivedThu}
-                onChange={() => setIsReceivedThu((item) => !item)}
-              />
-              목
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="isReceivedFri"
-                checked={isReceivedFri}
-                onChange={() => setIsReceivedFri((item) => !item)}
-              />
-              금
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="isReceivedSat"
-                checked={isReceivedSat}
-                onChange={() => setIsReceivedSat((item) => !item)}
-              />
-              토
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="isReceivedSun"
-                checked={isReceivedSun}
-                onChange={() => setIsReceivedSun((item) => !item)}
-              />
-              일
-            </label>
-          </div>
-          <div className="labelClass">
-            <label className="" type="datetime-local">
-              시작시간
-              <input
-                className="date-time"
-                type="time"
-                name="startTime"
-                defaultValue={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-              />
-            </label>
-            <label className="" type="datetime-local">
-              종료시간
-              <input
-                className="date-time"
-                type="time"
-                name="endTime"
-                defaultValue={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-              />
-            </label>
-          </div>
-          <div className="btn-container">
-            <Button mx="2" colorScheme="blue" type="submit">
-              설정하기
-            </Button>
-          </div>
-        </form>
-      </section>
+      {/* 알림톡 설정시간 (초기 비밀번호를 가졋으면 알림톡 설정 HTML 랜더링X)*/}
+      {initialLogin !== "4" ? (
+        <section>
+          <form onSubmit={handleSubmitAlim}>
+            <div className="reg-title">
+              <img src={PassIcon} alt="icon2" />
+              <h2>알림톡 설정시간</h2>
+            </div>
+            <div className="alimtalk-time_container">
+              <label>
+                <input
+                  type="checkbox"
+                  name="isReceivedMon"
+                  checked={isReceivedMon}
+                  onChange={() =>
+                    setIsReceivedMon((isReceivedMon) => !isReceivedMon)
+                  }
+                />
+                월
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="isReceivedTue"
+                  checked={isReceivedTue}
+                  onChange={() => setIsReceivedTue((item) => !item)}
+                />
+                화
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="isReceivedWed"
+                  checked={isReceivedWed}
+                  onChange={() => setIsReceivedWed((item) => !item)}
+                />
+                수
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="isReceivedThu"
+                  checked={isReceivedThu}
+                  onChange={() => setIsReceivedThu((item) => !item)}
+                />
+                목
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="isReceivedFri"
+                  checked={isReceivedFri}
+                  onChange={() => setIsReceivedFri((item) => !item)}
+                />
+                금
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="isReceivedSat"
+                  checked={isReceivedSat}
+                  onChange={() => setIsReceivedSat((item) => !item)}
+                />
+                토
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="isReceivedSun"
+                  checked={isReceivedSun}
+                  onChange={() => setIsReceivedSun((item) => !item)}
+                />
+                일
+              </label>
+            </div>
+            <div className="labelClass">
+              <label className="" type="datetime-local">
+                시작시간
+                <input
+                  className="date-time"
+                  type="time"
+                  name="startTime"
+                  defaultValue={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                />
+              </label>
+              <label className="" type="datetime-local">
+                종료시간
+                <input
+                  className="date-time"
+                  type="time"
+                  name="endTime"
+                  defaultValue={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                />
+              </label>
+            </div>
+            <div className="btn-container">
+              <Button mx="2" colorScheme="blue" type="submit">
+                설정하기
+              </Button>
+            </div>
+          </form>
+        </section>
+      ) : null}
+
       <section>
         <div className="help-container">
           <div className="help-title">

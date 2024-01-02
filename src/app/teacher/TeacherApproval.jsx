@@ -3,7 +3,7 @@
 // 목록
 
 import "./TeacherApproval.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import { TEACHER_LIST } from "../../lib/menuList";
 import useVisitSite from "../../hooks/useVisitSite";
@@ -34,6 +34,14 @@ export default function TeacherApproval() {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [page, setPage] = useState(1);
+
+  const [initialLogin, setInitialLogin] = useState(localStorage.getItem("initialLogin"));
+
+  // 로컬 스토리지에서 initialLogin 값이 변경되었을 때 감지
+  useEffect(() => {
+    const loginStatus = localStorage.getItem("initialLogin");
+    setInitialLogin(loginStatus);
+  }, []);
 
   const searchOption = {
     state: 0,
@@ -84,170 +92,177 @@ export default function TeacherApproval() {
           <ModalFooter></ModalFooter>
         </ModalContent>
       </Modal>
-      {isLoading ? (
-        <HStack justifyContent="center" py="10">
-          <Spinner
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="blue.500"
-            size="xl"
-          />
-        </HStack>
-      ) : (
-        <div className="teacher-approval">
-          {/* 일괄승인 */}
-          {/* <AllPass /> */}
+      {/* 초기 비밀번호를 가지고 로그인할시 랜더링 시켜주지 않음 */}
+      {initialLogin !== "4" && (
+        <>
+          {isLoading ? (
+            <HStack justifyContent="center" py="10">
+              <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+                size="xl"
+              />
+            </HStack>
+          ) : (
+            <div className="teacher-approval">
+              <div className="teacher-approval">
+                {/* 일괄승인 */}
+                {/* <AllPass /> */}
 
-          {/* 검색 */}
+                {/* 검색 */}
 
-          {/* 테이블 */}
-          <table>
-            <thead>
-              <tr>
-                <p>No</p>
-                <p>방문객명</p>
-                <p>연락처</p>
-                <p>차량번호</p>
-                <p>방문예정일시</p>
-                <p>출입일시</p>
-                <p>목적</p>
-                <p>반려사유</p>
-                <p>상태</p>
-              </tr>
-            </thead>
-            <tbody>
-              {!data ? (
-                <tr>
-                  <p colSpan={8}>
-                    <div>해당하는 데이터가 없습니다.</div>
-                  </p>
-                </tr>
-              ) : (
-                data?.resevations?.map((item, i) => (
-                  <tr
-                    key={i}
-                    className="table-hover"
-                    onClick={() => handleEditClick(item.visitReservationIndex)}
-                  >
-                    <div className="td-div-all">
-                      <div className="td-div">
-                        <div className="td-div-p">
-                          <p>No</p>
-                        </div>
-                        <div className="td-div-td">
-                          <td>{totalItemsCount - i - (page - 1) * 10}</td>
-                        </div>
-                      </div>
-
-                      <div className="td-div">
-                        <div className="td-div-p">
-                          <p>방문객명</p>
-                        </div>
-                        <div className="td-div-td">
-                          <td>{nameHidden(item.visitorName)}</td>
-                        </div>
-                      </div>
-
-                      <div className="td-div">
-                        <div className="td-div-p">
-                          <p>연락처</p>
-                        </div>
-                        <div className="td-div-td">
-                          <td>{item.visitorTel}</td>
-                        </div>
-                      </div>
-
-                      <div className="td-div">
-                        <div className="td-div-p">
-                          <p>차량번호</p>
-                        </div>
-                        <div className="td-div-td">
-                          <td>{item.carNumber}</td>
-                        </div>
-                      </div>
-
-                      <div className="td-div">
-                        <div className="td-div-p">
-                          <p>방문예정일시</p>
-                        </div>
-                        <div className="td-div-td">
-                          <td>{dateFormat(item.reservationDate)}</td>
-                        </div>
-                      </div>
-
-                      <div className="td-div">
-                        <div className="td-div-p">
-                          <p>출입일시</p>
-                        </div>
-                        <div className="td-div-td">
-                          <td>{dateFormat(item.visitDate)}</td>
-                        </div>
-                      </div>
-
-                      <div className="td-div">
-                        <div className="td-div-p">
-                          <p>목적</p>
-                        </div>
-                        <div className="td-div-td">
-                          <td>{item.purposeOfVisit}</td>
-                        </div>
-                      </div>
-
-                      <div className="td-div">
-                        <div className="td-div-p">
-                          <p>반려사유</p>
-                        </div>
-                        <div className="td-div-td">
-                          <td>{item.stateReason}</td>
-                        </div>
-                      </div>
-
-                      <div className="td-div">
-                        <div className="td-div-p">
-                          <p>상태</p>
-                        </div>
-                        <div className="td-div-td">
-                          <td>
-                            <div className="approval-status">
-                              {(() => {
-                                switch (item.state) {
-                                  case 0:
-                                    return <div>대기중</div>;
-                                  case 1:
-                                    return <div>승인</div>;
-                                  case 2:
-                                    return <div>미승인</div>;
-                                  case 3:
-                                    return <div>방문</div>;
-                                  case 4:
-                                    return <div>예약취소</div>;
-                                  default:
-                                    return;
-                                }
-                              })()}
+                {/* 테이블 */}
+                <table>
+                  <thead>
+                    <tr>
+                      <p>No</p>
+                      <p>방문객명</p>
+                      <p>연락처</p>
+                      <p>차량번호</p>
+                      <p>방문예정일시</p>
+                      <p>출입일시</p>
+                      <p>목적</p>
+                      <p>반려사유</p>
+                      <p>상태</p>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {!data ? (
+                      <tr>
+                        <p colSpan={8}>
+                          <div>해당하는 데이터가 없습니다.</div>
+                        </p>
+                      </tr>
+                    ) : (
+                      data?.resevations?.map((item, i) => (
+                        <tr
+                          key={i}
+                          className="table-hover"
+                          onClick={() => handleEditClick(item.visitReservationIndex)}
+                        >
+                          <div className="td-div-all">
+                            <div className="td-div">
+                              <div className="td-div-p">
+                                <p>No</p>
+                              </div>
+                              <div className="td-div-td">
+                                <td>{totalItemsCount - i - (page - 1) * 10}</td>
+                              </div>
                             </div>
-                          </td>
-                        </div>
-                      </div>
-                    </div>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-          <div>
-            <Pagination
-              activePage={page}
-              itemsCountPerPage={10}
-              totalItemsCount={totalItemsCount}
-              pageRangeDisplayed={5}
-              prevPageText={"‹"}
-              nextPageText={"›"}
-              onChange={handlePageChange}
-            />
-          </div>
-        </div>
+
+                            <div className="td-div">
+                              <div className="td-div-p">
+                                <p>방문객명</p>
+                              </div>
+                              <div className="td-div-td">
+                                <td>{nameHidden(item.visitorName)}</td>
+                              </div>
+                            </div>
+
+                            <div className="td-div">
+                              <div className="td-div-p">
+                                <p>연락처</p>
+                              </div>
+                              <div className="td-div-td">
+                                <td>{item.visitorTel}</td>
+                              </div>
+                            </div>
+
+                            <div className="td-div">
+                              <div className="td-div-p">
+                                <p>차량번호</p>
+                              </div>
+                              <div className="td-div-td">
+                                <td>{item.carNumber}</td>
+                              </div>
+                            </div>
+
+                            <div className="td-div">
+                              <div className="td-div-p">
+                                <p>방문예정일시</p>
+                              </div>
+                              <div className="td-div-td">
+                                <td>{dateFormat(item.reservationDate)}</td>
+                              </div>
+                            </div>
+
+                            <div className="td-div">
+                              <div className="td-div-p">
+                                <p>출입일시</p>
+                              </div>
+                              <div className="td-div-td">
+                                <td>{dateFormat(item.visitDate)}</td>
+                              </div>
+                            </div>
+
+                            <div className="td-div">
+                              <div className="td-div-p">
+                                <p>목적</p>
+                              </div>
+                              <div className="td-div-td">
+                                <td>{item.purposeOfVisit}</td>
+                              </div>
+                            </div>
+
+                            <div className="td-div">
+                              <div className="td-div-p">
+                                <p>반려사유</p>
+                              </div>
+                              <div className="td-div-td">
+                                <td>{item.stateReason}</td>
+                              </div>
+                            </div>
+
+                            <div className="td-div">
+                              <div className="td-div-p">
+                                <p>상태</p>
+                              </div>
+                              <div className="td-div-td">
+                                <td>
+                                  <div className="approval-status">
+                                    {(() => {
+                                      switch (item.state) {
+                                        case 0:
+                                          return <div>대기중</div>;
+                                        case 1:
+                                          return <div>승인</div>;
+                                        case 2:
+                                          return <div>미승인</div>;
+                                        case 3:
+                                          return <div>방문</div>;
+                                        case 4:
+                                          return <div>예약취소</div>;
+                                        default:
+                                          return;
+                                      }
+                                    })()}
+                                  </div>
+                                </td>
+                              </div>
+                            </div>
+                          </div>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+                <div>
+                  <Pagination
+                    activePage={page}
+                    itemsCountPerPage={10}
+                    totalItemsCount={totalItemsCount}
+                    pageRangeDisplayed={5}
+                    prevPageText={"‹"}
+                    nextPageText={"›"}
+                    onChange={handlePageChange}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </Layout>
   );

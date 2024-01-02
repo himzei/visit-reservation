@@ -7,7 +7,6 @@ import { IoIosSettings } from "react-icons/io";
 
 export default function Layout({ children, menu }) {
   const { data } = useTokenLogin();
-
   const { pathname } = useLocation();
   const temp_data = menu.find((item) => item.url === pathname);
   const MAIN_TITLE = temp_data?.title || "설정";
@@ -17,7 +16,7 @@ export default function Layout({ children, menu }) {
 
   const handleLogout = () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
-      localStorage.setItem("visitschool", "");
+      localStorage.removeItem("visitschool"); // visitschool 값을 제거합니다.
       navigate("/");
       window.location.reload();
     }

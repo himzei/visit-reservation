@@ -55,3 +55,9 @@ section h2 {
   color: black;
   font-weight: 600;
 }
+.file-upload-text{
+  color: red;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 18px 6px;
+}

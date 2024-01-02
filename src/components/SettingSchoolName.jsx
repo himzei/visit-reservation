@@ -67,6 +67,7 @@ export default function SettingSchoolName() {
           <div className="reg-title">
             <img src={PhotoIcon} alt="icon2" />
             <h2>대표 이미지</h2>
+            <p className="file-upload-text">5MB 이하 파일 업로드 권장</p>
           </div>
           <div className="files-group">
             <div className="border-box">{imgPath}</div>

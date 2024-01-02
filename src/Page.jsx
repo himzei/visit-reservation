@@ -11,7 +11,7 @@ export default function Page() {
           {/* 1 */}
           <Link to="/security/today">
             <Button>
-              <Text fontWeight="600" fontSize="20">
+              <Text fontWeight="600" fontSize="20"> 
                 지킴이페이지 이동
               </Text>
             </Button>

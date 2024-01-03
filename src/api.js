@@ -539,6 +539,7 @@ export async function apiVisitReservationRegister(visitSiteIndex, data) {
     placeToVisit,
     enterStartDate,
     enterEndDate,
+    password,
   } = data[1];
   const resevationDate = data[0];
 
@@ -553,7 +554,7 @@ export async function apiVisitReservationRegister(visitSiteIndex, data) {
       visitSiteIndex,
       state: 0,
       resevationDate,
-      password: "",
+      password,
       memo,
       visitors: [
         {
@@ -657,6 +658,7 @@ export async function apiPutVisitReservationOne(
       Authorization: `Bearer ${TOKEN}`,
     },
     body: JSON.stringify({
+      // 승인상태변경
       state: parseInt(formData.state),
       stateReason: formData.stateReason,
     }),
@@ -746,7 +748,7 @@ export async function apiManagerRegister(
       visitReservationIndex,
       managers: [
         {
-          // managerIndex: -1,
+          managerIndex: -1,
           accountIndex: parseInt(accountIndex),
           name: formData.name,
           position: managerPosition,
@@ -763,13 +765,13 @@ export async function apiManagerRegister(
 // 매니져 수정하기
 export async function apiManagerPut(
   { formData, isManagerIndex: managerIndex },
-  visitReservationIndex,
   accountIndex
 ) {
   console.log("managerIndex: ", managerIndex);
   console.log("accountIndex: ", accountIndex);
   console.log("name: ", formData.name);
   console.log("auth(0-담당,1-협조,2-배정): ", formData.auth);
+  console.log("State: ", formData.state);
 
   return await fetch(`/api/Manager/${managerIndex}`, {
     method: "PUT",
@@ -779,12 +781,11 @@ export async function apiManagerPut(
       Authorization: `Bearer ${TOKEN}`,
     },
     body: JSON.stringify({
-      managerIndex,
-      accountIndex,
+      managerIndex: parseInt(managerIndex),
+      accountIndex: parseInt(accountIndex),
       name: formData.name,
-
       auth: parseInt(formData.auth),
-      state: 0,
+      state: parseInt(formData.state),
       memo: "",
     }),
     credentials: "include",

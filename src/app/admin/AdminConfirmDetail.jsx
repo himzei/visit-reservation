@@ -35,12 +35,11 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
   const isManagerIndex = chargedManager?.managerIndex;
   const managerName = chargedManager?.name;
 
-  console.log(managerName);
-
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm({
     mode: "onChange",
     defaultValues: { name: chargedManager, auth: managerAuth },
@@ -53,9 +52,10 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
   // useQuery
   // 매니져 불러오기
   const { data: dataManager } = useQuery(
-    ["getManager", { visitSiteIndex, page: 1, pageRange: 10 }],
+    ["getManager", { visitSiteIndex, page: 1, pageRange: 1000 }],
     apiGetManager
   );
+  console.log(dataManager);
 
   // useQuery
   // 디테일 불러오기
@@ -68,7 +68,8 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
   // 불러온 방문지 데이터에서 PlaceToVisitIndex 값 추출
   // plceToVisitIndex 값으로 등록된 매니져의와 비교하여 필터링
   const tempString = data?.visitors[0]?.placeToVisit;
-  const stringVisit = tempString?.split(" ")[0].substr(0, 4);
+  const stringVisit1 = tempString?.split(" ")[0];
+  const stringVisit2 = tempString?.split(" ")[1];
 
   // 방문지 불러오기
   const { data: dataVisitSite } = useQuery(
@@ -76,13 +77,21 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     apiGetVisitSite
   );
 
-  const tempVisit = dataVisitSite?.placeToVisits?.find((item) =>
-    stringVisit?.includes(item.title)
+  console.log(dataVisitSite);
+
+  const tempVisit1 = dataVisitSite?.placeToVisits?.find(
+    (item) => item.title === stringVisit1
   );
 
+  // const tempVisit2 =
+
   // 방문지의 선택지
-  const selectedIndex = tempVisit?.placeToVisitIndex;
+  const selectedIndex = tempVisit1?.placeToVisitIndex;
   const tempAccount = dataManager?.accounts;
+
+  const tempVisit2 = dataVisitSite?.placeToVisits?.filter(
+    (item) => item.parentIndex === selectedIndex
+  );
 
   // 불러온 모든 매니져 중에 방문지가 현재 불러온 페이지의 방문지와 같은 경우만 리스트
   const selectAccount = tempAccount?.filter(
@@ -90,7 +99,10 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
       item.managePlaceToVisit?.placeToVisitIndex === parseInt(selectedIndex)
   );
 
-  // console.log(selectAccount);
+  // console.log("학급", selectAccount);
+
+  const temp2 = tempVisit2?.filter((item) => item.title === stringVisit2);
+  // console.log(temp2);
 
   const inChargedManger =
     selectAccount?.length !== 0 ? selectAccount : dataManager?.accounts;
@@ -128,8 +140,9 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
 
   // useMuatation
   // 매니져 수정 등록하기
+
   const { mutate: mutateEditManager } = useMutation(
-    (formData) => apiManagerPut(formData, selectData, accountIndex),
+    (formData) => apiManagerPut(formData, accountIndex),
     {
       onSuccess: (data) => {
         if (data.result === 0) {
@@ -245,20 +258,26 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
                 <img src={RegIcon3} alt="icon3" />
                 <h2>담당자 선택</h2>
               </div>
-              <div className="input-group input-selected">
-                <div>선택된 담당자</div>
-                <div>{managerName}</div>
-              </div>
-              <div className="input-group input-selected">
-                <div>권한</div>
-                <div>
-                  {managerAuth === 0
-                    ? "담담"
-                    : managerAuth === 1
-                    ? "협조"
-                    : "배정"}
-                </div>
-              </div>
+
+              {managerName && (
+                <>
+                  <div className="input-group input-selected">
+                    <div>선택된 담당자</div>
+                    <div>{managerName}</div>
+                  </div>
+                  <div className="input-group input-selected">
+                    <div>권한</div>
+                    <div>
+                      {managerAuth === 0
+                        ? "담담"
+                        : managerAuth === 1
+                        ? "협조"
+                        : "배정"}
+                    </div>
+                  </div>
+                </>
+              )}
+
               <div className="input-group">
                 <div>이름</div>
                 <select
@@ -354,11 +373,12 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
                 </div>
               </div>
             </div>
-            <div className="input-group">
-              <div>반려사유</div>
-
-              <input type="text" {...register("stateReason")} />
-            </div>
+            {watch("state") === "2" && (
+              <div className="input-group">
+                <div>반려사유</div>
+                <input type="text" {...register("stateReason")} />
+              </div>
+            )}
           </section>
 
           <HStack mt="8">

@@ -82,8 +82,6 @@ export default function AdminConfirm() {
     }
   }, [onOpen, visitreservation]);
 
-  // *******************************************************************************
-
   const handlePageChange = (page) => {
     setPage(page);
   };

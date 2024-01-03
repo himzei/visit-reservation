@@ -38,9 +38,14 @@ export default function AddPlaceToVisit({ onClose, checkIndex }) {
         <VStack w="full">
           <HStack w="full">
             <Input
+              maxLength={21}
               type="text"
               {...register("title", {
                 required: "방문목적은 반드시 입력해 주셔야 합니다.",
+                maxLength: {
+                  value: 20,
+                  message: "최대글자수는 20자로 제한되어 있습니다.",
+                },
               })}
             />
             <Button

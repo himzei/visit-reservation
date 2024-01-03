@@ -30,17 +30,22 @@ export default function DirectRegister() {
     apiGetPurposeOfVisit
   );
 
+  const orderedPurposeOfVisit = dataPurposeOfVisits?.purposeOfVisits?.sort(
+    (a, b) => parseInt(a?.itemOrder) - parseInt(b?.itemOrder) || 1
+  );
   // 방문지 불러오기
   const { data: dataVisitSite } = useQuery(
     ["getVisitSite", visitSiteIndex],
     apiGetVisitSite
   );
 
-  const parentSite = dataVisitSite?.placeToVisits?.filter(
-    (item) => item.parentIndex === -1
-  );
+  const parentSite = dataVisitSite?.placeToVisits
+    ?.filter((item) => item.parentIndex === -1)
+    .sort((a, b) => parseInt(a?.itemOrder) - (parseInt(b?.itemOrder) || 1));
+  console.log(parentSite);
 
   const {
+    watch,
     reset,
     register,
     handleSubmit,
@@ -70,7 +75,6 @@ export default function DirectRegister() {
     const reservationDate = divideDate(formData.date, formData.time);
     const placeToVisit = formData.placeToVisit1 + " " + formData.placeToVisit2;
     mutate([reservationDate, { placeToVisit, ...formData }]);
-    console.log(formData)
   };
 
   const handleSiteChange = (e) => {
@@ -85,9 +89,9 @@ export default function DirectRegister() {
       const { placeToVisitIndex } = parentSite.find(
         (item) => item.title === title
       );
-      const childSite = dataVisitSite?.placeToVisits?.filter(
-        (item) => item.parentIndex === parseInt(placeToVisitIndex)
-      );
+      const childSite = dataVisitSite?.placeToVisits
+        ?.filter((item) => item.parentIndex === parseInt(placeToVisitIndex))
+        .sort((a, b) => parseInt(a?.itemOrder) - parseInt(b?.itemOrder) || 1);
       setDataChild(childSite);
     }
   };
@@ -99,6 +103,11 @@ export default function DirectRegister() {
         <div className="admin-register">
           <input type="hidden" value={1} {...register("type")} />
           <input type="hidden" value="" {...register("code")} />
+          <input
+            type="hidden"
+            value={watch("tel")?.length >= 11 ? watch("tel")?.slice(-4) : null}
+            {...register("password")}
+          />
           <section>
             <div className="reg-title">
               <img src={RegIcon2} alt="icon2" />
@@ -127,12 +136,19 @@ export default function DirectRegister() {
             <div className="input-group">
               <div>휴대전화번호</div>
               <input
-                maxLength="11"
                 {...register("tel", {
                   required: "모바일 번호를 입력해 주세요",
                   pattern: {
                     value: /^[0-9]{10,11}$/,
                     message: "'-' 없이 숫자만 입력해 주세요",
+                  },
+                  minLength: {
+                    value: 11,
+                    message: "최소 11글자 이상 입력해주세요",
+                  },
+                  maxLength: {
+                    value: 11,
+                    message: "최대 11글자 입력해주세요",
                   },
                 })}
                 type="text"
@@ -212,7 +228,7 @@ export default function DirectRegister() {
                 })}
               >
                 <option value="">선택해주세요</option>
-                {dataPurposeOfVisits?.purposeOfVisits?.map((item, index) => (
+                {orderedPurposeOfVisit?.map((item, index) => (
                   <option key={index} value={item.title}>
                     {item.title}
                   </option>

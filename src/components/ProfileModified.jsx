@@ -24,19 +24,25 @@ export default function ProfileModified() {
   const [resultAuth, setResultAuth] = useState(""); // setResultHint 상태 추가
   const [resultHint, setResultHint] = useState(""); // setResultHint 상태 추가
   const queryClient = useQueryClient();
-  // sms 인증
-  const isEmpty = (str) => {
-    return typeof str === "undefined" || str === null || str === "";
-  };
 
-  const [initialLogin, setInitialLogin] = useState(localStorage.getItem("initialLogin"));
+  const {
+    watch,
+    setError,
+    reset,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const [initialLogin, setInitialLogin] = useState(
+    localStorage.getItem("initialLogin")
+  );
 
   // 로컬 스토리지에서 initialLogin 값이 변경되었을 때 감지
   useEffect(() => {
     const loginStatus = localStorage.getItem("initialLogin");
     setInitialLogin(loginStatus);
   }, []);
-
 
   // sms 인증
   const startAuthTimer = () => {
@@ -64,8 +70,9 @@ export default function ProfileModified() {
   }
 
   // sms 인증
+  console.log(watch("tel"));
   const handleSendAuth = () => {
-    if (isEmpty(tel)) {
+    if (watch("tel") === "") {
       alert("연락처를 입력해주세요.");
       return;
     }
@@ -87,7 +94,6 @@ export default function ProfileModified() {
       .then((data) => {
         switch (data.result) {
           case 0:
-
             // 상태 업데이트로 UI 변경
             setShowAfterAuth(true); // 인증번호 입력란 표시
             setShowBeforeAuth(false); // 본인인증 버튼 숨김
@@ -111,9 +117,18 @@ export default function ProfileModified() {
 
   // sms 인증
   // 확인버튼
+  function checkPhoneNumberWithoutHyphen(text) {
+    const phonePattern = /(?:\+\d{1,3})?(?:\d{10,11})/g;
+    return text.match(phonePattern);
+  }
+
   const handleAuthCheck = () => {
     var checkInputValue = document.getElementById("authCode").value;
-    //console.log(checkInputValue, test.toString())
+
+    if (!checkPhoneNumberWithoutHyphen(watch("tel"))) {
+      alert("올바른 연락처를 입력해주세요.");
+      return;
+    }
 
     if (checkInputValue === test.toString()) {
       // console.log("문자 인증 값과 작성한 인증값이 동일함");
@@ -126,7 +141,11 @@ export default function ProfileModified() {
       setResultAuth("다시 시도해주세요.");
       setShowBeforeAuth(true);
       setAgreeState(false); // 본인인증 실패 시 agreeState를 false로 설정
+    } else {
+      alert("전화번호 인증을 먼저하셔야 합니다. ");
+      return;
     }
+
     setShowAfterAuth(false); // authTime 숨기기
   };
 
@@ -149,15 +168,20 @@ export default function ProfileModified() {
     }
   );
 
-  const {
-    setError,
-    reset,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  function isValidPassword(password) {
+    const passwordPattern =
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    return passwordPattern.test(password);
+  }
 
   const onValid = (data) => {
+    if (!isValidPassword(data.nowPassword)) {
+      setError("newPassword", {
+        message:
+          "새로운 패스워드는 문자, 숫자, 특수문자 등의 조합으로 8자리 이상의 비밀번호를 사용해야 합니다 ",
+      });
+      return;
+    }
     if (data.nowPassword === data.newPassword) {
       setError("newPassword", {
         message: "새로운 패스워드는 기존의 패스워드와 달라야 합니다. ",
@@ -215,7 +239,6 @@ export default function ProfileModified() {
         if (data.result === 0) {
           queryClient.invalidateQueries("getAtsetting");
           alert("변경되었습니다.");
-          
         }
       },
     }
@@ -248,6 +271,8 @@ export default function ProfileModified() {
           <HStack>
             <Text width="250px">비밀번호 변경</Text>
             <Input
+              minLength={11}
+              maxLength={11}
               className=""
               {...register("tel", {
                 required: "전화번호 인증은 필수 항목입니다.",
@@ -302,32 +327,34 @@ export default function ProfileModified() {
           </HStack>
 
           {/* <!--본인인증 번호 입력 및 결과--> */}
-          <HStack
-            w="full"
-            spacing={4}
-            id="after_auth"
-            style={{ display: 33 ? "block" : "none" }}
-          >
-            {/* <!--본인인증 정보 입력--> */}
-            <Input
-              size="sm"
-              width="200px"
-              className="input-ctf"
-              type="text"
-              id="authCode"
-              placeholder="인증번호 입력"
-              maxLength="4"
-              inputMode="numeric"
-            />
-            <Button
-              size="sm"
-              colorScheme="blue"
-              type="button"
-              onClick={handleAuthCheck}
+          {showAfterAuth && (
+            <HStack
+              w="full"
+              spacing={4}
+              id="after_auth"
+              style={{ display: 33 ? "block" : "none" }}
             >
-              확인
-            </Button>
-          </HStack>
+              {/* <!--본인인증 정보 입력--> */}
+              <Input
+                size="sm"
+                width="200px"
+                className="input-ctf"
+                type="text"
+                id="authCode"
+                placeholder="인증번호 입력"
+                maxLength="4"
+                inputMode="numeric"
+              />
+              <Button
+                size="sm"
+                colorScheme="blue"
+                type="button"
+                onClick={handleAuthCheck}
+              >
+                확인
+              </Button>
+            </HStack>
+          )}
         </VStack>
       </section>
       {resultAuth && (

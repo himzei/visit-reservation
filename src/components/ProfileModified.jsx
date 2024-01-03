@@ -12,6 +12,7 @@ import {
 import useUser from "../hooks/useUser";
 import { useEffect } from "react";
 import { BiSolidHelpCircle } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfileModified() {
   const [test, setTest] = useState("");
@@ -24,6 +25,7 @@ export default function ProfileModified() {
   const [resultAuth, setResultAuth] = useState(""); // setResultHint 상태 추가
   const [resultHint, setResultHint] = useState(""); // setResultHint 상태 추가
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const {
     watch,
@@ -75,45 +77,50 @@ export default function ProfileModified() {
     if (watch("tel") === "") {
       alert("연락처를 입력해주세요.");
       return;
-    }
-
-    // 4자리 랜덤 숫자 생성
-    const randomAuthNumber = Math.floor(1000 + Math.random() * 9000);
-    setTest(randomAuthNumber);
-    // AJAX 호출 대신 fetch 또는 axios 등을 사용하세요.
-    // 이 코드는 AJAX 호출을 대체하는 것이 아닙니다.
-    // 아래의 URL 및 데이터는 실제로 사용하는 서버에 맞게 수정해야 합니다.
-    fetch("/api/Message/send-auth-code", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-      },
-      body: JSON.stringify({ tel: tel, authCode: randomAuthNumber.toString() }), // 휴대폰 번호를 문자열로 서버에 전달
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        switch (data.result) {
-          case 0:
-            // 상태 업데이트로 UI 변경
-            setShowAfterAuth(true); // 인증번호 입력란 표시
-            setShowBeforeAuth(false); // 본인인증 버튼 숨김
-            setAuthTime(60);
-            setResultHint("");
-            setResultAuth("");
-            startAuthTimer(null);
-
-            break;
-          case 1:
-            alert(data.message);
-            break;
-          default:
-            break;
-        }
+    } else {
+      alert("전화번호 인증을 진행하시겠습니까?")
+      setShowBeforeAuth(false); // 본인인증 버튼 숨김
+      // 4자리 랜덤 숫자 생성
+      const randomAuthNumber = Math.floor(1000 + Math.random() * 9000);
+      setTest(randomAuthNumber);
+      // AJAX 호출 대신 fetch 또는 axios 등을 사용하세요.
+      // 이 코드는 AJAX 호출을 대체하는 것이 아닙니다.
+      // 아래의 URL 및 데이터는 실제로 사용하는 서버에 맞게 수정해야 합니다.
+      fetch("/api/Message/send-auth-code", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+        body: JSON.stringify({ tel: tel, authCode: randomAuthNumber.toString() }), // 휴대폰 번호를 문자열로 서버에 전달
       })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
+        .then((response) => response.json())
+        .then((data) => {
+          switch (data.result) {
+            case 0:
+              // 상태 업데이트로 UI 변경
+              setShowAfterAuth(true); // 인증번호 입력란 표시
+              setShowBeforeAuth(false); // 본인인증 버튼 숨김
+              setAuthTime(60);
+              setResultHint("");
+              setResultAuth("");
+              startAuthTimer(null);
+              break;
+            case 1:
+              alert(data.message);
+              break;
+            default:
+              break;
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    };
+  }
+
+
+
+
 
   // sms 인증
   // 확인버튼
@@ -160,6 +167,7 @@ export default function ProfileModified() {
         if (data.result === 0) {
           alert("비밀번호가 변경되었습니다.");
           reset();
+          navigate("/login");
         }
         if (data.result === -4) {
           alert("비밀번호 변경에 실패하였습니다.");
@@ -379,14 +387,14 @@ export default function ProfileModified() {
               <div>새 비밀번호</div>
               <input
                 {...register("newPassword", {
-                  required: "'새 비밀번호'를 입력해 주세요.",
+                  required: "새로운 패스워드는 문자, 숫자, 특수문자 등의 조합으로 8자리 이상의 비밀번호를 사용해야 합니다",
                   minLength: {
-                    message: "8자 이상으로 설정해야 합니다.",
+                    message: "숫자,문자8자 이상으로 설정해야 합니다.",
                     value: 8,
                   },
                 })}
                 type="password"
-                placeholder="새 비밀번호를 입력해 주세요."
+                placeholder="새로운 패스워드는 문자, 숫자, 특수문자 등의 조합으로 8자리 이상의 비밀번호를 사용해야 합니다"
               />
             </div>
 
@@ -395,10 +403,10 @@ export default function ProfileModified() {
               <div>새 비밀번호 확인</div>
               <input
                 {...register("newPassword2", {
-                  required: "'새 비밀번호 확인'을 입력해 주세요.",
+                  required: "새로운 패스워드는 문자, 숫자, 특수문자 등의 조합으로 8자리 이상의 비밀번호를 사용해야 합니다",
                 })}
                 type="password"
-                placeholder="새 비밀번호 확인을 입력해 주세요."
+                placeholder="새로운 패스워드는 문자, 숫자, 특수문자 등의 조합으로 8자리 이상의 비밀번호를 사용해야 합니다"
               />
             </div>
 

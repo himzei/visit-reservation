@@ -175,7 +175,7 @@ export default function ProfileModified() {
   }
 
   const onValid = (data) => {
-    if (!isValidPassword(data.nowPassword)) {
+    if (!isValidPassword(data.newPassword)) {
       setError("newPassword", {
         message:
           "새로운 패스워드는 문자, 숫자, 특수문자 등의 조합으로 8자리 이상의 비밀번호를 사용해야 합니다 ",
@@ -269,7 +269,7 @@ export default function ProfileModified() {
         {/* 인증수단 */}
         <VStack spacing={4} w="full" alignItems="flex-start">
           <HStack>
-            <Text width="250px">비밀번호 변경</Text>
+            <Text width="250px">전화번호 인증</Text>
             <Input
               minLength={11}
               maxLength={11}

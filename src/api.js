@@ -543,6 +543,8 @@ export async function apiVisitReservationRegister(visitSiteIndex, data) {
   } = data[1];
   const resevationDate = data[0];
 
+  console.log(password);
+
   return await fetch(`/api/VisitReservation`, {
     method: "POST",
     headers: {

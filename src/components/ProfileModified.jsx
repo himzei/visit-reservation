@@ -215,6 +215,7 @@ export default function ProfileModified() {
         if (data.result === 0) {
           queryClient.invalidateQueries("getAtsetting");
           alert("변경되었습니다.");
+          
         }
       },
     }

@@ -70,6 +70,7 @@ export default function DirectRegister() {
     const reservationDate = divideDate(formData.date, formData.time);
     const placeToVisit = formData.placeToVisit1 + " " + formData.placeToVisit2;
     mutate([reservationDate, { placeToVisit, ...formData }]);
+    console.log(formData)
   };
 
   const handleSiteChange = (e) => {

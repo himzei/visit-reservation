@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./Login.css";
 import Person from "../assets/svg/person.svg";
 import InputPerson from "../assets/svg/person-input.svg";
@@ -18,7 +18,7 @@ export default function LogIn() {
 
   const [isAccountLocked, setIsAccountLocked] = useState(false);
   const navigate = useNavigate();
-  const { register, handleSubmit , watch  } = useForm();
+  const { register, handleSubmit, watch } = useForm();
 
   const password = watch("Password"); // 비밀번호 필드를 확인
 
@@ -28,9 +28,12 @@ export default function LogIn() {
   }, [loginAttempts]);
 
   const { mutate } = useMutation(login, {
-    onSuccess: (data) => {
+    onSuccess: (data , variables) => {
       localStorage.setItem("visitschool", data.token);
       localStorage.removeItem("loginAttempts"); // 로그인 성공 시 로컬 스토리지에서 실패 횟수 삭제
+
+      const { UserId } = variables;
+      localStorage.removeItem(UserId + "_loginAttempts");
 
       // 초기 비밀번호로 로그인할시 경고 문구 작성
       if (password.length === 4) {
@@ -57,7 +60,7 @@ export default function LogIn() {
               return;
           }
         }
-      }else{
+      } else {
         localStorage.removeItem("initialLogin"); // 비밀번호 길이가 4가 아닐 경우 데이터 삭제
 
         // data.auth 값에 따른 페이지 리디렉션
@@ -66,7 +69,7 @@ export default function LogIn() {
             navigate("/admin/confirm");
             break;
           case 1:
-            navigate("/teacher/today");
+            navigate("/teacher/approval");
             break;
           case 2:
             navigate("/security/today");
@@ -75,15 +78,17 @@ export default function LogIn() {
             // 기본적으로 처리할 내용이나 오류 처리 로직을 작성할 수 있습니다.
             console.log("알 수 없는 사용자 권한");
         }
-  
+
+
         window.location.reload();
       }
     },
-    //
-    onError: (error) => {
-      if (loginAttempts < 4) {
-        setLoginAttempts(loginAttempts + 1);
-        alert(`아이디와 비밀번호를 확인해 주세요.`);
+    onError: (error, variables) => {
+      const { UserId } = variables;
+      const currentAttempts = parseInt(localStorage.getItem(UserId + "_loginAttempts")) || 0;
+      if (currentAttempts < 4) {
+        localStorage.setItem(UserId + "_loginAttempts", (currentAttempts + 1).toString());
+        alert(`[${currentAttempts + 1}/5 비밀번호 오류] 아이디와 비밀번호를 확인해 주세요.`);
       } else {
         alert("비밀번호를 5회 이상 틀렸습니다. 관리자에 문의해주세요.");
       }
@@ -96,10 +101,14 @@ export default function LogIn() {
   const onSubmit = ({ UserId, Password }) => {
     const ip = getIpData?.IPv4;
 
+    // 로그인 시도 횟수를 사용자 ID에 따라 저장
+    const currentAttempts = parseInt(localStorage.getItem(UserId + "_loginAttempts")) || 0;
+    setLoginAttempts(currentAttempts);
+
     mutate({ UserId, Password, ip });
   };
 
-  
+
 
 
   return (

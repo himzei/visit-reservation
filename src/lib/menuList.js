@@ -13,14 +13,14 @@ export const SECURITY_LIST = [
 
 export const TEACHER_LIST = [
   {
-    title: "방문자 현황",
-    subTitle: "방문자 확인 및 상태를 변경해 보세요.",
-    url: "/teacher/today",
-  },
-  {
     title: "방문 승인 대기자",
     subTitle: "3개월 전과 후 대기중인 상태만 확인할 수 있어요",
     url: "/teacher/approval",
+  },
+  {
+    title: "방문 승인 현황",
+    subTitle: "방문자 확인 및 상태를 변경해 보세요.",
+    url: "/teacher/today",
   },
   {
     title: "방문 이력 조회",
@@ -41,7 +41,7 @@ export const ADMIN_LIST = [
     url: "/admin/confirm",
   },
   {
-    title: "방문자 승인 현황",
+    title: "방문 승인 현황",
     subTitle: "금일 방문자 현황을 확인해 보세요",
     url: "/admin/today",
   },
@@ -51,7 +51,7 @@ export const ADMIN_LIST = [
     url: "/admin/history",
   },
   {
-    title: "방문자 직접 등록",
+    title: "방문 직접 등록",
     subTitle: "방문객 예약을 등록해 보세요",
     url: "/admin/register",
   },

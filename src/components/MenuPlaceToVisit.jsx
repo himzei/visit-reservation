@@ -58,6 +58,7 @@ export default function MenuPlaceToVisit({ lists, title }) {
       .sort((a, b) => parseInt(a?.itemOrder) - (parseInt(b?.itemOrder) || 1))
   );
 
+
   useEffect(() => {
     const temp = lists
       ?.filter((item) => item.parentIndex === placeVisitIndex)
@@ -69,26 +70,34 @@ export default function MenuPlaceToVisit({ lists, title }) {
   const { mutate } = useMutation(apiPlactToVisitEdit, {
     onSuccess: (data) => {
       if (data.result === 0) {
-        setEditIndex(null);
-        queryClient.invalidateQueries(["getVisitSite"]);
-        window.location.reload();
+        setEditIndex(null); 
+        // 순서저장이 모두 완료 되었을때 페이지를 새로고침 
+        queryClient.invalidateQueries(["getVisitSite"]).then(() => {
+          window.location.reload();
+        });
       }
+    },
+    // 오류 처리를 위한 추가적 인 콜백을 여기에 배치할 수 있습니다.
+    onError: (error) => {
+      // 에러 핸들링 로직
     },
   });
 
   const handleOrderSave = () => {
-    placeToVisit?.map((item, index) => {
+    // 학급 순서 저장 로직
+    placeToVisit?.forEach((item, index) => {
       mutate([
         item.title,
         {
           visitSiteIndex,
-          placeToVisitIndex: item.placeToVisitIndex,
+          placeToVisitIndex: item.placeToVisitIndex, 
           parentIndex: item.parentIndex,
           itemOrder: index + 1,
         },
       ]);
     });
-    placeToVisitSecond.map((item, index) => {
+    // 반 순서 저장 로직
+    placeToVisitSecond.forEach((item, index) => {
       mutate([
         item.title,
         {
@@ -100,6 +109,9 @@ export default function MenuPlaceToVisit({ lists, title }) {
       ]);
     });
   };
+
+  console.log('학급',placeToVisit)
+  console.log('반',placeToVisitSecond)
 
   const handleEditClick = (index, placeToVisitIndex, secondSelect) => {
     if (secondSelect === "select") {
@@ -120,12 +132,14 @@ export default function MenuPlaceToVisit({ lists, title }) {
     const check = window.confirm("삭제하시겠습니까?");
     if (check) {
       apiPlaceToVisitDelete(index);
+      alert('삭제가 완료 되었습니다.')
       window.location.reload();
     }
   };
 
   const handleChange = (e) => {
     setEditTitle(e.target.value);
+
   };
 
   const handleSubmit = (e) => {
@@ -151,7 +165,7 @@ export default function MenuPlaceToVisit({ lists, title }) {
       <Modal onClose={onCloseFirst} size="xl" isOpen={isOpenFirst}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>방문지 추가</ModalHeader>
+          <ModalHeader>학급 추가</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <AddPlaceToVisit onClose={onCloseFirst} checkIndex={checkIndex} />
@@ -163,7 +177,7 @@ export default function MenuPlaceToVisit({ lists, title }) {
       <Modal onClose={onClose} size="xl" isOpen={isOpen}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>방문지 추가(2)</ModalHeader>
+          <ModalHeader>반 추가</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <AddPlaceToVisit onClose={onClose} checkIndex={placeVisitIndex} />

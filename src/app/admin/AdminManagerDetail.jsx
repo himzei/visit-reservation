@@ -42,6 +42,8 @@ export default function AdminManagerDetail({ selectEdit, onClose }) {
     (item) => item.parentIndex === -1
   );
 
+
+
   const handleSiteChange = (e) => {
     const title = e.target.value;
     setFirstData(title);

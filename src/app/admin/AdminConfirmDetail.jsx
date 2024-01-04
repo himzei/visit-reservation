@@ -55,7 +55,7 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     ["getManager", { visitSiteIndex, page: 1, pageRange: 1000 }],
     apiGetManager
   );
-  console.log(dataManager);
+
 
   // useQuery
   // 디테일 불러오기
@@ -77,32 +77,38 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     apiGetVisitSite
   );
 
-  console.log(dataVisitSite);
 
   const tempVisit1 = dataVisitSite?.placeToVisits?.find(
     (item) => item.title === stringVisit1
   );
 
-  // const tempVisit2 =
+  console.log("dataVisitSite", dataVisitSite?.placeToVisits);  
 
-  // 방문지의 선택지
-  const selectedIndex = tempVisit1?.placeToVisitIndex;
-  const tempAccount = dataManager?.accounts;
+ // 방문지의 선택지
+ const selectedIndex = tempVisit1?.placeToVisitIndex;
+ const tempAccount = dataManager?.accounts;
 
-  const tempVisit2 = dataVisitSite?.placeToVisits?.filter(
-    (item) => item.parentIndex === selectedIndex
-  );
+ const tempVisit2 = dataVisitSite?.placeToVisits?.find(
+   (item) => item.parentIndex === selectedIndex &&
+   item.title === stringVisit2
+ );
 
+ 
+
+ const selectedIndex2 = tempVisit2?.placeToVisitIndex;
+
+ 
   // 불러온 모든 매니져 중에 방문지가 현재 불러온 페이지의 방문지와 같은 경우만 리스트
   const selectAccount = tempAccount?.filter(
     (item) =>
-      item.managePlaceToVisit?.placeToVisitIndex === parseInt(selectedIndex)
+      item.managePlaceToVisit?.parentPlaceToVisitIndex === parseInt(selectedIndex) &&
+      item.managePlaceToVisit?.placeToVisitIndex === parseInt(selectedIndex2)  
   );
-
-  // console.log("학급", selectAccount);
-
-  const temp2 = tempVisit2?.filter((item) => item.title === stringVisit2);
-  // console.log(temp2);
+  console.log("parentPlaceToVisitIndex 의 값", selectedIndex);
+  console.log("placeToVisitIndex 의 값", selectedIndex2);
+  console.log("tempAccount", tempAccount);
+  // console.log("학급", selectAccount);  
+  
 
   const inChargedManger =
     selectAccount?.length !== 0 ? selectAccount : dataManager?.accounts;

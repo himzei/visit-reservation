@@ -324,6 +324,9 @@ export async function apiPlactToVisitEdit(props) {
   const parentIndex = props[1].parentIndex;
   const itemOrder = props[1].itemOrder;
 
+  console.log(props[0]) 
+  console.log(props[1]) 
+
   return await fetch(`/api/PlaceToVisit/${placeToVisitIndex}`, {
     method: "PUT",
     headers: {

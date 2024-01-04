@@ -50,10 +50,12 @@ export default function AdminUserWrite({ onClose }) {
         }
         if (data.result === 0) {
           const accountIndex = data.accountIndex;
+          alert(accountIndex)
+          console.log(accountIndex)
           manageMutate({
             accountIndex,
-            parentPlaceToVisitIndex: watch("placeToVisit2"),
-            placeToVisitIndex: watch("placeToVisit1"),
+            parentPlaceToVisitIndex: watch("placeToVisit1"),
+            placeToVisitIndex: watch("placeToVisit2"),
           });
           handleCloseClick();
           window.location.reload();
@@ -85,6 +87,7 @@ export default function AdminUserWrite({ onClose }) {
     apiGetVisitSite
   );
 
+
   const parentSite = dataVisitSite?.placeToVisits?.filter(
     (item) => item.parentIndex === -1
   );
@@ -100,6 +103,8 @@ export default function AdminUserWrite({ onClose }) {
     );
     setDataChild(childSite);
   };
+
+
 
   return (
     <div className="admin-user-detail">

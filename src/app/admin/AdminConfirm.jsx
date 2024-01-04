@@ -91,7 +91,7 @@ export default function AdminConfirm() {
       <Modal onClose={onClose} size="5xl" isOpen={isOpen}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>방문예약확인</ModalHeader>
+          <ModalHeader>방문예약확인</ModalHeader> 
           <ModalCloseButton />
           <ModalBody>
             <AdminConfirmDetail selectData={selectData} onClose={onClose} />

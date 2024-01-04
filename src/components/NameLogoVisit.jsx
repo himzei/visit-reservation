@@ -70,7 +70,6 @@ export default function NameLogoVisit() {
               <img src={PhotoIcon} alt="icon2" />
               <h2>방문지 설정</h2>
             </div>
-
             <div className="location-group">
               {isLoadingVisitSite ? (
                 <HStack justifyContent="center" py="10">

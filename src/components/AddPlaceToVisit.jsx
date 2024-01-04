@@ -20,9 +20,10 @@ export default function AddPlaceToVisit({ onClose, checkIndex }) {
     {
       onSuccess: (data) => {
         if (data.result === 0) {
-          queryClient.invalidateQueries("getVisitSite");
-          onClose();
-          window.location.reload();
+          queryClient.invalidateQueries("getVisitSite").then(() => {
+            onClose();
+            window.location.reload();
+          });
         }
       },
     }
@@ -40,13 +41,16 @@ export default function AddPlaceToVisit({ onClose, checkIndex }) {
             <Input
               maxLength={21}
               type="text"
+              placeholder = "최대글자수는 20자로 제한되어 있습니다."
               {...register("title", {
                 required: "방문목적은 반드시 입력해 주셔야 합니다.",
                 maxLength: {
                   value: 20,
                   message: "최대글자수는 20자로 제한되어 있습니다.",
                 },
+                
               })}
+
             />
             <Button
               type="submit"

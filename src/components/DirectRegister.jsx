@@ -39,9 +39,10 @@ export default function DirectRegister() {
     apiGetVisitSite
   );
 
-  const parentSite = dataVisitSite?.placeToVisits?.filter(
-    (item) => item.parentIndex === -1
-  );
+  const parentSite = dataVisitSite?.placeToVisits
+    ?.filter((item) => item.parentIndex === -1)
+    .sort((a, b) => parseInt(a?.itemOrder) - (parseInt(b?.itemOrder) || 1));
+  console.log(parentSite);
 
   const {
     watch,
@@ -55,6 +56,7 @@ export default function DirectRegister() {
     (formData) => apiVisitReservationRegister(visitSiteIndex, formData),
     {
       onSuccess: () => {
+
         toast.success("등록되었습니다!", {
           position: "top-center",
           autoClose: 1000,
@@ -70,19 +72,11 @@ export default function DirectRegister() {
     }
   );
 
-  const [password, setPassword] = useState("");
-
-  const onChange = (e) => {
-    const temp = e.target.value;
-    if (temp.length >= 11) {
-      setPassword(temp.slice(-4));
-    }
-  };
-
   const onSubmit = (formData) => {
     const reservationDate = divideDate(formData.date, formData.time);
     const placeToVisit = formData.placeToVisit1 + " " + formData.placeToVisit2;
-    mutate([reservationDate, { placeToVisit, password, ...formData }]);
+    mutate([reservationDate, { placeToVisit, ...formData }]);
+    console.log(formData)
   };
 
   const handleSiteChange = (e) => {
@@ -111,7 +105,11 @@ export default function DirectRegister() {
         <div className="admin-register">
           <input type="hidden" value={1} {...register("type")} />
           <input type="hidden" value="" {...register("code")} />
-
+          <input
+            type="hidden"
+            value={watch("tel")?.length >= 11 ? watch("tel")?.slice(-4) : null}
+            {...register("password")}
+          />
           <section>
             <div className="reg-title">
               <img src={RegIcon2} alt="icon2" />
@@ -155,7 +153,6 @@ export default function DirectRegister() {
                     message: "최대 11글자 입력해주세요",
                   },
                 })}
-                onChange={onChange}
                 type="text"
                 placeholder="휴대전화번호를 입력해 주세요."
               />

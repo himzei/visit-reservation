@@ -67,13 +67,18 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
   );
 
   let dataChild = dataVisitSite?.placeToVisits?.filter(
-    (item) => item.parentIndex === parseInt(placeToVisit1)
+    (item) => item.parentIndex === parseInt(placeToVisit2)
   );
+
+
 
   const parentSite = dataVisitSite?.placeToVisits?.filter(
     (item) => item.parentIndex === -1
   );
 
+  console.log("필터링될 담당자의 학년 정보:",parentSite) 
+  console.log("필터링될 담당자의 학반 정보:",dataChild)
+  
   const handleSiteChange = (e) => {
     const title = e.target.value;
     saveChildData(title);
@@ -128,7 +133,7 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
                   key={index}
                   value={item.placeToVisitIndex}
                   selected={
-                    item.placeToVisitIndex === placeToVisit1 ? true : false
+                    item.placeToVisitIndex === placeToVisit2 ? true : false
                   }
                 >
                   {item.title}
@@ -152,7 +157,7 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
                   key={index}
                   value={item.placeToVisitIndex}
                   selected={
-                    item.placeToVisitIndex === placeToVisit2 ? true : false
+                    item.placeToVisitIndex === placeToVisit1 ? true : false
                   }
                 >
                   {item.title}

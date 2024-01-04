@@ -187,7 +187,7 @@ export default function OrderItem({ lists }) {
       <Modal onClose={onCloseFirst} size="xl" isOpen={isOpenFirst}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>방문지 추가</ModalHeader>
+          <ModalHeader>학급 추가</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <AddPlaceToVisit onClose={onCloseFirst} checkIndex={checkIndex} />
@@ -199,7 +199,7 @@ export default function OrderItem({ lists }) {
       <Modal onClose={onClose} size="xl" isOpen={isOpen}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>방문지 추가(2)</ModalHeader>
+          <ModalHeader>반 추가</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <AddPlaceToVisit onClose={onClose} checkIndex={checkIndex} />

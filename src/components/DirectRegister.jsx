@@ -1,4 +1,5 @@
 import "./DirectRegister.css";
+import { useEffect } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useForm } from "react-hook-form";
 import { divideDate } from "../utils/divideDate";
@@ -48,9 +49,23 @@ export default function DirectRegister() {
     watch,
     reset,
     register,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm({ mode: "onChange" });
+
+  // 전화번호 필드의 변화를 감시
+  const telValue = watch("tel");
+
+
+  // 전화번호가 변경될 때마다 password 필드의 값을 업데이트
+  useEffect(() => {
+    if (telValue?.length === 11) {
+      // 전화번호의 마지막 4자리를 password 필드에 설정
+      setValue("password", telValue.slice(-4));
+    }
+  }, [telValue, setValue]);
+
 
   const { isLoading, mutate } = useMutation(
     (formData) => apiVisitReservationRegister(visitSiteIndex, formData),
@@ -73,10 +88,12 @@ export default function DirectRegister() {
   );
 
   const onSubmit = (formData) => {
+    console.log(formData)
+
     const reservationDate = divideDate(formData.date, formData.time);
     const placeToVisit = formData.placeToVisit1 + " " + formData.placeToVisit2;
     mutate([reservationDate, { placeToVisit, ...formData }]);
-    console.log(formData)
+
   };
 
   const handleSiteChange = (e) => {
@@ -212,14 +229,21 @@ export default function DirectRegister() {
             </div>
             <div className="input-group">
               <div>방문지 중분류</div>
-              <select {...register("placeToVisit2")}>
-                <option>선택해주세요</option>
+              <select
+                {...register("placeToVisit2", {
+                  required: "방문지 중분류는 필수 입력 사항입니다." 
+                })}
+              >
+                <option value="">선택해주세요</option>
                 {dataChild?.map((item, index) => (
                   <option key={index} value={item.title}>
                     {item.title}
                   </option>
                 ))}
               </select>
+              <span className="form-errors more-left">
+                {errors?.placeToVisit2?.message}
+              </span>
             </div>
 
             <div className="input-group">

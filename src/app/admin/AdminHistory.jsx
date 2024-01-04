@@ -140,9 +140,13 @@ export default function AdminHistory() {
                     <td>{mobileDash(item.tel)}</td>
                     <td>{item.carNumber}</td>
                     <td>{dateFormat(item.visitDate)}</td>
-                    <td>{dateFormat(item.checkOutDate)}</td>
+                    <td>
+                      {item.checkOutDate !== "1900-01-01T00:00:00Z" ? dateFormat(item.checkOutDate) : ""}
+                    </td>
                     <td>{item.purposeOfVisit}</td>
-                    <td>{item.managerName}</td>
+                    <td>
+                      {item.managerName !== "???" ? item.managerName : ""}
+                    </td>
                   </tr>
                 ))
               )}

@@ -19,13 +19,16 @@ import { mobileFormat } from "../../utils/mobileFormat";
 
 export default function TeacherApprovalDetail({ selectData, onClose }) {
   const queryClient = useQueryClient();
-  const { register, handleSubmit } = useForm({ mode: "onChange" });
+  const { register, handleSubmit , watch  } = useForm({ mode: "onChange" });
   const [managerPosition, setNanagerPosition] = useState("");
   const [accountIndex, setAccountIndex] = useState(0);
 
   // VISITSITEINDEX
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
+
+  // Watch the 'state' field for changes
+  const stateValue = watch("state");
 
   // useQuery
   // 매니져 불러오기
@@ -39,7 +42,9 @@ export default function TeacherApprovalDetail({ selectData, onClose }) {
   const { isLoading: dataIsLoading, data } = useQuery(
     ["getVisitReservationOne", { visitReservationIndex: selectData }],
     apiGetVisitReservationOne
+
   );
+  console.log(data)
 
   // useMutation
   // 승인 반려 수정
@@ -166,7 +171,7 @@ export default function TeacherApprovalDetail({ selectData, onClose }) {
 
           {/* 담당자 선택 */}
           <section>
-            <div className="reg-title">
+            {/* <div className="reg-title">
               <img src={RegIcon3} alt="icon3" />
               <h2>담당자 선택</h2>
             </div>
@@ -193,16 +198,17 @@ export default function TeacherApprovalDetail({ selectData, onClose }) {
                 <option value="0">담당</option>
                 <option value="1" selected>
                   협조
-                </option>
+                </option> 
                 <option value="2">배정</option>
               </select>
-            </div>
+            </div> */}
             <div className="input-group">
               <div>메모</div>
               <input
                 type="text"
-                defaultValue={data?.managers[0]?.memo}
+                defaultValue={data?.visitReservation?.memo}
                 {...register("memo")}
+                readOnly
               />
             </div>
           </section>
@@ -260,11 +266,12 @@ export default function TeacherApprovalDetail({ selectData, onClose }) {
                 </div>
               </div>
             </div>
-            <div className="input-group">
-              <div>반려사유</div>
-
-              <input type="text" {...register("stateReason")} />
-            </div>
+            {watch("state") === "2" && (
+              <div className="input-group">
+                <div>반려사유</div>
+                <input type="text" {...register("stateReason")} placeholder="반려 사유를 입력하여 주세요."/>
+              </div>
+            )}
           </section>
 
           <HStack mt="8">

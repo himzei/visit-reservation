@@ -11,16 +11,16 @@ import { useEffect } from "react";
 
 export default function AdminUserDetail({ selectEdit, onClose }) {
   const queryClient = useQueryClient();
-  // VISIT SITE INDEX
+
   const { data: visitSite } = useVisitSite();
   const visitSiteIndex = visitSite?.visitSite?.visitSiteIndex;
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ mode: "onChange" });
+  const { data: dataVisitSite } = useQuery(
+    ["getVisitSite", visitSiteIndex],
+    apiGetVisitSite
+  );
 
+  const { register, handleSubmit, formState: { errors } } = useForm({ mode: "onChange" });
   const { mutate } = useMutation((formData) => apiPutManager(formData), {
     onSuccess: (formData) => {
       if (formData.result === 0) {
@@ -30,18 +30,37 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
       queryClient.invalidateQueries("getManager");
     },
   });
-  const [placeToVisit1, setPlaceToVisit1] = useState(
-    selectEdit.managePlaceToVisit?.placeToVisitIndex
-  );
-  const [placeToVisit2, setPlaceToVisit2] = useState(
-    selectEdit.managePlaceToVisit?.parentPlaceToVisitIndex
-  );
+
+  const [placeToVisit1, setPlaceToVisit1] = useState(selectEdit.managePlaceToVisit?.placeToVisitIndex);
+  const [placeToVisit2, setPlaceToVisit2] = useState(selectEdit.managePlaceToVisit?.parentPlaceToVisitIndex);
+  const [dataChild, setDataChild] = useState([]);
+
+  useEffect(() => {
+    if (dataVisitSite) {
+      const initialChildData = dataVisitSite.placeToVisits.filter(
+        (item) => item.parentIndex === parseInt(placeToVisit2)
+      );
+      setDataChild(initialChildData);
+    }
+  }, [dataVisitSite, placeToVisit2]);
 
   const handlePlaceToVisit1 = (e) => {
-    setPlaceToVisit1(e.target.value);
+    const newPlaceToVisit2 = e.target.value;
+    setPlaceToVisit2(newPlaceToVisit2);
+  
+    // 중분류 데이터 업데이트
+    const newChildData = dataVisitSite?.placeToVisits?.filter(
+      (item) => item.parentIndex === parseInt(newPlaceToVisit2)
+    );
+    setDataChild(newChildData);
+  
+    // 중분류 선택 초기화
+    setPlaceToVisit1("");
   };
+
+
   const handlePlaceToVisit2 = (e) => {
-    setPlaceToVisit2(e.target.value);
+    setPlaceToVisit1(e.target.value);
   };
 
   const onSubmit = (formData) => {
@@ -56,40 +75,9 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
     onClose();
   };
 
-  useEffect(() => {
-    saveChildData(selectEdit.managePlaceToVisit?.placeToVisitIndex);
-  }, []);
-
-  // 방문지 불러오기
-  const { data: dataVisitSite } = useQuery(
-    ["getVisitSite", visitSiteIndex],
-    apiGetVisitSite
-  );
-
-  let dataChild = dataVisitSite?.placeToVisits?.filter(
-    (item) => item.parentIndex === parseInt(placeToVisit2)
-  );
-
-
-
   const parentSite = dataVisitSite?.placeToVisits?.filter(
     (item) => item.parentIndex === -1
   );
-
-  console.log("필터링될 담당자의 학년 정보:",parentSite) 
-  console.log("필터링될 담당자의 학반 정보:",dataChild)
-  
-  const handleSiteChange = (e) => {
-    const title = e.target.value;
-    saveChildData(title);
-  };
-
-  const saveChildData = (placeToVisitIndex) => {
-    const childSite = dataVisitSite?.placeToVisits?.filter(
-      (item) => item.parentIndex === parseInt(placeToVisitIndex)
-    );
-    dataChild = childSite;
-  };
 
   return (
     <div className="admin-user-detail">
@@ -120,46 +108,25 @@ export default function AdminUserDetail({ selectEdit, onClose }) {
             <span className="form-errors">{errors?.name?.message}</span>
           </div>
 
-          <div className="input-group" onChange={handleSiteChange}>
+          <div className="input-group">
             <div>방문지 대분류</div>
-            <select
-              // {...register("placeToVisit1")}
-              // defaultValue={selectEdit.managePlaceToVisit?.placeToVisitIndex}
-              onChange={(e) => handlePlaceToVisit1(e)}
-            >
-              <option>선택해주세요</option>
+            <select value={placeToVisit2} onChange={handlePlaceToVisit1}>
+              <option value="">선택해주세요</option>
               {parentSite?.map((item, index) => (
-                <option
-                  key={index}
-                  value={item.placeToVisitIndex}
-                  selected={
-                    item.placeToVisitIndex === placeToVisit2 ? true : false
-                  }
-                >
+                <option key={index} value={item.placeToVisitIndex}>
                   {item.title}
-                  {/* {item.placeToVisitIndex} */}
-                  {/* {selectEdit.managePlaceToVisit?.placeToVisitIndex} */}
                 </option>
               ))}
             </select>
-            <span className="form-errors">
-              {errors?.placeToVisit1?.message}
-            </span>
+            <span className="form-errors">{errors?.placeToVisit1?.message}</span>
           </div>
+
           <div className="input-group">
             <div>방문지 중분류</div>
-            <select
-              onChange={(e) => handlePlaceToVisit2(e)}
-              // {...register("placeToVisit2")}
-            >
+            <select value={placeToVisit1} onChange={handlePlaceToVisit2}>
+              <option value="">선택해주세요</option>
               {dataChild?.map((item, index) => (
-                <option
-                  key={index}
-                  value={item.placeToVisitIndex}
-                  selected={
-                    item.placeToVisitIndex === placeToVisit1 ? true : false
-                  }
-                >
+                <option key={index} value={item.placeToVisitIndex}>
                   {item.title}
                 </option>
               ))}

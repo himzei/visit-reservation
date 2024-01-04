@@ -1,5 +1,5 @@
 import "./AdminConfirmDetail.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RegIcon1 from "../../assets/svg/person-input.svg";
 import RegIcon2 from "../../assets/svg/location-icon.svg";
 import RegIcon3 from "../../assets/svg/person-icon.svg";
@@ -28,12 +28,27 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     ["managerGet", { visitReservationIndex: selectData }],
     apiManagerGet
   );
+  // 배정된 담당자가있다면 표시 모달창에 표시
+  const [selectedManager, setSelectedManager] = useState("");
+  const [selectedAuth, setSelectedAuth] = useState("");
 
   const chargedManager = dataGetManager?.managers[0];
   // 콤보박스 셀렉트를 하기위한 구문
   const managerAuth = chargedManager?.auth;
   const isManagerIndex = chargedManager?.managerIndex;
   const managerName = chargedManager?.name;
+
+  useEffect(() => {
+    if (chargedManager) {
+      // 매니저 이름 설정
+      setSelectedManager(chargedManager.name);
+  
+      // 매니저의 권한 설정 (권한 값이 정의되어 있는 경우)
+      if (chargedManager.auth !== undefined) {
+        setSelectedAuth(chargedManager.auth.toString());
+      }
+    }
+  }, [chargedManager]);
 
   const {
     register,
@@ -82,33 +97,33 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
     (item) => item.title === stringVisit1
   );
 
-  console.log("dataVisitSite", dataVisitSite?.placeToVisits);  
+  console.log("dataVisitSite", dataVisitSite?.placeToVisits);
 
- // 방문지의 선택지
- const selectedIndex = tempVisit1?.placeToVisitIndex;
- const tempAccount = dataManager?.accounts;
+  // 방문지의 선택지
+  const selectedIndex = tempVisit1?.placeToVisitIndex;
+  const tempAccount = dataManager?.accounts;
 
- const tempVisit2 = dataVisitSite?.placeToVisits?.find(
-   (item) => item.parentIndex === selectedIndex &&
-   item.title === stringVisit2
- );
+  const tempVisit2 = dataVisitSite?.placeToVisits?.find(
+    (item) => item.parentIndex === selectedIndex &&
+      item.title === stringVisit2
+  );
 
- 
 
- const selectedIndex2 = tempVisit2?.placeToVisitIndex;
 
- 
+  const selectedIndex2 = tempVisit2?.placeToVisitIndex;
+
+
   // 불러온 모든 매니져 중에 방문지가 현재 불러온 페이지의 방문지와 같은 경우만 리스트
   const selectAccount = tempAccount?.filter(
     (item) =>
       item.managePlaceToVisit?.parentPlaceToVisitIndex === parseInt(selectedIndex) &&
-      item.managePlaceToVisit?.placeToVisitIndex === parseInt(selectedIndex2)  
+      item.managePlaceToVisit?.placeToVisitIndex === parseInt(selectedIndex2)
   );
   console.log("parentPlaceToVisitIndex 의 값", selectedIndex);
   console.log("placeToVisitIndex 의 값", selectedIndex2);
   console.log("tempAccount", tempAccount);
   // console.log("학급", selectAccount);  
-  
+
 
   const inChargedManger =
     selectAccount?.length !== 0 ? selectAccount : dataManager?.accounts;
@@ -140,7 +155,7 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
         accountIndex
       ),
     {
-      onSuccess: (data) => {},
+      onSuccess: (data) => { },
     }
   );
 
@@ -265,7 +280,7 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
                 <h2>담당자 선택</h2>
               </div>
 
-              {managerName && (
+              {/* {managerName && (
                 <>
                   <div className="input-group input-selected">
                     <div>선택된 담당자</div>
@@ -277,12 +292,12 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
                       {managerAuth === 0
                         ? "담담"
                         : managerAuth === 1
-                        ? "협조"
-                        : "배정"}
+                          ? "협조"
+                          : "배정"}
                     </div>
                   </div>
                 </>
-              )}
+              )} */}
 
               <div className="input-group">
                 <div>이름</div>
@@ -290,18 +305,22 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
                   {...register("name", {
                     required: "담당자 선택은 필수 입력사항입니다. ",
                   })}
-                  onChange={(e) => handleChange(e)}
+                  value={selectedManager}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setSelectedManager(e.target.value);
+                  }}
                 >
                   <option value="">선택하세요</option>
-                  {inChargedManger?.map((item, index) => (
-                    <option
-                      key={index}
-                      value={item.name}
-                      // selected={!isLoitem.name === managerName}
-                    >
-                      {item.name}
-                    </option>
-                  ))}
+                  {selectAccount && selectAccount.length > 0 ? (
+                    selectAccount.map((item, index) => (
+                      <option key={index} value={item.name}>
+                        {item.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="">담당자 없음</option>
+                  )}
                 </select>
                 <span className="form-errors more-left">
                   {errors?.name?.message}
@@ -313,6 +332,8 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
                   {...register("auth", {
                     required: "권한은 필수 입력사항입니다. ",
                   })}
+                  value={selectedAuth}
+                  onChange={(e) => setSelectedAuth(e.target.value)}
                 >
                   <option value="">선택하세요</option>
                   <option value="0">담당</option>
@@ -382,7 +403,7 @@ export default function AdminConfirmDetail({ selectData, onClose }) {
             {watch("state") === "2" && (
               <div className="input-group">
                 <div>반려사유</div>
-                <input type="text" {...register("stateReason")} />
+                <input type="text" {...register("stateReason")} placeholder="반려 사유를 입력하여 주세요." />
               </div>
             )}
           </section>

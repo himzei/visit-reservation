@@ -39,7 +39,7 @@ export default function AddPlaceToVisit({ onClose, checkIndex }) {
         <VStack w="full">
           <HStack w="full">
             <Input
-              maxLength={21}
+              maxLength={20}
               type="text"
               placeholder = "최대글자수는 20자로 제한되어 있습니다."
               {...register("title", {

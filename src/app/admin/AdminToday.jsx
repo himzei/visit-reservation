@@ -120,7 +120,7 @@ export default function AdminToday() {
                             case 1:
                               return <div>승인</div>;
                             case 2:
-                              return <div>미승인</div>;
+                              return <div>반려</div>;
                             case 3:
                               return <div>방문</div>;
                             case 4:

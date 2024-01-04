@@ -68,6 +68,7 @@ export default function TeacherApproval() {
     apiGetVisitReservation
   );
 
+
   const totalItemsCount = data?.totalCnt;
   const handlePageChange = (page) => {
     setPage(page);
